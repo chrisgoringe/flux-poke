@@ -1,44 +1,66 @@
 from comfy.ldm.flux.layers import DoubleStreamBlock
 import torch
-from datasets import Dataset, concatenate_datasets
 from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
-import os
+import os, random
+
+class DiskCache:
+    def __init__(self):
+        self.directory = TemporaryDirectory()
+        self.number = 0
+
+    def append(self, data:dict[str,torch.Tensor]):
+        save_file(data, os.path.join(self.directory.name, str(self.number)))
+        self.number += 1
+
+    def __len__(self): 
+        return self.number
+
+    def __getitem__(self, i): 
+        return load_file(os.path.join(self.directory.name, str(i)))
 
 class HiddenStateTracker(torch.nn.Module):
-    hidden_states: dict[int, list[tuple[torch.Tensor]]] = {}  # index i is the hidden states *before* layer i
+    hidden_states: dict[int, DiskCache] = {}  # index i is the hidden states *before* layer i
+    active = False
     def __init__(self, dsb_to_wrap:DoubleStreamBlock, layer:int, store_before:bool=None, store_after:bool=True):
         super().__init__()
         self.store_before   = store_before if store_before is not None else (layer==0)
         self.store_after    = store_after
         self.wrapped_module = dsb_to_wrap
         self.layer          = layer
-        if layer   not in self.hidden_states and self.store_before: self.hidden_states[layer]   = []
-        if layer+1 not in self.hidden_states and self.store_after:  self.hidden_states[layer+1] = [] 
+        self.is_master      = (layer==0)
+        if layer   not in self.hidden_states and self.store_before: self.hidden_states[layer]   = DiskCache()
+        if layer+1 not in self.hidden_states and self.store_after:  self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
-        if self.store_before: self.hidden_states[self.layer].append( (img.cpu(), txt.cpu()) )
-        img, txt = self.wrapped_module(img, txt, vec, pe)
-        self.hidden_states[self.layer + 1].append( (img.cpu(), txt.cpu()) )
-        return img, txt
+        if self.is_master: HiddenStateTracker.active = (random.random() < 0.05)  # 5% of steps captured
+        if HiddenStateTracker.active:
+            if self.store_before: self.hidden_states[self.layer].append( {"img":img.cpu(), "txt":txt.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
+            img, txt = self.wrapped_module(img, txt, vec, pe)
+            self.hidden_states[self.layer + 1].append( {"img":img.cpu(), "txt":txt.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
+            return img, txt
+        else: return self.wrapped_module(img, txt, vec, pe)
     
     @classmethod
     def reset_all(cls):
-        for k in cls.hidden_states: cls.hidden_states[k]=[]
+        for k in cls.hidden_states: cls.hidden_states[k] = DiskCache()
 
     @classmethod
     def save_all(cls, filepath, append=True):
-        length = min( len(cls.hidden_states[k] for k in cls.hidden_states) )
+        if not os.path.exists(filepath): os.makedirs(filepath, exist_ok=True)
+        if not append: raise NotImplementedError() # need to empty the directory
+        length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
         def gen():
             for index in range(length):
-                yield { k:cls.hidden_states[k][index] for k in cls.hidden_states } 
-        dataset:Dataset = Dataset.from_generator(gen)
-        if append and os.path.exists(filepath):
-            dataset:Dataset = concatenate_datasets([Dataset.load_from_disk(filepath), dataset])
-            with TemporaryDirectory() as tmpdirname:
-                dataset.save_to_disk(filename=tmpdirname)
-                dataset = Dataset.load_from_disk(tmpdirname)
-        dataset.save_to_disk(filename=filepath)
+                data = {}
+                for k in cls.hidden_states:
+                    for kk in ['img','txt','vec','pe']:
+                        data[f"{k}-{kk}"] = cls.hidden_states[k][index][kk]
+                yield data
+        for datum in gen():
+            label = f"{random.randint(1000000,9999999)}.safetensors"
+            save_file(datum, os.path.join(filepath, label))
+            
         cls.reset_all()
 
 class InternalsTracker(torch.nn.Module):
@@ -70,33 +92,3 @@ class InternalsTracker(torch.nn.Module):
         if isinstance( block.img_mlp[2], InternalsTracker ): return
         block.img_mlp.insert(2, InternalsTracker(f"double-img-{index}"))
         block.txt_mlp.insert(2, InternalsTracker(f"double-txt-{index}"))
-
-def prune(t:torch.Tensor, mask):
-    t, transpose = (t.T, True) if len(t.shape)==2 and t.shape[1] == len(mask) else (t, False)
-    if t.shape[0] != len(mask): return t
-    t = torch.stack( list(t[i,...] for i,m in enumerate(mask) if m ) )
-    return t.T if transpose else t
-
-def new_mlp(old_mlp, mask):
-    assert len(mask)==old_mlp[0].weight.shape[0]
-    if all(mask): return old_mlp
-
-    clazz       = old_mlp[0].__class__
-    hidden_size = old_mlp[0].weight.shape[1]
-    dtype       = old_mlp[0].weight.dtype
-    device      = old_mlp[0].weight.device
-    hidden_dim  = sum(mask)
-
-    mlp = torch.nn.Sequential(
-        clazz(hidden_size, hidden_dim, bias=True, dtype=dtype, device=device),
-        torch.nn.GELU(approximate="tanh"),
-        clazz(hidden_dim, hidden_size, bias=True, dtype=dtype, device=device),        
-    )
-    old_sd = old_mlp.state_dict()
-    sd = { k:prune(old_sd[k],mask) for k in old_sd }
-    mlp.load_state_dict(sd)
-    return mlp
-
-def slice_double_block(block:DoubleStreamBlock, img_mask:list[bool], txt_mask:list[bool]):
-    block.img_mlp = new_mlp(block.img_mlp, img_mask)
-    block.txt_mlp = new_mlp(block.txt_mlp, txt_mask)

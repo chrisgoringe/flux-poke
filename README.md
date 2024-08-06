@@ -1,6 +1,6 @@
 # flux-poke
  
-`933,888` 
+Flux has 19 `DoubleStreamBlock`s, each of which has two `mlp` (`img` and `txt`), each consisting of two Linear matrices 94096,12288)
 
 ## Download prompts
 

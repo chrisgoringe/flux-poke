@@ -1,4 +1,4 @@
-from .flux_probe_nodes import InsertInternalProbes, InternalsSaver, InsertHiddenStateProbes, HiddenStatesSaver, LoadPrunedFluxModel
+from .flux_probe_nodes import InsertInternalProbes, InternalsSaver, InsertHiddenStateProbes, HiddenStatesSaver, LoadPrunedFluxModel, ReplaceLayers
 from .utils import Prompts, Counter
 
 NODE_CLASS_MAPPINGS = { 
@@ -7,6 +7,7 @@ NODE_CLASS_MAPPINGS = {
     "Insert Hidden State Probes" : InsertHiddenStateProbes,
     "Save Hidden State Data" : HiddenStatesSaver,
     "Load Pruned Model" : LoadPrunedFluxModel,
+    "Replace Layers" : ReplaceLayers,
     "Prompts" : Prompts,
     "Counter" : Counter,
                       }

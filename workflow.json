@@ -1,0 +1,1445 @@
+{
+  "last_node_id": 77,
+  "last_link_id": 148,
+  "nodes": [
+    {
+      "id": 41,
+      "type": "Prompts",
+      "pos": [
+        47.07797428818392,
+        250.54294455336165
+      ],
+      "size": {
+        "0": 210,
+        "1": 126
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            76,
+            77
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "index",
+          "type": "STRING",
+          "links": [
+            126,
+            127
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Prompts"
+      },
+      "widgets_values": [
+        -1,
+        "no",
+        "prompts.txt"
+      ]
+    },
+    {
+      "id": 57,
+      "type": "DisplayText",
+      "pos": [
+        49.07797428818392,
+        412.5429445533619
+      ],
+      "size": {
+        "0": 210,
+        "1": 76
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "*",
+          "link": 127
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DisplayText"
+      },
+      "widgets_values": [
+        "94357"
+      ]
+    },
+    {
+      "id": 43,
+      "type": "Anything Everywhere",
+      "pos": [
+        304.0779742881829,
+        507.5429445533617
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "STRING",
+          "type": "*",
+          "link": 76,
+          "color_on": ""
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "DualCLIPLoader",
+      "pos": [
+        296.8837023082058,
+        -58.52177461105986
+      ],
+      "size": {
+        "0": 239.21673583984375,
+        "1": 106
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            62
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": [
+        "t5xxl_fp8_e4m3fn.safetensors",
+        "clip_l.safetensors",
+        "flux"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "VAELoader",
+      "pos": [
+        315.47662913242493,
+        91.59529210378419
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            63
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": [
+        "ae.sft"
+      ]
+    },
+    {
+      "id": 67,
+      "type": "Anything Everywhere",
+      "pos": [
+        792.5020190007826,
+        900.4918814997558
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 17,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "MODEL",
+          "type": "*",
+          "link": 137,
+          "color_on": "#B39DDB"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 54,
+      "type": "CombineStrings",
+      "pos": [
+        794.5020190007826,
+        971.4918814997558
+      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
+      "flags": {},
+      "order": 18,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "x",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "x"
+          }
+        },
+        {
+          "name": "y",
+          "type": "STRING",
+          "link": 130,
+          "widget": {
+            "name": "y"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            95,
+            125
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CombineStrings"
+      },
+      "widgets_values": [
+        "img[X]_prune[Y]",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 51,
+      "type": "DisplayText",
+      "pos": [
+        792.5020190007826,
+        1117.4918814997586
+      ],
+      "size": {
+        "0": 230.26901245117188,
+        "1": 76
+      },
+      "flags": {},
+      "order": 23,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "*",
+          "link": 125
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DisplayText"
+      }
+    },
+    {
+      "id": 13,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        499.2043619353513,
+        820.0690463451666
+      ],
+      "size": {
+        "0": 236.8000030517578,
+        "1": 106
+      },
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 37,
+          "slot_index": 0
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 30,
+          "slot_index": 1
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 19,
+          "slot_index": 2
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 20,
+          "slot_index": 3
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 23,
+          "slot_index": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            24
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": [],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      }
+    },
+    {
+      "id": 25,
+      "type": "RandomNoise",
+      "pos": [
+        152.204361935351,
+        637.0690463451656
+      ],
+      "size": {
+        "0": 277.2485046386719,
+        "1": 84.58332824707031
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            37
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        779018287281866,
+        "randomize"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        518.2043619353522,
+        977.0690463451664
+      ],
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 24
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            138
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 68,
+      "type": "Anything Everywhere",
+      "pos": [
+        508.20436193535176,
+        1084.0690463451688
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "IMAGE",
+          "type": "*",
+          "link": 138,
+          "color_on": "#64B5F6"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 38,
+      "type": "CLIPTextEncodeFlux",
+      "pos": [
+        18.908673751758,
+        781.9514237133308
+      ],
+      "size": {
+        "0": 210,
+        "1": 98
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": null
+        },
+        {
+          "name": "clip_l",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "clip_l"
+          },
+          "slot_index": 1
+        },
+        {
+          "name": "t5xxl",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "t5xxl"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            67
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncodeFlux"
+      },
+      "widgets_values": [
+        "full length photo of ten year old girl.\nCanon EOS R5",
+        "full length photo of ten year old girl.\nCanon EOS R5",
+        3.5
+      ]
+    },
+    {
+      "id": 37,
+      "type": "Anything Everywhere3",
+      "pos": [
+        559.6417651675787,
+        -5.202011582739276
+      ],
+      "size": {
+        "0": 174.97201538085938,
+        "1": 66
+      },
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "anything",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "CLIP",
+          "type": "*",
+          "link": 62,
+          "color_on": "#FFD500"
+        },
+        {
+          "name": "VAE",
+          "type": "*",
+          "link": 63,
+          "color_on": "#FF6E6E"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere3",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 61,
+      "type": "Load Pruned Model",
+      "pos": [
+        787.257224469533,
+        644.8967084101549
+      ],
+      "size": {
+        "0": 240.1597137451172,
+        "1": 150
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 4,
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            137
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "masked_count",
+          "type": "STRING",
+          "links": [
+            130
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Load Pruned Model"
+      },
+      "widgets_values": [
+        "flux1-dev.sft",
+        "fp8_e4m3fn",
+        "internals.safetensors",
+        2000
+      ]
+    },
+    {
+      "id": 44,
+      "type": "DisplayText",
+      "pos": [
+        304.0779742881829,
+        258.5429445533616
+      ],
+      "size": {
+        "0": 431,
+        "1": 204
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "*",
+          "link": 77
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DisplayText"
+      },
+      "widgets_values": [
+        "A tray of freshly cooked meatballs, their golden-orange topping hinting at the savory flavors.\n"
+      ]
+    },
+    {
+      "id": 45,
+      "type": "Anything Everywhere?",
+      "pos": [
+        65.46186881943376,
+        532.7686375221115
+      ],
+      "size": {
+        "0": 210.98976135253906,
+        "1": 127
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "STRING",
+          "type": "*",
+          "link": 126,
+          "color_on": ""
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere?",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": [
+        "",
+        "^x",
+        ""
+      ]
+    },
+    {
+      "id": 49,
+      "type": "SaveImage",
+      "pos": [
+        1059.2572244695314,
+        645.8967084101549
+      ],
+      "size": {
+        "0": 515.02734375,
+        "1": 548.7855224609375
+      },
+      "flags": {},
+      "order": 22,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "filename_prefix",
+          "type": "STRING",
+          "link": 95,
+          "widget": {
+            "name": "filename_prefix"
+          }
+        }
+      ],
+      "properties": {},
+      "widgets_values": [
+        "t1"
+      ]
+    },
+    {
+      "id": 22,
+      "type": "BasicGuider",
+      "pos": [
+        270.6081848663817,
+        758.8678630335932
+      ],
+      "size": {
+        "0": 161.1999969482422,
+        "1": 46.6132926940918
+      },
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": null,
+          "slot_index": 0
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 67,
+          "slot_index": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            30
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      }
+    },
+    {
+      "id": 16,
+      "type": "KSamplerSelect",
+      "pos": [
+        240.6081848663817,
+        845.8678630335932
+      ],
+      "size": {
+        "0": 211.76162719726562,
+        "1": 58
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            19
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "BasicScheduler",
+      "pos": [
+        235.6081848663817,
+        936.8678630335932
+      ],
+      "size": {
+        "0": 212.36163330078125,
+        "1": 106
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": null,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            20
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        20,
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        138.6081848663817,
+        1084.8678630335942
+      ],
+      "size": {
+        "0": 315,
+        "1": 106
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            23
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 70,
+      "type": "Insert Internal Probes",
+      "pos": [
+        795.8276353945317,
+        123.61992348828129
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 140
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            145
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Insert Internal Probes"
+      }
+    },
+    {
+      "id": 76,
+      "type": "Insert Hidden State Probes",
+      "pos": [
+        1032.82763539453,
+        122.61992348828126
+      ],
+      "size": {
+        "0": 218.39999389648438,
+        "1": 26
+      },
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 145
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            146
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Insert Hidden State Probes"
+      }
+    },
+    {
+      "id": 77,
+      "type": "Save Hidden State Data",
+      "pos": [
+        1049.8067913476552,
+        217.40537194238271
+      ],
+      "size": {
+        "0": 219.8277587890625,
+        "1": 106
+      },
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 147
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            148
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Save Hidden State Data"
+      },
+      "widgets_values": [
+        "hidden_states",
+        "yes"
+      ]
+    },
+    {
+      "id": 69,
+      "type": "Save Internal Data",
+      "pos": [
+        794.5385130039064,
+        218.8226499531249
+      ],
+      "size": {
+        "0": 235.9499969482422,
+        "1": 106
+      },
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            147
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Save Internal Data"
+      },
+      "widgets_values": [
+        "internals.safetensors",
+        "yes"
+      ]
+    },
+    {
+      "id": 66,
+      "type": "PreviewImage",
+      "pos": [
+        1298.538513003905,
+        -15.177350046875212
+      ],
+      "size": {
+        "0": 542.0524291992188,
+        "1": 548.8755493164062
+      },
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 148
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 62,
+      "type": "UNETLoader",
+      "pos": [
+        788.5385130039064,
+        -6.177350046875217
+      ],
+      "size": {
+        "0": 226.83401489257812,
+        "1": 82.21080780029297
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            140
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "flux1-dev.sft",
+        "fp8_e4m3fn"
+      ]
+    },
+    {
+      "id": 64,
+      "type": "Anything Everywhere",
+      "pos": [
+        1052,
+        -8
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "MODEL",
+          "type": "*",
+          "link": 146,
+          "color_on": "#B39DDB"
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Anything Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      19,
+      16,
+      0,
+      13,
+      2,
+      "SAMPLER"
+    ],
+    [
+      20,
+      17,
+      0,
+      13,
+      3,
+      "SIGMAS"
+    ],
+    [
+      23,
+      5,
+      0,
+      13,
+      4,
+      "LATENT"
+    ],
+    [
+      24,
+      13,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      30,
+      22,
+      0,
+      13,
+      1,
+      "GUIDER"
+    ],
+    [
+      37,
+      25,
+      0,
+      13,
+      0,
+      "NOISE"
+    ],
+    [
+      62,
+      11,
+      0,
+      37,
+      1,
+      "CLIP"
+    ],
+    [
+      63,
+      10,
+      0,
+      37,
+      2,
+      "VAE"
+    ],
+    [
+      67,
+      38,
+      0,
+      22,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      76,
+      41,
+      0,
+      43,
+      0,
+      "STRING"
+    ],
+    [
+      77,
+      41,
+      0,
+      44,
+      0,
+      "*"
+    ],
+    [
+      95,
+      54,
+      0,
+      49,
+      1,
+      "STRING"
+    ],
+    [
+      101,
+      55,
+      0,
+      22,
+      0,
+      "MODEL"
+    ],
+    [
+      102,
+      55,
+      0,
+      17,
+      0,
+      "MODEL"
+    ],
+    [
+      103,
+      10,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      104,
+      11,
+      0,
+      38,
+      0,
+      "CLIP"
+    ],
+    [
+      105,
+      41,
+      0,
+      38,
+      1,
+      "STRING"
+    ],
+    [
+      106,
+      41,
+      0,
+      38,
+      2,
+      "STRING"
+    ],
+    [
+      107,
+      53,
+      1,
+      54,
+      0,
+      "STRING"
+    ],
+    [
+      108,
+      55,
+      0,
+      22,
+      0,
+      "MODEL"
+    ],
+    [
+      109,
+      55,
+      0,
+      17,
+      0,
+      "MODEL"
+    ],
+    [
+      110,
+      10,
+      0,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      111,
+      11,
+      0,
+      38,
+      0,
+      "CLIP"
+    ],
+    [
+      112,
+      41,
+      0,
+      38,
+      1,
+      "STRING"
+    ],
+    [
+      113,
+      41,
+      0,
+      38,
+      2,
+      "STRING"
+    ],
+    [
+      114,
+      53,
+      1,
+      54,
+      0,
+      "STRING"
+    ],
+    [
+      125,
+      54,
+      0,
+      51,
+      0,
+      "*"
+    ],
+    [
+      126,
+      41,
+      1,
+      45,
+      0,
+      "STRING"
+    ],
+    [
+      127,
+      41,
+      1,
+      57,
+      0,
+      "*"
+    ],
+    [
+      130,
+      61,
+      1,
+      54,
+      1,
+      "STRING"
+    ],
+    [
+      137,
+      61,
+      0,
+      67,
+      0,
+      "MODEL"
+    ],
+    [
+      138,
+      8,
+      0,
+      68,
+      0,
+      "IMAGE"
+    ],
+    [
+      140,
+      62,
+      0,
+      70,
+      0,
+      "MODEL"
+    ],
+    [
+      145,
+      70,
+      0,
+      76,
+      0,
+      "MODEL"
+    ],
+    [
+      146,
+      76,
+      0,
+      64,
+      0,
+      "MODEL"
+    ],
+    [
+      147,
+      69,
+      0,
+      77,
+      0,
+      "IMAGE"
+    ],
+    [
+      148,
+      77,
+      0,
+      66,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "Group",
+      "bounding": [
+        286,
+        -132,
+        458,
+        292
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "Group",
+      "bounding": [
+        38,
+        177,
+        708,
+        366
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "Enable to run inference with pruned model",
+      "bounding": [
+        778,
+        571,
+        807,
+        634
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "Enable to analyse",
+      "bounding": [
+        779,
+        -89,
+        1072,
+        633
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "Sampling",
+      "bounding": [
+        9,
+        563,
+        737,
+        638
+      ],
+      "color": "#3f789e",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5644739300537778,
+      "offset": [
+        229.23637058087974,
+        148.9851287847024
+      ]
+    }
+  },
+  "version": 0.4
+}
