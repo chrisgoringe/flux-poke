@@ -15,8 +15,8 @@ class AbstractInserter:
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { "model": ("MODEL", ), } }    
-    def func(self, model):
-        self._func(model)
+    def func(self, model, **kwargs):
+        self._func(model, **kwargs)
         return (model,)
 
 class AbstractSaver:
