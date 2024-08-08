@@ -3,13 +3,12 @@ from tqdm import tqdm
 
 # Edit the line below to read 
 # option = 0  (or whatever )
-option = None
+
 OPTIONS = [
     ("isidentical/random-stable-diffusion-prompts", 'prompt'),  #0
     ("Gustavosta/Stable-Diffusion-Prompts", 'Prompt'),          
-
 ]
-
+option = OPTIONS[1]
 
 if __name__=='__main__':
     assert option is not None, "edit this file to choose an option"    
