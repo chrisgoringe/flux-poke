@@ -1,9 +1,9 @@
 from safetensors.torch import load_file
-from .trackers import InternalsTracker, HiddenStateTracker
-from .modifiers import slice_double_block, replace_double_block_mlps
+from .modules.trackers import InternalsTracker, HiddenStateTracker
+from .modules.modifiers import slice_double_block, replace_double_block_mlps, get_mask
 from nodes import UNETLoader
 import torch
-import os, random
+import os
 import folder_paths
 from functools import partial
 
@@ -16,8 +16,9 @@ class AbstractInserter:
     @classmethod
     def INPUT_TYPES(s): return { "required": { "model": ("MODEL", ), } }    
     def func(self, model, **kwargs):
-        self._func(model, **kwargs)
-        return (model,)
+        m = model.clone()
+        self._func(m, **kwargs)
+        return (m,)
 
 class AbstractSaver:
     RETURN_TYPES = ("IMAGE",)
@@ -42,6 +43,10 @@ class InsertInternalProbes(AbstractInserter):
                 InternalsTracker.inject_internals_tracker(block.wrapped_module, i)
             else:
                 InternalsTracker.inject_internals_tracker(block, i)
+        #for i, block in enumerate(model.model.diffusion_model.single_blocks): 
+        #    if isinstance(block.linear2, torch.nn.Sequential): block.linear2 = block.linear2[1]
+        #    InternalsTracker.inject_internals_tracker(block, i+len(model.model.diffusion_model.double_blocks))
+
         print(f"Added {len(InternalsTracker.all_datasets)} callouts")
     
 class InternalsSaver(AbstractSaver):
@@ -59,19 +64,31 @@ class HiddenStatesSaver(AbstractSaver):
     DEFAULT = "hidden_states"
     CLAZZ   = HiddenStateTracker
 
-class ReplaceLayers(AbstractInserter):
+class ReplaceLayers(UNETLoader):
+    RETURN_TYPES = ("MODEL","STRING",)
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "model": ("MODEL", ), 
-        "first_layer":("INT",{"default":0, "man":0, "max":19}), 
-        "last_layer":("INT",{"default":0, "man":0, "max":19}),
+        "unet_name":            (folder_paths.get_filename_list("unet"), ),
+        "weight_dtype":         (["default", "fp8_e4m3fn", "fp8_e5m2"],),
+        "replacement_directory":("STRING",{"default":"retrained_layers"}),
+        "first_layer":          ("INT",{"default":0,  "min":0, "max":18}), 
+        "last_layer":           ("INT",{"default":18, "min":0, "max":18}),
     }}
 
-    def _func(self, model, first_layer, last_layer):
+    def func(self, unet_name, weight_dtype, replacement_directory, first_layer, last_layer):
+        model = self.load_unet(unet_name, weight_dtype)[0]
+        dbs   = model.model.diffusion_model.double_blocks
         for l in range(first_layer, last_layer+1):
-            replace_double_block_mlps(block = model.model.diffusion_model.double_blocks[l], 
-                                      data = load_file(filepath("retrained_layers",f"{l}.safetensors")))
-            
+            if os.path.exists(file:=filepath(replacement_directory,f"{l}.safetensors")):
+                replace_double_block_mlps(block = dbs[l], data = load_file(file))
+            else:
+                print(f"{file} not found")
+        img_masked = sum( (12288-l.img_mlp[0].out_features) for l in dbs )
+        txt_masked = sum( (12288-l.txt_mlp[0].out_features) for l in dbs )
+        return (model,f"img{img_masked}_txt{txt_masked}",)
+
 
 class LoadPrunedFluxModel(UNETLoader):
     RETURN_TYPES = ("MODEL","STRING")
@@ -80,29 +97,65 @@ class LoadPrunedFluxModel(UNETLoader):
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "unet_name": (folder_paths.get_filename_list("unet"), ),
+        "unet_name":    (folder_paths.get_filename_list("unet"), ),
         "weight_dtype": (["default", "fp8_e4m3fn", "fp8_e5m2"],),
-        "file": ("STRING", {"default":"internals.safetensors"}), 
-        "threshold": ("INT", {"default":-1}),
-        "first_layer": ("INT", {"default":0, "min":0, "max":19}),
-        "last_layer": ("INT", {"default":0, "min":0, "max":19}),
+        "file":         ("STRING", {"default":"internals.safetensors"}), 
+        "img_cut":      ("INT", {"default":2000, "min":0, "max":12288}),
+        "txt_cut":      ("INT", {"default":2000, "min":0, "max":12288}),
+        "first_layer":  ("INT", {"default":0,  "min":0, "max":18}),
+        "last_layer":   ("INT", {"default":18, "min":0, "max":18}),
         } }    
-    
-    def __init__(self):
-        super().__init__()
-        self.masked_out = 0
-    
-    def mask_from(self, data, threshold):
-        l = list( d>threshold for d in data )
-        self.masked_out += len(data) - sum(l)
-        return l
 
-    def func(self, unet_name, weight_dtype, file, threshold, first_layer, last_layer):
+    def func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_cut, txt_cut):
+        return self._func(unet_name, weight_dtype, file, first_layer, last_layer, img_cut, txt_cut)
+
+    def _func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_threshold=None, txt_threshold=None, img_cut=None, txt_cut=None):
         model = self.load_unet(unet_name, weight_dtype)[0]
         all_data = load_file(filepath(file))
-        self.masked_out = 0
+        img_masked, txt_masked = 0, 0
         for i in range(first_layer, last_layer+1):
-            slice_double_block(block    = model.model.diffusion_model.double_blocks[i], 
-                               img_mask = self.mask_from(all_data[f"double-img-{i}"], threshold), 
-                               txt_mask = self.mask_from(all_data[f"double-txt-{i}"], threshold))
-        return (model,str(int(self.masked_out)))    
+            block = model.model.diffusion_model.double_blocks[i]
+            img_mask = get_mask(all_data[f"double-img-{i}"], img_threshold, img_cut)
+            txt_mask = get_mask(all_data[f"double-txt-{i}"], txt_threshold, txt_cut)
+            img_masked += sum(not x for x in img_mask) 
+            txt_masked += sum(not x for x in txt_mask)
+            slice_double_block(block = block, img_mask = img_mask, txt_mask = txt_mask )
+        print(f"Total of {img_masked} img lines and {txt_masked} txt lines cut")
+        return (model,f"img{img_masked}_txt{txt_masked}",)
+    
+class LoadPrunedFluxModelThreshold(LoadPrunedFluxModel):
+    @classmethod
+    def INPUT_TYPES(s): return { "required": { 
+        "unet_name":     (folder_paths.get_filename_list("unet"), ),
+        "weight_dtype":  (["default", "fp8_e4m3fn", "fp8_e5m2"],),
+        "file":          ("STRING", {"default":"internals.safetensors"}), 
+        "img_threshold": ("INT", {"default":2000, "min":0}),
+        "txt_threshold": ("INT", {"default":2000, "min":0}),
+        "first_layer":   ("INT", {"default":0,  "min":0, "max":18}),
+        "last_layer":    ("INT", {"default":18, "min":0, "max":18}),
+        } }    
+    
+    def func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold):
+        return self._func(unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold)
+
+try:
+    from bitsandbytes.nn import Linear8bitLt
+    class ConvertToBAB(AbstractInserter):
+        def _func(self, model):
+            wrapped_model:torch.nn.Module = model.model
+            name_filter = lambda name:True
+            for name, module in wrapped_model.named_modules():
+                if name_filter(name):
+                    for child_name, child_module in module.named_children():
+                        if isinstance(child_module, torch.nn.Linear):
+                            replacement = Linear8bitLt(input_features=child_module.in_features, 
+                                                    output_features=child_module.out_features, 
+                                                    bias=(child_module.bias is not None))
+                            replacement.load_state_dict( module.state_dict() )
+                            setattr(module, child_name, replacement)
+
+
+except ModuleNotFoundError:
+    class ConvertToBAB(AbstractInserter):
+        def _func(self, model):
+            raise ModuleNotFoundError("Try pip install bitsandbytes")

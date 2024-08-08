@@ -1,5 +1,5 @@
 from comfy.ldm.flux.layers import DoubleStreamBlock
-import torch
+import torch, random
 
 def prune(t:torch.Tensor, mask):
     t, transpose = (t.T, True) if len(t.shape)==2 and t.shape[1] == len(mask) else (t, False)
@@ -32,6 +32,19 @@ def new_mlp(old_mlp, mask):
     sd = { k:prune(old_sd[k],mask) for k in old_sd }
     mlp.load_state_dict(sd)
     return mlp
+
+def get_mask(data, remove_below, remove_count, return_threshold = False): 
+    remove_below, remove_count = (remove_below, None) if remove_below is not None else (sorted(data)[remove_count], remove_count)
+    mask = [ d>=remove_below for d in data ] 
+    # because of equalities, we may well not have removed enough. Take more out at random from those which equal remove_below
+    if remove_count is not None and (still_to_remove := remove_count - sum(not x for x in mask)):
+        jumbled = [x for x in range(len(data))]
+        random.shuffle(jumbled)
+        for pointer in jumbled:
+            if still_to_remove>0 and data[pointer]==remove_below:
+                mask[pointer] = False
+                still_to_remove -= 1        
+    return (mask, remove_below) if return_threshold else mask
 
 def slice_double_block(block:DoubleStreamBlock, img_mask:list[bool], txt_mask:list[bool]):
     block.img_mlp = new_mlp(block.img_mlp, img_mask)

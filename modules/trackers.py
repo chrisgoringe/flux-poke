@@ -1,8 +1,9 @@
-from comfy.ldm.flux.layers import DoubleStreamBlock
+from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 import torch
 from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
 import os, random
+from typing import Union
 
 class DiskCache:
     def __init__(self):
@@ -20,20 +21,25 @@ class DiskCache:
         return load_file(os.path.join(self.directory.name, str(i)))
 
 class HiddenStateTracker(torch.nn.Module):
+    '''
+    Wraps a DoubleStreamBlock. If the index is zero, this is the master block. The master block turns the trackers 
+    on for step_fraction of steps (default 0.05) so we capture on average one rando step per image
+    '''
     hidden_states: dict[int, DiskCache] = {}  # index i is the hidden states *before* layer i
     active = False
-    def __init__(self, dsb_to_wrap:DoubleStreamBlock, layer:int, store_before:bool=None, store_after:bool=True):
+    def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, store_before:bool=None, store_after:bool=True, step_fraction:float=0.05):
         super().__init__()
         self.store_before   = store_before if store_before is not None else (layer==0)
         self.store_after    = store_after
-        self.wrapped_module = dsb_to_wrap
+        self.wrapped_module = block_to_wrap
         self.layer          = layer
         self.is_master      = (layer==0)
+        self.step_fraction  = step_fraction
         if layer   not in self.hidden_states and self.store_before: self.hidden_states[layer]   = DiskCache()
         if layer+1 not in self.hidden_states and self.store_after:  self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
-        if self.is_master: HiddenStateTracker.active = (random.random() < 0.05)  # 5% of steps captured
+        if self.is_master: HiddenStateTracker.active = (random.random() < self.step_fraction)  
         if HiddenStateTracker.active:
             if self.store_before: self.hidden_states[self.layer].append( {"img":img.cpu(), "txt":txt.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
             img, txt = self.wrapped_module(img, txt, vec, pe)
@@ -65,13 +71,14 @@ class HiddenStateTracker(torch.nn.Module):
 
 class InternalsTracker(torch.nn.Module):
     all_datasets = {}
-    def __init__(self,label:str):
+    def __init__(self,label:str, keep_last=12288):
         super().__init__()
         self.label = label
         self.all_datasets[self.label] = 0
+        self.keep_last = keep_last
         
     def forward(self, x:torch.Tensor):
-        self.all_datasets[self.label] += torch.sum((x>0),dim=(0,1)).cpu()
+        self.all_datasets[self.label] += torch.sum((x>0),dim=(0,1)).cpu()[-self.keep_last:]
         return x
     
     @classmethod
@@ -88,7 +95,14 @@ class InternalsTracker(torch.nn.Module):
         cls.reset_all()
 
     @classmethod
-    def inject_internals_tracker(cls,block:DoubleStreamBlock, index:int):
+    def inject_internals_tracker(cls,block:Union[DoubleStreamBlock, SingleStreamBlock], index:int):
         if isinstance( block.img_mlp[2], InternalsTracker ): return
-        block.img_mlp.insert(2, InternalsTracker(f"double-img-{index}"))
-        block.txt_mlp.insert(2, InternalsTracker(f"double-txt-{index}"))
+
+        if isinstance(block, DoubleStreamBlock):
+            block.img_mlp.insert(2, InternalsTracker(f"double-img-{index}"))
+            block.txt_mlp.insert(2, InternalsTracker(f"double-txt-{index}"))
+        elif isinstance(block, SingleStreamBlock):
+            block.linear2 = torch.nn.Sequential([
+                InternalsTracker((f"single-{index}")),
+                block.linear2
+            ])
