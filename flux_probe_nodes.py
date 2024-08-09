@@ -17,25 +17,9 @@ class AbstractInserter:
     def INPUT_TYPES(s): return { "required": { "model": ("MODEL", ), } }    
     def func(self, model, **kwargs):
         m = model.clone()
-        self._func(m, **kwargs)
+        print(self._func(m, **kwargs))
         return (m,)
-
-class AbstractSaver:
-    RETURN_TYPES = ("IMAGE",)
-    OUTPUT_NODE = True
-    FUNCTION = "func"
-    CATEGORY = "flux_watcher"
-    @classmethod
-    def INPUT_TYPES(cls): 
-        return { "required": { 
-            "image": ("IMAGE", {}), 
-            "filename": ("STRING",{"default":cls.DEFAULT}),
-            "append": (["yes", "no"], {}),
-            } }      
-    def func(self, image, filename, append):
-        self.CLAZZ.save_all(filepath(filename), append=(append=='yes'))
-        return (image,)      
-
+ 
 class InsertInternalProbes(AbstractInserter):
     def _func(self, model):
         for i, block in enumerate(model.model.diffusion_model.double_blocks): 
@@ -47,22 +31,44 @@ class InsertInternalProbes(AbstractInserter):
         #    if isinstance(block.linear2, torch.nn.Sequential): block.linear2 = block.linear2[1]
         #    InternalsTracker.inject_internals_tracker(block, i+len(model.model.diffusion_model.double_blocks))
 
-        print(f"Added {len(InternalsTracker.all_datasets)} callouts")
-    
-class InternalsSaver(AbstractSaver):
-    DEFAULT = "internals.safetensors"
-    CLAZZ   = InternalsTracker
-    
+        return f"Added {len(InternalsTracker.all_datasets)} callouts"
+
 class InsertHiddenStateProbes(AbstractInserter):
     def _func(self, model):
         model.model.diffusion_model.double_blocks = torch.nn.ModuleList(
             [ HiddenStateTracker(dsb, i) for i, dsb in enumerate(model.model.diffusion_model.double_blocks) ]
         )
-        print(f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states")   
+        #n_double = len(model.model.diffusion_model.double_blocks)
+        #model.model.diffusion_model.single_blocks = torch.nn.ModuleList(
+        #    [ HiddenStateTracker(dsb, i+n_double) for i, dsb in enumerate(model.model.diffusion_model.single_blocks) ]
+        #)        
+        return f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states"  
 
+
+class AbstractSaver:
+    RETURN_TYPES = ("LATENT",)
+    OUTPUT_NODE = True
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
+    @classmethod
+    def INPUT_TYPES(cls): 
+        return { "required": { 
+            "latent": ("LATENT", {}), 
+            "filename": ("STRING",{"default":cls.DEFAULT}),
+            } }      
+    def func(self, latent, filename):
+        self.SAVER(filepath(filename))
+        return (latent,)     
+    
+class InternalsSaver(AbstractSaver):
+    DEFAULT = "internals.safetensors"
+    SAVER   = InternalsTracker.save_all
+    
 class HiddenStatesSaver(AbstractSaver):
     DEFAULT = "hidden_states"
-    CLAZZ   = HiddenStateTracker
+    SAVER   = HiddenStateTracker.save_all
+
+
 
 class ReplaceLayers(UNETLoader):
     RETURN_TYPES = ("MODEL","STRING",)
@@ -137,6 +143,8 @@ class LoadPrunedFluxModelThreshold(LoadPrunedFluxModel):
     
     def func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold):
         return self._func(unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold)
+    
+    
 
 try:
     from bitsandbytes.nn import Linear8bitLt
