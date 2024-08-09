@@ -26,8 +26,8 @@ class Prompts:
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "index": ("INT", {"default": 0 }), 
-        "seed": ("INT", {"default": 0 }),
+        "index": ("INT", {"default": -1 }), 
+        "seed": ("INT", {"default": 42 }),
         "reload":(["no","yes"],), 
         "filename":("STRING", {"default":"prompts.txt"}),
         "regex":("STRING", {"default":".*"},)
