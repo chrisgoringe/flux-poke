@@ -6,17 +6,17 @@ from argparse import ArgumentParser
 # option = 0  (or whatever )
 
 OPTIONS = [
-    ("isidentical/random-stable-diffusion-prompts", 'prompt'),  #0
-    ("Gustavosta/Stable-Diffusion-Prompts", 'Prompt'),          
+    ("isidentical/random-stable-diffusion-prompts", 'prompt', ''),  #0
+    ("Gustavosta/Stable-Diffusion-Prompts", 'Prompt', '\n'),          
 ]
 
 if __name__=='__main__':
     a = ArgumentParser()
     a.add_argument('--option', type=int, default=0)
     args = a.parse_args()
-    filename, column_name = OPTIONS[args.option]
+    filename, column_name, line_end = OPTIONS[args.option]
     dataset = load_dataset(filename)
 
     with open("prompts.txt","w", encoding="UTF-8") as f:
         for item in tqdm(dataset['train']):
-            print(item[column_name], file=f, end='')
+            print(item[column_name], file=f, end=line_end)
