@@ -5,14 +5,29 @@ import torch
 
 filepath = partial(os.path.join,os.path.split(__file__)[0])
 
+class SeedContext():
+    """
+    Context Manager to allow one or more random numbers to be generated, optionally using a specified seed, 
+    without changing the random number sequence for other code.
+    """
+    def __init__(self, seed=None):
+        self.seed = seed
+    def __enter__(self):
+        self.state = random.getstate()
+        if self.seed:
+            random.seed(self.seed)
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        random.setstate(self.state)
+
 class Prompts:
-    RETURN_TYPES = ("STRING","STRING")
-    RETURN_NAMES = ("prompt","index")
+    RETURN_TYPES = ("STRING","STRING","STRING")
+    RETURN_NAMES = ("prompt","index","seed")
     FUNCTION = "func"
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
         "index": ("INT", {"default": 0 }), 
+        "seed": ("INT", {"default": 0 }),
         "reload":(["no","yes"],), 
         "filename":("STRING", {"default":"prompts.txt"}),
         "regex":("STRING", {"default":".*"},)
@@ -33,7 +48,7 @@ class Prompts:
         regex = re.compile(regex_string)
         self.prompts = [ x for x in self.prompts if regex.match(x) ]
 
-    def func(self, index, reload, filename, regex):
+    def func(self, index, seed, reload, filename, regex):
         if reload=='yes' or self.prompts is None: 
             self.load(filename)
             self.last_regex = ".*"
@@ -41,8 +56,9 @@ class Prompts:
             self.filter(regex)
             self.last_regex = regex
         print(f"Prompts has {len(self.prompts)} entries")
-        if index==-1: index = random.randrange(0, len(self.prompts))
-        return (self.prompts[index % len(self.prompts)], str(index))
+        if index==-1: 
+            with SeedContext(seed): index = random.randrange(0, len(self.prompts))
+        return (self.prompts[index % len(self.prompts)], str(index), str(seed))
 
 class Counter:
     RETURN_TYPES = ("INT","STRING")
