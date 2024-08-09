@@ -15,6 +15,7 @@ wget --header "Authorization: Bearer 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" http
 cd /workspace/ComfyUI/custom_nodes
 git clone https://github.com/chrisgoringe/cg-use-everywhere
 git clone https://github.com/chrisgoringe/flux-poke
+git clone https://github.com/chrisgoringe/cg-quicknodes
 cd flux-poke; pip install -r requirements.txt ; python download_prompts.py 
 
 # Updates
