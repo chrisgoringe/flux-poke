@@ -162,3 +162,4 @@ prompts.txt
 arguments.txt
 *.safetensors
 hidden_states
+hf_key.txt
