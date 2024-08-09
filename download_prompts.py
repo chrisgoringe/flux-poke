@@ -12,7 +12,7 @@ OPTIONS = [
 
 if __name__=='__main__':
     a = ArgumentParser()
-    a.add_argument('--option', default=0)
+    a.add_argument('--option', type=int, default=0)
     args = a.parse_args()
     filename, column_name = OPTIONS[args.option]
     dataset = load_dataset(filename)
