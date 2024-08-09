@@ -30,7 +30,6 @@ class Prompts:
         "seed": ("INT", {"default": 42 }),
         "reload":(["no","yes"],), 
         "filename":("STRING", {"default":"prompts.txt"}),
-        "regex":("STRING", {"default":".*"},)
     } }
 
     @classmethod
@@ -39,22 +38,14 @@ class Prompts:
 
     def __init__(self):
         self.prompts = None
-        self.last_regex = ".*"
 
     def load(self, filename):
         with open(filepath(filename), 'r', encoding='UTF-8') as f: self.prompts = f.readlines()
 
-    def filter(self, regex_string):
-        regex = re.compile(regex_string)
-        self.prompts = [ x for x in self.prompts if regex.match(x) ]
-
-    def func(self, index, seed, reload, filename, regex):
+    def func(self, index, seed, reload, filename):
         if reload=='yes' or self.prompts is None: 
             self.load(filename)
             self.last_regex = ".*"
-        if regex != self.last_regex:
-            self.filter(regex)
-            self.last_regex = regex
         print(f"Prompts has {len(self.prompts)} entries")
         if index==-1: 
             with SeedContext(seed): index = random.randrange(0, len(self.prompts))
