@@ -40,7 +40,11 @@ class Prompts:
         self.prompts = None
 
     def load(self, filename):
-        with open(filepath(filename), 'r', encoding='UTF-8') as f: self.prompts = f.readlines()
+        if os.path.isdir(filepath(filename)):
+            import datasets
+            self.prompts = [p for p in datasets.Dataset.load_from_disk(filepath(filename))['prompt']]
+        else:
+            with open(filepath(filename), 'r', encoding='UTF-8') as f: self.prompts = f.readlines()
 
     def func(self, index, seed, reload, filename):
         if reload=='yes' or self.prompts is None: 

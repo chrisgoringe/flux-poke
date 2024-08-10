@@ -6,10 +6,11 @@ import torch
 import os
 import folder_paths
 from functools import partial
+from comfy.model_management import cleanup_models
 
 filepath = partial(os.path.join,os.path.split(__file__)[0])
     
-class AbstractInserter:
+class AbstractModelModifier:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "func"
     CATEGORY = "flux_watcher"
@@ -18,9 +19,11 @@ class AbstractInserter:
     def func(self, model, **kwargs):
         m = model.clone()
         print(self._func(m, **kwargs))
+        model = None
+        cleanup_models()
         return (m,)
  
-class InsertInternalProbes(AbstractInserter):
+class InsertInternalProbes(AbstractModelModifier):
     def _func(self, model):
         for i, block in enumerate(model.model.diffusion_model.double_blocks): 
             if isinstance(block, HiddenStateTracker):
@@ -33,7 +36,7 @@ class InsertInternalProbes(AbstractInserter):
 
         return f"Added {len(InternalsTracker.all_datasets)} callouts"
 
-class InsertHiddenStateProbes(AbstractInserter):
+class InsertHiddenStateProbes(AbstractModelModifier):
     def _func(self, model):
         model.model.diffusion_model.double_blocks = torch.nn.ModuleList(
             [ HiddenStateTracker(dsb, i) for i, dsb in enumerate(model.model.diffusion_model.double_blocks) ]
@@ -144,26 +147,3 @@ class LoadPrunedFluxModelThreshold(LoadPrunedFluxModel):
     def func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold):
         return self._func(unet_name, weight_dtype, file, first_layer, last_layer, img_threshold, txt_threshold)
     
-    
-
-try:
-    from bitsandbytes.nn import Linear8bitLt
-    class ConvertToBAB(AbstractInserter):
-        def _func(self, model):
-            wrapped_model:torch.nn.Module = model.model
-            name_filter = lambda name:True
-            for name, module in wrapped_model.named_modules():
-                if name_filter(name):
-                    for child_name, child_module in module.named_children():
-                        if isinstance(child_module, torch.nn.Linear):
-                            replacement = Linear8bitLt(input_features=child_module.in_features, 
-                                                    output_features=child_module.out_features, 
-                                                    bias=(child_module.bias is not None))
-                            replacement.load_state_dict( module.state_dict() )
-                            setattr(module, child_name, replacement)
-
-
-except ModuleNotFoundError:
-    class ConvertToBAB(AbstractInserter):
-        def _func(self, model):
-            raise ModuleNotFoundError("Try pip install bitsandbytes")

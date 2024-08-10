@@ -1,5 +1,5 @@
 from .flux_probe_nodes import InsertInternalProbes, InternalsSaver, InsertHiddenStateProbes, HiddenStatesSaver, \
-    LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold, ConvertToBAB
+    LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold
 from .utils_nodes import Prompts, Counter, FluxSimpleScheduler
 
 NODE_CLASS_MAPPINGS = { 
@@ -11,7 +11,6 @@ NODE_CLASS_MAPPINGS = {
     "Load Pruned Model (Threshold)" : LoadPrunedFluxModelThreshold,
     "Load Patched Model"            : ReplaceLayers,
     "Flux Simple Scheduler"         : FluxSimpleScheduler,
-    "Convert to Bits and Bytes"     : ConvertToBAB,
     "Prompts"                       : Prompts,
     "Counter"                       : Counter,
                       }

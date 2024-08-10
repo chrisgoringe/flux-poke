@@ -29,4 +29,3 @@ cd /workspace/ComfyUI ; pip install -r requirements.txt ; python main.py --liste
 
 
 
-https://docs.runpod.io/pods/configuration/export-data#amazon-s3
