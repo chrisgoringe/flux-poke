@@ -11,9 +11,9 @@ def create_repo(repo):
     api = HfApi()
     api.create_repo(repo_id=repo_id(repo), repo_type="dataset", private=True)
 
-def upload_files_from_directory(repo, directory):
+def upload_files_from_directory(repo, directory, max_upload=100):
     api = HfApi()
-    for file in tqdm(os.listdir(directory)):
+    for i, file in enumerate(os.listdir(directory)):
         if os.path.splitext(file)[1]=='.safetensors':  
             print(file)
             api.upload_file(
@@ -22,6 +22,7 @@ def upload_files_from_directory(repo, directory):
                 repo_id=repo_id(repo),
                 repo_type="dataset",
             )
+        if i==max_upload: return
 
 def upload_dataset(repo, directory):
     ds = datasets.Dataset.load_from_disk(directory)
