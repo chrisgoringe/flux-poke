@@ -2,18 +2,15 @@ import datasets
 import os
 from safetensors.torch import load_file
 from argparse import ArgumentParser
+from tqdm import tqdm
 
 def from_directory_of_files(directory, push_name):
-    def gen():
-        for file in os.listdir(directory):
-            root, ext = os.path.splitext(file)
-            if ext=='.safetensors':  
-                datum = load_file(os.path.join(directory, file))
-                datum['id'] = root
-                yield datum
-
-    ds = datasets.Dataset.from_generator(gen)
-    ds.push_to_hub(push_name)
+    for file in tqdm([os.listdir(directory)]):
+        root, ext = os.path.splitext(file)
+        if ext=='.safetensors':  
+            datum = load_file(os.path.join(directory, file))
+            ds = datasets.Dataset.from_dict(datum)
+            ds.push_to_hub(push_name, split=f"p_{root}")
 
 def from_dataset(directory, push_name):
     ds = datasets.Dataset.load_from_disk(directory)
