@@ -22,6 +22,7 @@ def upload_files_from_directory(repo, directory, max_upload=100):
                 repo_id=repo_id(repo),
                 repo_type="dataset",
             )
+            os.remove(os.path.join(directory, file))
         if i==max_upload: return
 
 def upload_dataset(repo, directory):
