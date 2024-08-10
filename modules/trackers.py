@@ -2,8 +2,10 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 import torch
 from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
-import os, random
+import os, random, threading, queue, sys
 from typing import Union
+from modules.utils import SingletonAddin
+from huggingface_hub import HfApi
 
 class DiskCache:
     def __init__(self):
@@ -20,6 +22,27 @@ class DiskCache:
     def __getitem__(self, i): 
         return load_file(os.path.join(self.directory.name, str(i)))
 
+class UploadThread(SingletonAddin):
+    def __init__(self):
+        self.queue  = queue.SimpleQueue()
+        self.api    = HfApi()
+        self.thread = threading.Thread(target=self.run, daemon=True)
+        self.thread.start()
+
+    def run(self):
+        while True:
+            try:
+                filepath = self.queue.get()
+                self.api.upload_file(
+                    path_or_fileobj=filepath,
+                    path_in_repo=os.path.split(filepath)[-1],
+                    repo_id="ChrisGoringe/fi",
+                    repo_type="dataset",
+                )
+                os.remove(filepath)
+            except:
+                print(sys.exc_info())
+
 class HiddenStateTracker(torch.nn.Module):
     '''
     Wraps a DoubleStreamBlock. If the index is zero, this is the master block. The master block turns the trackers 
@@ -27,6 +50,7 @@ class HiddenStateTracker(torch.nn.Module):
     '''
     hidden_states: dict[int, DiskCache] = {}  # index i is the hidden states *before* layer i
     active = False
+    queue = UploadThread.instance().queue
     def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, store_before:bool=None, store_after:bool=True, step_fraction:float=0.05):
         super().__init__()
         self.store_before   = store_before if store_before is not None else (layer==0)
@@ -66,6 +90,7 @@ class HiddenStateTracker(torch.nn.Module):
         for datum in gen():
             label = f"{random.randint(1000000,9999999)}.safetensors"
             save_file(datum, os.path.join(filepath, label))
+            cls.queue.put(os.path.join(filepath, label))
             
         cls.reset_all()
 
