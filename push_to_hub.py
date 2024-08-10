@@ -18,8 +18,8 @@ def from_dataset(directory, push_name):
     ds = datasets.Dataset.load_from_disk(directory)
     ds.push_to_hub(push_name)
 
-#HF_NAME, DIRECTORY, ALREADY_DATASET = ("ChrisGoringe/flux_internals","hidden_states",False)
-HF_NAME, DIRECTORY, ALREADY_DATASET = ("ChrisGoringe/uncleaned_prompts","prompts_dataset",True)
+HF_NAME, DIRECTORY, ALREADY_DATASET = ("ChrisGoringe/flux_internals","hidden_states",False)
+#HF_NAME, DIRECTORY, ALREADY_DATASET = ("ChrisGoringe/uncleaned_prompts","prompts_dataset",True)
 
 if __name__=='__main__':
     if ALREADY_DATASET:
