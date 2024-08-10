@@ -6,7 +6,7 @@ def from_directory_of_files(directory, push_name):
     def gen():
         for file in os.listdir(directory):
             root, ext = os.path.splitext(file)
-            if root=='.safetensors':  
+            if ext=='.safetensors':  
                 datum = load_file(os.path.join(directory, file))
                 datum['id'] = root
                 yield datum
