@@ -23,9 +23,9 @@ if __name__=='__main__':
     a = ArgumentParser()
     a.add_argument('--hidden_states', action='store_true')
     a.add_argument('--prompts', action='store_true')
-    a.parse_args()
+    args = a.parse_args()
 
-    if a.hidden_states:
+    if args.hidden_states:
         from_dataset(directory="hidden_states", push_name="ChrisGoringe/flux_internals")
-    if a.prompts:
+    if args.prompts:
         from_directory_of_files(directory="prompts_dataset", push_name="ChrisGoringe/uncleaned_prompts")
