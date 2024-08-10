@@ -149,7 +149,7 @@
         "Node name for S&R": "RandomNoise"
       },
       "widgets_values": [
-        338930954574126,
+        403410228706469,
         "randomize"
       ]
     },
@@ -403,67 +403,6 @@
       ]
     },
     {
-      "id": 103,
-      "type": "Prompts",
-      "pos": [
-        893.5294224374996,
-        78.25471376765441
-      ],
-      "size": {
-        "0": 210,
-        "1": 146
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "seed",
-          "type": "INT",
-          "link": null,
-          "widget": {
-            "name": "seed"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "links": [
-            180
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "index",
-          "type": "STRING",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "seed",
-          "type": "STRING",
-          "links": [
-            181
-          ],
-          "shape": 3,
-          "slot_index": 2
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Prompts"
-      },
-      "widgets_values": [
-        -1,
-        1650,
-        "randomize",
-        "no",
-        "prompts.txt"
-      ]
-    },
-    {
       "id": 43,
       "type": "Anything Everywhere",
       "pos": [
@@ -477,7 +416,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 12,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
@@ -508,7 +447,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 13,
+      "order": 15,
       "mode": 0,
       "inputs": [
         {
@@ -541,7 +480,7 @@
         "1": 82
       },
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -557,7 +496,7 @@
         "color_restricted": 0
       },
       "widgets_values": [
-        738910934855854,
+        238257414445597,
         "randomize"
       ]
     },
@@ -674,7 +613,7 @@
         "1": 224.4642333984375
       },
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -695,7 +634,8 @@
         "Node name for S&R": "DisplayText"
       },
       "widgets_values": [
-        ""
+        "",
+        "Yuri Shwedoff woman (cyborg:1.35) (dark black void contact lens:1.5) by Tony Conrad ,Biopunk, , shallow depth of field, vignette, (Fiber optic light painting) (Fujicolor Superia X-TRA 400:) (Light tracing) (Dramatic lighting)"
       ]
     },
     {
@@ -710,7 +650,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "outputs": [
         {
@@ -744,7 +684,7 @@
         "1": 98
       },
       "flags": {},
-      "order": 14,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
@@ -797,12 +737,12 @@
         461.94659176821153,
         786.543365223634
       ],
-      "size": [
-        210,
-        78
-      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
       "flags": {},
-      "order": 15,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -848,12 +788,12 @@
         239,
         788
       ],
-      "size": [
-        210,
-        78
-      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -889,7 +829,7 @@
         "Node name for S&R": "Random Size"
       },
       "widgets_values": [
-        42,
+        1934,
         "randomize",
         0.5
       ]
@@ -906,7 +846,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "outputs": [
         {
@@ -937,7 +877,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -964,6 +904,67 @@
         "simple",
         20,
         1
+      ]
+    },
+    {
+      "id": 103,
+      "type": "Prompts",
+      "pos": [
+        893.5294224374996,
+        78.25471376765441
+      ],
+      "size": {
+        "0": 210,
+        "1": 146
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            180
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "index",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "seed",
+          "type": "STRING",
+          "links": [
+            181
+          ],
+          "shape": 3,
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Prompts"
+      },
+      "widgets_values": [
+        -1,
+        1269,
+        "randomize",
+        "no",
+        "prompts_dataset"
       ]
     }
   ],
@@ -1282,10 +1283,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5644739300537778,
+      "scale": 0.6830134553650712,
       "offset": [
-        666.6487667198585,
-        229.02973095099452
+        43.82062671985855,
+        -9.09149304900528
       ]
     }
   },
