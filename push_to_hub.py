@@ -26,6 +26,6 @@ if __name__=='__main__':
     args = a.parse_args()
 
     if args.hidden_states:
-        from_dataset(directory="hidden_states", push_name="ChrisGoringe/flux_internals")
+        from_directory_of_files(directory="hidden_states", push_name="ChrisGoringe/flux_internals")
     if args.prompts:
-        from_directory_of_files(directory="prompts_dataset", push_name="ChrisGoringe/uncleaned_prompts")
+        from_dataset(directory="prompts_dataset", push_name="ChrisGoringe/uncleaned_prompts")
