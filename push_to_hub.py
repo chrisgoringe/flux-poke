@@ -38,7 +38,7 @@ if __name__=='__main__':
 
     if args.create:
         api = HfApi()
-        api.create_repo(repo_id="ChrisGoringe/fi", repo_type="datset", private=True)
+        api.create_repo(repo_id="ChrisGoringe/fi", repo_type="dataset", private=True)
     if args.hidden_states:
         from_directory_of_files(directory="hidden_states", push_name="ChrisGoringe/fi")
     if args.prompts:
