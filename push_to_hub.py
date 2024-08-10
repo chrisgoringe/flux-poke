@@ -31,11 +31,15 @@ def from_dataset(directory, push_name):
 
 if __name__=='__main__':
     a = ArgumentParser()
+    a.add_argument('--create', action='store_true')
     a.add_argument('--hidden_states', action='store_true')
     a.add_argument('--prompts', action='store_true')
     args = a.parse_args()
 
+    if args.create:
+        api = HfApi()
+        api.create_repo(repo_id="ChrisGoringe/fi", repo_type="datset", private=True)
     if args.hidden_states:
-        from_directory_of_files(directory="hidden_states", push_name="ChrisGoringe/flux_internals")
+        from_directory_of_files(directory="hidden_states", push_name="ChrisGoringe/fi")
     if args.prompts:
         from_dataset(directory="prompts_dataset", push_name="ChrisGoringe/uncleaned_prompts")
