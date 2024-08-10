@@ -17,6 +17,7 @@ def from_directory_of_files(directory, push_name):
                 path_or_fileobj=os.path.join(directory, file),
                 path_in_repo=file,
                 repo_id=push_name,
+                repo_type="dataset",
             )
 
     #for file in tqdm(os.listdir(directory)):
