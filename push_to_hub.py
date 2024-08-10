@@ -12,9 +12,10 @@ def from_directory_of_files(directory, push_name):
     for file in tqdm(os.listdir(directory)):
         root, ext = os.path.splitext(file)
         if ext=='.safetensors':  
+            print(file)
             api.upload_file(
                 path_or_fileobj=os.path.join(directory, file),
-                path_in_repo=os.path.join(directory, file),
+                path_in_repo=file,
                 repo_id=push_name,
             )
 
