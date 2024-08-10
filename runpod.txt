@@ -1,5 +1,4 @@
-# Once Only
-# pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+
 
 cd /workspace
 git clone http://github.com/comfyanonymous/ComfyUI
@@ -10,7 +9,7 @@ wget https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/clip_
 cd /workspace/ComfyUI/models/vae
 wget https://huggingface.co/black-forest-labs/FLUX.1-schnell/resolve/main/ae.safetensors
 cd /workspace/ComfyUI/models/unet
-wget --header "Authorization: Bearer [HF_KEY]" https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors
+wget --header "Authorization: Bearer $HF" https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors
 
 cd /workspace/ComfyUI/custom_nodes
 git clone https://github.com/chrisgoringe/cg-use-everywhere
@@ -18,24 +17,14 @@ git clone https://github.com/chrisgoringe/flux-poke
 git clone https://github.com/chrisgoringe/cg-quicknodes
 
 
-cd /workspace/ComfyUI ; pip install -r requirements.txt
-cd /workspace/ComfyUI/custom_nodes/flux-poke; pip install -r requirements.txt  
-
-# Updates
-
 cd /workspace/ComfyUI ; git pull ; pip install -r requirements.txt
-cd /workspace/ComfyUI/custom_nodes/flux-poke ; git pull ; pip install -r requirements.txt
+cd /workspace/ComfyUI/custom_nodes/flux-poke; git pull ; pip install -r requirements.txt  
 
-# HF_KEY
 git config --global credential.helper store
-huggingface-cli login
-[HF_SAVE_KEY]
-Y
+huggingface-cli login --token $HF --add-to-git-credential
 
-
-# Every time
-
-cd /workspace/ComfyUI ; python main.py --listen 
+cd /workspace/ComfyUI
+# python main.py --listen 
 
 
 
