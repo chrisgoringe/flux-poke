@@ -4,7 +4,6 @@ from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
 import os, random, threading, queue, sys
 from typing import Union
-from modules.utils import SingletonAddin
 from huggingface_hub import HfApi
 
 class DiskCache:
@@ -22,7 +21,14 @@ class DiskCache:
     def __getitem__(self, i): 
         return load_file(os.path.join(self.directory.name, str(i)))
 
-class UploadThread(SingletonAddin):
+class UploadThread:
+    _instance = None
+    @classmethod
+    def instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+    
     def __init__(self):
         self.queue  = queue.SimpleQueue()
         self.api    = HfApi()
