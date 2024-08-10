@@ -4,13 +4,21 @@ from safetensors.torch import load_file
 from argparse import ArgumentParser
 from tqdm import tqdm
 
+from huggingface_hub import HfApi
+
+
 def from_directory_of_files(directory, push_name):
-    for file in tqdm(os.listdir(directory)):
-        root, ext = os.path.splitext(file)
-        if ext=='.safetensors':  
-            datum = load_file(os.path.join(directory, file))
-            ds = datasets.Dataset.from_dict(datum)
-            ds.push_to_hub(push_name, split=f"p_{root}", num_shards=1)
+    api = HfApi()
+    api.upload_folder(
+        folder_path=directory,
+        repo_id=push_name
+    )
+    #for file in tqdm(os.listdir(directory)):
+    #    root, ext = os.path.splitext(file)
+    #    if ext=='.safetensors':  
+    #        datum = load_file(os.path.join(directory, file))
+    #        ds = datasets.Dataset.from_dict(datum)
+    #        ds.push_to_hub(push_name, split=f"p_{root}", num_shards=1)
 
 def from_dataset(directory, push_name):
     ds = datasets.Dataset.load_from_disk(directory)
