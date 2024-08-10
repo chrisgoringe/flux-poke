@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 from tqdm import tqdm
 
 def from_directory_of_files(directory, push_name):
-    for file in tqdm([os.listdir(directory)]):
+    for file in tqdm(os.listdir(directory)):
         root, ext = os.path.splitext(file)
         if ext=='.safetensors':  
             datum = load_file(os.path.join(directory, file))
