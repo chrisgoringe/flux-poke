@@ -74,6 +74,30 @@ class Counter:
         self.n = (self.n+1) % max
         return (self.n,str(self.n))
     
+class RandomSize:
+    SIZES = [
+        (832,1216),
+        (1024,1024),
+        (1216,832),
+        (720,1280),
+        (768,1280),
+        (768,1344),
+        (896,1152),
+        (768,1024),
+        (624,800),
+    ]
+    RETURN_TYPES = ("INT","INT")
+    RETURN_NAMES = ("W","H")
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
+    @classmethod
+    def INPUT_TYPES(s): return { "required": { "seed": ("INT", {"default": 42 }), "flip": ("FLOAT", {"default":0.5, "min":0.0, "max":1.0, "step":0.01 }), } }
+
+    def func(self,seed, flip):
+        with SeedContext(seed):
+            w, h = random.choice(self.SIZES)
+            return ( h, w ) if (random.random()<flip) else ( w,h )
+    
 class FluxSimpleScheduler:
     RETURN_TYPES = ("SIGMAS",)
     FUNCTION = "func"
