@@ -10,7 +10,7 @@ def from_directory_of_files(directory, push_name):
         if ext=='.safetensors':  
             datum = load_file(os.path.join(directory, file))
             ds = datasets.Dataset.from_dict(datum)
-            ds.push_to_hub(push_name, split=f"p_{root}", num_shards=1, max_shard_size="2000MB")
+            ds.push_to_hub(push_name, split=f"p_{root}", num_shards=1)
 
 def from_dataset(directory, push_name):
     ds = datasets.Dataset.load_from_disk(directory)
