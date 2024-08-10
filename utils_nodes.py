@@ -29,7 +29,7 @@ class Prompts:
         "index": ("INT", {"default": -1 }), 
         "seed": ("INT", {"default": 42 }),
         "reload":(["no","yes"],), 
-        "filename":("STRING", {"default":"prompts.txt"}),
+        "filename":("STRING", {"default":"prompts_dataset"}),
     } }
 
     @classmethod
