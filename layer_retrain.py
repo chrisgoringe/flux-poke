@@ -69,7 +69,7 @@ def train_layer(layer_index:int, thickness:int):
     log(str(shared.layer_stats[layer_index]))
 
     if args.cast_map:
-        map = yaml.load(filepath(args.cast_map))
+        with open(filepath(args.cast_map), 'r') as f: map = yaml.safe_load(f)
         for k in map:
             if map[k] != "default":
                 type = getattr(torch, map[k])
