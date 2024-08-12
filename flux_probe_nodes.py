@@ -41,10 +41,10 @@ class InsertHiddenStateProbes(AbstractModelModifier):
         model.model.diffusion_model.double_blocks = torch.nn.ModuleList(
             [ HiddenStateTracker(dsb, i) for i, dsb in enumerate(model.model.diffusion_model.double_blocks) ]
         )
-        #n_double = len(model.model.diffusion_model.double_blocks)
-        #model.model.diffusion_model.single_blocks = torch.nn.ModuleList(
-        #    [ HiddenStateTracker(dsb, i+n_double) for i, dsb in enumerate(model.model.diffusion_model.single_blocks) ]
-        #)        
+        n_double = len(model.model.diffusion_model.double_blocks)
+        model.model.diffusion_model.single_blocks = torch.nn.ModuleList(
+            [ HiddenStateTracker(dsb, i+n_double) for i, dsb in enumerate(model.model.diffusion_model.single_blocks) ]
+        )        
         return f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states"  
 
 

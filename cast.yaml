@@ -1,6 +1,6 @@
-img_mod:  default
-img_attn: default
-img_mlp:  default
-txt_mod:  default
-txt_attn: default
-txt_mlp:  default
+img_mod:  float8_e4m3fn
+img_attn: float8_e4m3fn
+img_mlp:  float8_e4m3fn
+txt_mod:  float8_e4m3fn
+txt_attn: float8_e4m3fn
+txt_mlp:  float8_e4m3fn

@@ -40,24 +40,31 @@ class HFFS_Cache(SingletonAddin):
         return os.path.join(self.directory, "temp.safetensors")
 
 class HFFS:
-    def __init__(self, repository):
-        self.repository = repository
+    def __init__(self, repo_id):
+        self.repo_id = repo_id
         self.fs = HfFileSystem()
+        self.cache = HFFS_Cache.instance()
 
     def get_file_list(self, pattern="*.safetensors") -> list[str]:
-        return self.fs.glob("/".join([self.repository, pattern]))
+        return self.fs.glob("/".join([self.repo_id, pattern]))
     
     def load_file(self, filename, filter:callable=lambda a:a):
         print(f"Loading {filename}")
-        cache = HFFS_Cache.instance()
-        if cache.is_in_cache(filename): 
+        if self.cache.is_in_cache(filename): 
             print("From cache")
-            return cache.get_from_cache(filename)
-        with cache.templock:
-            tempname = cache.tempname()
+            return self.cache.get_from_cache(filename)
+        with self.cache.templock:
+            tempname = self.cache.tempname()
             print("Downloading")
             self.fs.get_file(rpath=filename, lpath=tempname)
             data = filter(load_file(tempname))
             os.remove(tempname)
-            cache.store_in_cache(filename, data)
+            self.cache.store_in_cache(filename, data)
         return data
+    
+    def save_file(self, label, datum):
+        with self.cache.templock:
+            tempname = self.cache.tempname()
+            save_file(datum, tempname)
+            self.fs.put_file(lpath=tempname, rpath=label)
+            os.remove(tempname)

@@ -10,7 +10,7 @@ class TheDataset:
             self.sources = [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
             self.load_file = load_file
         else:
-            self.hffs = HFFS(repository=dir)
+            self.hffs = HFFS(repo_id=dir)
             self.sources = self.hffs.get_file_list()
             if filter_hffs_cache:
                 self.load_file = partial(self.hffs.load_file, filter=self.apply_filter)

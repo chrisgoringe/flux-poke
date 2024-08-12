@@ -5,6 +5,8 @@ from tempfile import TemporaryDirectory
 import os, random, threading, queue, sys
 from typing import Union
 from huggingface_hub import HfApi
+from .hffs import HFFS
+from .utils import SingletonAddin
 
 class DiskCache:
     def __init__(self):
@@ -21,62 +23,61 @@ class DiskCache:
     def __getitem__(self, i): 
         return load_file(os.path.join(self.directory.name, str(i)))
 
-class UploadThread:
-    _instance = None
-    @classmethod
-    def instance(cls):
-        if cls._instance is None:
-            cls._instance = cls()
-        return cls._instance
-    
+class UploadThread(SingletonAddin):
     def __init__(self):
         self.queue  = queue.SimpleQueue()
-        self.api    = HfApi()
-        self.thread = threading.Thread(target=self.run, daemon=True)
-        self.thread.start()
+        self.hffs   = HFFS("ChrisGoringe/fi")
+        threading.Thread(target=self.run, daemon=True).start()
 
     def run(self):
         while True:
             try:
-                filepath = self.queue.get()
-                self.api.upload_file(
-                    path_or_fileobj=filepath,
-                    path_in_repo=os.path.split(filepath)[-1],
-                    repo_id="ChrisGoringe/fi",
-                    repo_type="dataset",
-                )
-                os.remove(filepath)
+                (label, datum) = self.queue.get()
+                self.hffs.save_file(label, datum)
+                print(f"qsize returns {self.queue.qsize()}")
             except:
                 print(sys.exc_info())
 
 class HiddenStateTracker(torch.nn.Module):
     '''
-    Wraps a DoubleStreamBlock. If the index is zero, this is the master block. The master block turns the trackers 
-    on for step_fraction of steps (default 0.05) so we capture on average one rando step per image
+    Wraps a SingleStreamBlock or DoubleStreamBlock. 
     '''
+    SAVE_EVERY = 19
+    NEXT_SAVE_COUNTER = 0
+
     hidden_states: dict[int, DiskCache] = {}  # index i is the hidden states *before* layer i
     active = False
     queue = UploadThread.instance().queue
-    def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, store_before:bool=None, store_after:bool=True, step_fraction:float=0.05):
+    def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, is_master=None, store_input=None):
+        '''
+        Wraps `block_to_wrap` and, when active, stores the hidden states.
+        `layer` is used as an index
+        `is_master` (default None, in which case set to True iff `layer`==0): there should be exactly one master, which turns all trackers on or off
+        `store_input` (default None, in which case set to True iff `layer`==0). If True, this tracker needs to store input values as well as output.
+        Normally false because the inputs have been stored already as the previous layer's outputs.
+        '''
         super().__init__()
-        self.store_before   = store_before if store_before is not None else (layer==0)
-        self.store_after    = store_after
+        self.store_input    = store_input if store_input is not None else (layer==0)
         self.wrapped_module = block_to_wrap
         self.layer          = layer
-        self.is_master      = (layer==0)
-        self.step_fraction  = step_fraction
-        if layer   not in self.hidden_states and self.store_before: self.hidden_states[layer]   = DiskCache()
-        if layer+1 not in self.hidden_states and self.store_after:  self.hidden_states[layer+1] = DiskCache()
+        self.is_master      = is_master if is_master is not None else (layer==0)
+        if layer   not in self.hidden_states and self.store_input: self.hidden_states[layer]   = DiskCache()
+        if layer+1 not in self.hidden_states and self.store_input: self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
-        if self.is_master: HiddenStateTracker.active = (random.random() < self.step_fraction)  
+        img_out, txt_out = self.wrapped_module(img, txt, vec, pe)
+
+        if self.is_master: 
+            HiddenStateTracker.active = (HiddenStateTracker.NEXT_SAVE_COUNTER == 0)
+            HiddenStateTracker.NEXT_SAVE_COUNTER = (HiddenStateTracker.NEXT_SAVE_COUNTER + 1) % HiddenStateTracker.SAVE_EVERY
+
         if HiddenStateTracker.active:
-            if self.store_before: self.hidden_states[self.layer].append( {"img":img.cpu(), "txt":txt.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
-            img, txt = self.wrapped_module(img, txt, vec, pe)
-            self.hidden_states[self.layer + 1].append( {"img":img.cpu(), "txt":txt.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
-            return img, txt
-        else: return self.wrapped_module(img, txt, vec, pe)
-    
+            if self.store_input: 
+                self.hidden_states[self.layer].append( {"img":img.cpu(),     "txt":txt.cpu(),     "vec":vec.cpu(), "pe":pe.cpu()} )
+            self.hidden_states[self.layer + 1].append( {"img":img_out.cpu(), "txt":txt_out.cpu(), "vec":vec.cpu(), "pe":pe.cpu()} )
+
+        return img_out, txt_out
+
     @classmethod
     def reset_all(cls):
         for k in cls.hidden_states: cls.hidden_states[k] = DiskCache()
@@ -88,15 +89,12 @@ class HiddenStateTracker(torch.nn.Module):
         length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
         def gen():
             for index in range(length):
-                data = {}
-                for k in cls.hidden_states:
-                    for kk in ['img','txt','vec','pe']:
-                        data[f"{k}-{kk}"] = cls.hidden_states[k][index][kk]
-                yield data
-        for datum in gen():
-            label = f"{random.randint(1000000,9999999)}.safetensors"
-            save_file(datum, os.path.join(filepath, label))
-            cls.queue.put(os.path.join(filepath, label))
+                r = random.randint(1000000,9999999)
+                for layer_index in cls.hidden_states:
+                    yield layer_index, r, cls.hidden_states[layer_index][index]
+        for layer_index, r, datum in gen():
+            label = "{:0>2}_{:0>7}.safetensors".format(layer_index, r)
+            cls.queue.put((label, datum))
             
         cls.reset_all()
 

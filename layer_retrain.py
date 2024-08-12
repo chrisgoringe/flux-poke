@@ -59,6 +59,15 @@ def load_pruned_layer(layer_number:int) -> DoubleStreamBlock:
 
     return layer
 
+class CastLinear(torch.nn.Module):
+    def __init__(self, linear:torch.nn.Linear, to):
+        super().__init__()
+        self.linear  = linear.to(to)
+
+    def forward(self, x):
+        with torch.autocast("cuda"):
+            return self.linear(x)
+
 def train_layer(layer_index:int, thickness:int):
     log(f"Model is layers {layer_index} to {layer_index+thickness-1}" if thickness > 1 else f"Model is layer {layer_index}")
     assert layer_index+thickness-1 <= shared.max_layer, f"max_layer ({shared.max_layer}) exceeded"
@@ -69,15 +78,18 @@ def train_layer(layer_index:int, thickness:int):
     log(str(shared.layer_stats[layer_index]))
 
     if args.cast_map:
+        log("Casting")
         with open(filepath(args.cast_map), 'r') as f: map = yaml.safe_load(f)
         for k in map:
             if map[k] != "default":
                 type = getattr(torch, map[k])
                 for layer in model:
                     module:torch.nn.Module = getattr(layer, k)
-                    for submodule in module.children():
+                    for name, submodule in module.named_children():
                         if isinstance(submodule, torch.nn.Linear):
-                            submodule.to(type)
+                            setattr(module, name, CastLinear(submodule,type))
+        log("Cast")
+                            
 
     t = TheTrainer(
         model         = model,
