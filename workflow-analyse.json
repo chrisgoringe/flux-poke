@@ -49,8 +49,8 @@
       "id": 62,
       "type": "UNETLoader",
       "pos": [
-        15.711502364747725,
-        77.56356428119237
+        25.037621599366858,
+        -45.233968912166915
       ],
       "size": {
         "0": 226.83401489257812,
@@ -149,7 +149,7 @@
         "Node name for S&R": "RandomNoise"
       },
       "widgets_values": [
-        403410228706469,
+        329540470996111,
         "randomize"
       ]
     },
@@ -406,8 +406,8 @@
       "id": 43,
       "type": "Anything Everywhere",
       "pos": [
-        1125.5294224374989,
-        75.37063332423399
+        555.2883074863277,
+        141.43245763087458
       ],
       "size": {
         "0": 173.7029571533203,
@@ -437,8 +437,8 @@
       "id": 102,
       "type": "Anything Everywhere?",
       "pos": [
-        1126.5294224374989,
-        148.37063332423403
+        556.2883074863277,
+        214.43245763087464
       ],
       "size": {
         "0": 240.11239624023438,
@@ -496,7 +496,7 @@
         "color_restricted": 0
       },
       "widgets_values": [
-        238257414445597,
+        34180819241491,
         "randomize"
       ]
     },
@@ -504,8 +504,8 @@
       "id": 70,
       "type": "Insert Internal Probes",
       "pos": [
-        257,
-        79
+        266.32611923461906,
+        -43.79753319335928
       ],
       "size": {
         "0": 184.8000030517578,
@@ -540,8 +540,8 @@
       "id": 76,
       "type": "Insert Hidden State Probes",
       "pos": [
-        460,
-        79
+        469.32611923461906,
+        -43.79753319335928
       ],
       "size": {
         "0": 218.39999389648438,
@@ -576,8 +576,8 @@
       "id": 64,
       "type": "Anything Everywhere",
       "pos": [
-        692,
-        80
+        701.326119234619,
+        -42.79753319335928
       ],
       "size": {
         "0": 165.23866271972656,
@@ -602,43 +602,6 @@
       "widgets_values": []
     },
     {
-      "id": 104,
-      "type": "DisplayText",
-      "pos": [
-        1341,
-        39
-      ],
-      "size": {
-        "0": 445.9632263183594,
-        "1": 224.4642333984375
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "any",
-          "type": "*",
-          "link": null
-        },
-        {
-          "name": "string",
-          "type": "STRING",
-          "link": null,
-          "widget": {
-            "name": "string"
-          }
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "DisplayText"
-      },
-      "widgets_values": [
-        "",
-        "Yuri Shwedoff woman (cyborg:1.35) (dark black void contact lens:1.5) by Tony Conrad ,Biopunk, , shallow depth of field, vignette, (Fiber optic light painting) (Fujicolor Superia X-TRA 400:) (Light tracing) (Dramatic lighting)"
-      ]
-    },
-    {
       "id": 11,
       "type": "DualCLIPLoader",
       "pos": [
@@ -650,7 +613,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "outputs": [
         {
@@ -793,7 +756,7 @@
         "1": 78
       },
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -829,7 +792,7 @@
         "Node name for S&R": "Random Size"
       },
       "widgets_values": [
-        1934,
+        80,
         "randomize",
         0.5
       ]
@@ -846,7 +809,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "outputs": [
         {
@@ -877,7 +840,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -910,15 +873,15 @@
       "id": 103,
       "type": "Prompts",
       "pos": [
-        893.5294224374996,
-        78.25471376765441
+        323.2883074863284,
+        144.31653807429498
       ],
       "size": {
         "0": 210,
         "1": 146
       },
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -961,10 +924,47 @@
       },
       "widgets_values": [
         -1,
-        1269,
+        884,
         "randomize",
         "no",
         "prompts_dataset"
+      ]
+    },
+    {
+      "id": 104,
+      "type": "DisplayText",
+      "pos": [
+        908,
+        -90
+      ],
+      "size": [
+        879.91488328014,
+        356.9195030490049
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "any",
+          "type": "*",
+          "link": null
+        },
+        {
+          "name": "string",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "string"
+          }
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DisplayText"
+      },
+      "widgets_values": [
+        "",
+        "The image is a close-up of a statue of a mythical creature. The creature resembles a dragon mongrel with a rabbit with sharp teeth and a fierce expression. It has a large head with a pointed snout and sharp claws and also rabbit ears. The body of the creature is covered in intricate patterns and designs there appear to be scales that outline its shape, with gold accents on the shoulders and arms. The head is also covered in snakes that appear to dance around, and are wrapped around the creature's head. The snake's eyes glow a bright yellow and its mouth is open, as if roaring. The statue is very detailed, with realistic features and textures. The background is black, which makes the creature stand out even more."
       ]
     }
   ],
@@ -1238,8 +1238,8 @@
     {
       "title": "Generate Prompt",
       "bounding": [
-        884,
-        4,
+        314,
+        70,
         438,
         230
       ],
@@ -1249,8 +1249,8 @@
     {
       "title": "Load model with probes",
       "bounding": [
-        6,
-        4,
+        15,
+        -119,
         862,
         166
       ],
@@ -1283,10 +1283,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6830134553650712,
+      "scale": 0.6209213230591556,
       "offset": [
-        43.82062671985855,
-        -9.09149304900528
+        226.8331267198586,
+        232.33859695099474
       ]
     }
   },

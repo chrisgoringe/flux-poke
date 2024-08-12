@@ -1,6 +1,6 @@
 from .flux_probe_nodes import InsertInternalProbes, InternalsSaver, InsertHiddenStateProbes, HiddenStatesSaver, \
     LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold
-from .utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize
+from .utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize, CommonSizes
 
 NODE_CLASS_MAPPINGS = { 
     "Insert Internal Probes"        : InsertInternalProbes,
@@ -14,6 +14,7 @@ NODE_CLASS_MAPPINGS = {
     "Prompts"                       : Prompts,
     "Counter"                       : Counter,
     "Random Size"                   : RandomSize,
+    "Common Flux Sizes"             : CommonSizes,
                       }
 
 __all__ = ["NODE_CLASS_MAPPINGS",]

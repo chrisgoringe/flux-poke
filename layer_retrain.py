@@ -1,14 +1,15 @@
-import sys, os, json, yaml
+import sys, os
 sys.path.insert(0,os.getcwd())
 
 from modules.modifiers import slice_double_block, get_mask
 from comfy.ldm.flux.layers import DoubleStreamBlock
 import torch
-from safetensors.torch import load_file, save_file
+from safetensors.torch import save_file
 import transformers
 from modules.arguments import args, filepath
-
+from modules.generated_dataset import TheDataset
 from modules.utils import log, shared
+from modules.hffs import HFFS_Cache
 
 class TheTrainer(transformers.Trainer):
     def __init__(self, *args, **kwargs):
@@ -31,30 +32,6 @@ class TheCallback(transformers.TrainerCallback):
     def eval_losses(cls): return [l['eval_loss'] for l in cls.log if 'eval_loss' in l]
     @classmethod
     def losses(cls): return [l['loss'] for l in cls.log if 'loss' in l]
-    
-class TheDataset:
-    def __init__(self, first_layer:int, split:str, thickness:int=1, train_frac=0.8):
-        dir = filepath(args.hs_dir)
-        self.sources = [ os.path.join(dir,x) for x in os.listdir(dir) if x.endswith(".safetensors") ]
-        split_at = int(train_frac*len(self.sources))
-        if   split=='train': self.sources = self.sources[:split_at]
-        elif split=='eval':  self.sources = self.sources[split_at:]
-        self.layer = first_layer
-        self.thickness = thickness
-    
-    def __len__(self): 
-        return len(self.sources)
-
-    def __getitem__(self, i):
-        all_data = load_file(self.sources[i])
-        return {
-            "img"     : all_data[f"{self.layer}-img"].squeeze(0),
-            "txt"     : all_data[f"{self.layer}-txt"].squeeze(0),
-            "vec"     : all_data[f"{self.layer}-vec"].squeeze(0),
-            "pe"      : all_data[f"{self.layer}-pe"].squeeze(0),
-            "img_out" : all_data[f"{self.layer+self.thickness}-img"].squeeze(0),
-            "txt_out" : all_data[f"{self.layer+self.thickness}-txt"].squeeze(0),
-        }
 
 def load_pruned_layer(layer_number:int) -> DoubleStreamBlock:
     log(f"Loading and pruning layer {layer_number}")
@@ -91,8 +68,8 @@ def train_layer(layer_index:int, thickness:int):
     t = TheTrainer(
         model         = model,
         args          = args.training_args,
-        train_dataset = TheDataset(first_layer=layer_index, split="train", thickness=1),
-        eval_dataset  = TheDataset(first_layer=layer_index, split="eval",  thickness=1),
+        train_dataset = TheDataset(dir=args.hf_dir, first_layer=layer_index, split="train", thickness=1),
+        eval_dataset  = TheDataset(dir=args.hf_dir, first_layer=layer_index, split="eval",  thickness=1),
         data_collator = transformers.DefaultDataCollator(),
         callbacks     = [TheCallback,],
     )
@@ -114,8 +91,13 @@ def train_layer(layer_index:int, thickness:int):
 
         
 if __name__=="__main__": 
+    HFFS_Cache.set_cache_directory(args.cache_dir)
+    if args.clear_cache_before: HFFS_Cache.clear_cache()
     start_layer_list = [int(x.strip()) for x in args.first_layer.split(',')]
-    for l in start_layer_list: train_layer(l, args.thickness)
+    for l in start_layer_list: 
+        HFFS_Cache.set_validity_token(f"{l},{args.thickness}")
+        train_layer(l, args.thickness)
     with open(filepath(args.save_dir,args.stats_yaml), 'w') as f: print(shared.layer_stats_yaml, file=f)
     log(f"Saved stats in {filepath(args.save_dir,args.stats_yaml)}")
     for l in shared.layer_stats: log( str(l) )    
+    if args.clear_cache_after: HFFS_Cache.clear_cache()

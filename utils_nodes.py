@@ -76,14 +76,13 @@ class Counter:
     
 class RandomSize:
     SIZES = [
-        (832,1216),
         (1024,1024),
-        (1216,832),
-        (720,1280),
+        (896,1152),
+        (832,1216),
+        (768,1024),
         (768,1280),
         (768,1344),
-        (896,1152),
-        (768,1024),
+        (720,1280),
         (624,800),
     ]
     RETURN_TYPES = ("INT","INT")
@@ -97,6 +96,16 @@ class RandomSize:
         with SeedContext(seed):
             w, h = random.choice(self.SIZES)
             return ( h, w ) if (random.random()<flip) else ( w,h )
+        
+class CommonSizes(RandomSize):
+    @classmethod
+    def INPUT_TYPES(s): return { "required": { 
+        "size": ([ f"{x}x{y}" for (x,y) in s.SIZES ] + [ f"{y}x{x}" for (x,y) in s.SIZES if x!=y ],{}), } }
+    
+    def func(self,size:str):
+        x,y = (int(x) for x in size.split('x'))
+        return (x,y)
+
     
 class FluxSimpleScheduler:
     RETURN_TYPES = ("SIGMAS",)

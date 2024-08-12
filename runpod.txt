@@ -1,4 +1,6 @@
+git clone https://github.com/chrisgoringe/runpod-setup ; cd runpod-setup ; bash runpod.bash
 
+###
 
 cd /workspace
 git clone http://github.com/comfyanonymous/ComfyUI
@@ -25,7 +27,8 @@ git config --global credential.helper store
 huggingface-cli login --token $HF_SAVE --add-to-git-credential
 
 cd /workspace/ComfyUI
-# python main.py --listen 
 
+
+# python main.py --listen 
 
 

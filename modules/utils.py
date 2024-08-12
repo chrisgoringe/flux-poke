@@ -1,6 +1,8 @@
-import logging, time, yaml
+import logging, time, yaml, os
 from safetensors.torch import load_file
-from modules.arguments import args, filepath
+from functools import partial
+
+filepath = partial(os.path.join,os.path.split(__file__)[0],"..")
 
 class SingletonAddin:
     _instance = None
@@ -22,10 +24,12 @@ log = Log.instance().info
 
 class Shared(SingletonAddin):
     def __init__(self):
-        self.sd        = load_file(args.model)
-        self.internals = load_file(filepath(args.internals))
         self.max_layer = 18
         self.layer_stats = [{"layer":i} for i in range(19)]
+
+    def load(self,args):
+        self.sd        = load_file(args.model)
+        self.internals = load_file(filepath(args.internals))
 
     @property
     def layer_stats_yaml(self):
