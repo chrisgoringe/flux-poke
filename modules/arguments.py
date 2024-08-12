@@ -12,8 +12,11 @@ def process_arguments():
     a.add_argument('--save_dir', default="retrained_layers", help="directory, relative to cwd, to store results in")
     a.add_argument('--stats_yaml', default="layer_stats.yaml", help="filename (relative to save_dir) for stats to be saved in")
     a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files")
+    a.add_argument('--hffs_cache_whole', action="store_true", help="Keep in cache the whole dataset, not just this layer this layer")
     a.add_argument('--clear_cache_before', action="store_true", help="Clear the cache at the start of the run" )
     a.add_argument('--clear_cache_after', action="store_true", help="Clear the cache at the start of the run" )
+
+    a.add_argument('--cast_map', default=None, help="Path to yaml file describing how the layer should be cast")
 
     img = a.add_mutually_exclusive_group(required=True)
     img.add_argument('--img_threshold', type=int, help="Threshold below which img lines are dropped")
@@ -53,7 +56,7 @@ def process_arguments():
         "label_names"           : [],
     }
 
-    for ea in extra_args:
+    for ea in (ea for ea in extra_args if ea):
         key, value = ea[2:].split('=')
         dictionary = training_config
         if ':' in key: 

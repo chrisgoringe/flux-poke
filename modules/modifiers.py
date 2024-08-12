@@ -33,7 +33,8 @@ def new_mlp(old_mlp, mask):
     mlp.load_state_dict(sd)
     return mlp
 
-def get_mask(data, remove_below, remove_count, return_threshold = False): 
+def get_mask(data, remove_below, remove_count, remove_nothing, return_threshold = False): 
+    if remove_nothing: return ([True]*len(data), -1) if return_threshold else [True]*len(data)
     remove_below, remove_count = (remove_below, None) if remove_below is not None else (sorted(data)[remove_count], remove_count)
     mask = [ d>=remove_below for d in data ] 
     # because of equalities, we may well not have removed enough. Take more out at random from those which equal remove_below

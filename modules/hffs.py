@@ -1,7 +1,7 @@
 from huggingface_hub import HfFileSystem
 from safetensors.torch import load_file, save_file
 import tempfile, os
-from utils import SingletonAddin
+from .utils import SingletonAddin
 from threading import Lock
 
 class HFFS_Cache(SingletonAddin):
@@ -11,12 +11,15 @@ class HFFS_Cache(SingletonAddin):
 
     @property
     def directory(self):
-        if self._directory is None: self._directory = tempfile.TemporaryDirectory()
+        if self._directory is None: 
+            self._temp_directory = tempfile.TemporaryDirectory()
+            self._directory = self._temp_directory.name
         return self._directory
     
     @classmethod
     def set_cache_directory(cls, directory):
         cls.instance()._directory = directory
+        if not os.path.exists(directory): os.makedirs(directory, exist_ok=True)
 
     def clear_cache(self):
         for f in os.listdir(self._directory): os.remove(os.path.join(self._directory, f))
@@ -35,20 +38,9 @@ class HFFS_Cache(SingletonAddin):
     
     def tempname(self):
         return os.path.join(self.directory, "temp.safetensors")
-    
-    def set_validity_token(self, token:str):
-        '''
-        A string that somehow describes what has been cached.
-        If it is different from that stored in the cache directory, the cache is invalid and should be cleared.
-        '''
-        vt_file = self.localname('validity_token.txt')
-        if os.path.exists(vt_file):
-            with open(vt_file, 'r') as f: vt = f.readline()
-            if vt.strip() != token.strip(): self.clear_cache()
-        with open(vt_file, 'w') as f: print(token, file=f)
 
 class HFFS:
-    def __init__(self, repository="datasets/ChrisGoringe/fi"):
+    def __init__(self, repository):
         self.repository = repository
         self.fs = HfFileSystem()
 
@@ -56,11 +48,16 @@ class HFFS:
         return self.fs.glob("/".join([self.repository, pattern]))
     
     def load_file(self, filename, filter:callable=lambda a:a):
+        print(f"Loading {filename}")
         cache = HFFS_Cache.instance()
-        if cache.is_in_cache(filename): return cache.get_from_cache(filename)
+        if cache.is_in_cache(filename): 
+            print("From cache")
+            return cache.get_from_cache(filename)
         with cache.templock:
             tempname = cache.tempname()
+            print("Downloading")
             self.fs.get_file(rpath=filename, lpath=tempname)
             data = filter(load_file(tempname))
+            os.remove(tempname)
             cache.store_in_cache(filename, data)
         return data

@@ -1,5 +1,6 @@
 import sys, os
 sys.path.insert(0,os.getcwd())
+sys.path.insert(0,os.path.join(os.getcwd(),'..','..'))
 
 from modules.modifiers import slice_double_block, get_mask
 from comfy.ldm.flux.layers import DoubleStreamBlock
@@ -10,6 +11,7 @@ from modules.arguments import args, filepath
 from modules.generated_dataset import TheDataset
 from modules.utils import log, shared
 from modules.hffs import HFFS_Cache
+import yaml
 
 class TheTrainer(transformers.Trainer):
     def __init__(self, *args, **kwargs):
@@ -40,8 +42,9 @@ def load_pruned_layer(layer_number:int) -> DoubleStreamBlock:
     layer_sd = { k[len(prefix):]:shared.sd[k] for k in shared.sd if k.startswith(prefix) }
     layer.load_state_dict(layer_sd)
 
-    img_mask, img_threshold = get_mask(shared.internals[f"double-img-{layer_number}"], args.img_threshold, args.img_count, return_threshold=True) 
-    txt_mask, txt_threshold = get_mask(shared.internals[f"double-txt-{layer_number}"], args.txt_threshold, args.txt_count, return_threshold=True)
+
+    img_mask, img_threshold = get_mask(shared.internals[f"double-img-{layer_number}"], args.img_threshold, args.img_count, args.img_no, return_threshold=True) 
+    txt_mask, txt_threshold = get_mask(shared.internals[f"double-txt-{layer_number}"], args.txt_threshold, args.txt_count, args.txt_no, return_threshold=True)
 
     slice_double_block(layer, img_mask=img_mask, txt_mask=txt_mask)
 
@@ -65,11 +68,22 @@ def train_layer(layer_index:int, thickness:int):
     )
     log(str(shared.layer_stats[layer_index]))
 
+    if args.cast_map:
+        map = yaml.load(filepath(args.cast_map))
+        for k in map:
+            if map[k] != "default":
+                type = getattr(torch, map[k])
+                for layer in model:
+                    module:torch.nn.Module = getattr(layer, k)
+                    for submodule in module.children():
+                        if isinstance(submodule, torch.nn.Linear):
+                            submodule.to(type)
+
     t = TheTrainer(
         model         = model,
         args          = args.training_args,
-        train_dataset = TheDataset(dir=args.hf_dir, first_layer=layer_index, split="train", thickness=1),
-        eval_dataset  = TheDataset(dir=args.hf_dir, first_layer=layer_index, split="eval",  thickness=1),
+        train_dataset = TheDataset(dir=args.hs_dir, first_layer=layer_index, split="train", thickness=1, filter_hffs_cache=not args.hffs_cache_whole),
+        eval_dataset  = TheDataset(dir=args.hs_dir, first_layer=layer_index, split="eval",  thickness=1, filter_hffs_cache=not args.hffs_cache_whole),
         data_collator = transformers.DefaultDataCollator(),
         callbacks     = [TheCallback,],
     )
@@ -95,7 +109,6 @@ if __name__=="__main__":
     if args.clear_cache_before: HFFS_Cache.clear_cache()
     start_layer_list = [int(x.strip()) for x in args.first_layer.split(',')]
     for l in start_layer_list: 
-        HFFS_Cache.set_validity_token(f"{l},{args.thickness}")
         train_layer(l, args.thickness)
     with open(filepath(args.save_dir,args.stats_yaml), 'w') as f: print(shared.layer_stats_yaml, file=f)
     log(f"Saved stats in {filepath(args.save_dir,args.stats_yaml)}")

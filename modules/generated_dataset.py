@@ -5,15 +5,17 @@ from modules.utils import filepath
 from safetensors.torch import load_file
 
 class TheDataset:
-    def __init__(self, dir, first_layer:int, split:str, thickness:int=1, train_frac=0.8):
-        dir = filepath(dir)
-        if os.path.isdir(dir):
-            self.sources = [ os.path.join(dir,x) for x in os.listdir(dir) if x.endswith(".safetensors") ]
+    def __init__(self, dir, first_layer:int, split:str, thickness:int=1, train_frac=0.8, filter_hffs_cache=True):
+        if os.path.isdir(local_dir:=filepath(dir)):
+            self.sources = [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
             self.load_file = load_file
         else:
             self.hffs = HFFS(repository=dir)
             self.sources = self.hffs.get_file_list()
-            self.load_file = partial(self.hffs.load_file, filter=self.apply_filter)
+            if filter_hffs_cache:
+                self.load_file = partial(self.hffs.load_file, filter=self.apply_filter)
+            else:
+                self.load_file = partial(self.hffs.load_file)
                                      
         split_at = int(train_frac*len(self.sources))
         if   split=='train': self.sources = self.sources[:split_at]
