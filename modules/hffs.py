@@ -66,5 +66,5 @@ class HFFS:
         with self.cache.templock:
             tempname = self.cache.tempname()
             save_file(datum, tempname)
-            self.fs.put_file(lpath=tempname, rpath=label)
+            self.fs.put_file(lpath=tempname, rpath=f"datasets/{self.repo_id}/{label}")
             os.remove(tempname)
