@@ -32,8 +32,10 @@ class HFFS_Cache(SingletonAddin):
     def store_in_cache(self, filename, data):
         save_file(data, self.localname(filename))
     
-    def localname(self, filename):
-        return os.path.join(self.directory, os.path.split(filename)[-1])
+    def localname(self, filename:str):
+        a, b = filename.split("/")[-2:]
+        if not os.path.exists(subdir:=os.path.join(self.directory,a)): os.makedirs(subdir,exist_ok=True)
+        return os.path.join(subdir, b+".safetensors")
     
     def tempname(self):
         return os.path.join(self.directory, "temp.safetensors")
