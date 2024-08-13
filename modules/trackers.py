@@ -66,9 +66,7 @@ class HiddenStateTracker(torch.nn.Module):
         if layer+1 not in self.hidden_states:                      self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, *args, **kwargs): # img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
-        out = self.wrapped_module(**kwargs)
-
-        assert len(args)==0, f"Got {len(args)}"
+        out = self.wrapped_module(*args, **kwargs)
 
         if self.is_master: 
             HiddenStateTracker.active = (HiddenStateTracker.NEXT_SAVE_COUNTER == 0)
@@ -76,11 +74,14 @@ class HiddenStateTracker(torch.nn.Module):
 
         if HiddenStateTracker.active:
             if self.store_input:
-                self.hidden_states[self.layer].append( { k:kwargs[k].cpu() for k in kwargs }  )
+                if self.is_double:
+                    self.hidden_states[self.layer].append( { "img":kwargs['img'].cpu(), "txt":kwargs['txt'].cpu(), "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
+                else:
+                    self.hidden_states[self.layer].append( { "x":args[0].cpu(),                                    "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
             if self.is_double: 
-                self.hidden_states[self.layer + 1].append( {"img":out[0].cpu(), "txt":out[1].cpu(), "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu()} )
+                self.hidden_states[self.layer + 1].append( { "img":out[0].cpu(),        "txt":out[1].cpu(),        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
             else:                
-                self.hidden_states[self.layer + 1].append( {"x":out.cpu(), "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu()} )
+                self.hidden_states[self.layer + 1].append( { "x":out.cpu(),                                        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
 
         return out
 
