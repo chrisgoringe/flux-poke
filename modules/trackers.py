@@ -4,7 +4,6 @@ from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
 import os, random, threading, queue, sys
 from typing import Union
-from huggingface_hub import HfApi
 from .hffs import HFFS
 from .utils import SingletonAddin
 
