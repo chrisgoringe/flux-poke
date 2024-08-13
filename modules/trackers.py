@@ -95,11 +95,15 @@ class HiddenStateTracker(torch.nn.Module):
         UploadThread.hffs.set_repo_id(repo_id)
         length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
 
-        def label(r, layer_index): return "{:0>7}/{:0>2}.safetensors".format(r, layer_index)
+        def label(r, layer_from, layer_to): return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(r, layer_from, layer_to)
+        division = (( 0, 6), ( 7,13), (14,18), (19,25), (26,31), (32,37), (38,43), (44,50), (51,57))     
         for index in range(length):
             r = random.randint(1000000,9999999)
-            for layer_index in cls.hidden_states:
-                cls.queue.put((label(r,layer_index), cls.hidden_states[layer_index][index]))
+            for (layer_from, layer_to) in division:
+                datum = {}
+                for layer_index in range(layer_from, layer_to+1):
+                    for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+"-{k}"] = cls.hidden_states[layer_index][index][k]
+                cls.queue.put((label(r,layer_from, layer_to), datum))
             
         cls.reset_all()
 
