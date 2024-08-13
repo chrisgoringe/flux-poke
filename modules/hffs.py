@@ -1,7 +1,7 @@
 from huggingface_hub import HfFileSystem
 from huggingface_hub.utils._errors import HfHubHTTPError
 from safetensors.torch import load_file, save_file
-import tempfile, os, torch, sys
+import tempfile, os, torch, sys, random
 from .utils import SingletonAddin
 
 class HFFS_Cache(SingletonAddin):
@@ -60,18 +60,20 @@ class HFFS:
         if self.cache.is_in_cache(filename): 
             print("From cache")
             return self.cache.get_from_cache(filename)
-        with tempfile.NamedTemporaryFile() as temp:
+        with tempfile.TemporaryDirectory() as tempdir:
+            tempname = os.path.join(tempdir,str(random.randint(1,1000000)))
             print("Downloading")
-            self.fs.get_file(rpath=filename, lpath=temp.name)
-            data = load_file(temp.name)
+            self.fs.get_file(rpath=filename, lpath=tempname)
+            data = load_file(tempname)
             self.cache.store_in_cache(filename, data)
         return data
     
     def save_file(self, label:str, datum:dict[str,torch.Tensor]) -> bool:
-        with tempfile.NamedTemporaryFile() as temp:
-            save_file(datum, temp.name)
+        with tempfile.TemporaryDirectory() as tempdir:
+            tempname = os.path.join(tempdir,str(random.randint(1,1000000)))
+            save_file(datum, tempname)
             try:
-                self.fs.put_file(lpath=temp.name, rpath=self.rpath(label))
+                self.fs.put_file(lpath=tempname, rpath=self.rpath(label))
                 return True
             except HfHubHTTPError:
                 print(sys.exc_info())
