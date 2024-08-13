@@ -47,8 +47,7 @@ class InsertHiddenStateProbes(AbstractModelModifier):
         )        
         return f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states"  
 
-
-class AbstractSaver:
+class InternalsSaver:
     RETURN_TYPES = ("LATENT",)
     OUTPUT_NODE = True
     FUNCTION = "func"
@@ -57,21 +56,26 @@ class AbstractSaver:
     def INPUT_TYPES(cls): 
         return { "required": { 
             "latent": ("LATENT", {}), 
-            "filename": ("STRING",{"default":cls.DEFAULT}),
+            "filename": ("STRING",{"default":"internals.safetensors"}),
             } }      
     def func(self, latent, filename):
-        self.SAVER(filepath(filename))
+        InternalsTracker.save_all(filepath(filename))
         return (latent,)     
-    
-class InternalsSaver(AbstractSaver):
-    DEFAULT = "internals.safetensors"
-    SAVER   = InternalsTracker.save_all
-    
-class HiddenStatesSaver(AbstractSaver):
-    DEFAULT = "hidden_states"
-    SAVER   = HiddenStateTracker.save_all
 
-
+class HiddenStatesSaver:
+    RETURN_TYPES = ("LATENT",)
+    OUTPUT_NODE = True
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
+    @classmethod
+    def INPUT_TYPES(cls): 
+        return { "required": { 
+            "latent": ("LATENT", {}), 
+            "repo_id": ("STRING",{"default":"ChrisGoringe/fi"}),
+            } }      
+    def func(self, latent, repo_id):
+        HiddenStateTracker.save_all(repo_id)
+        return (latent,)     
 
 class ReplaceLayers(UNETLoader):
     RETURN_TYPES = ("MODEL","STRING",)

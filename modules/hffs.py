@@ -44,13 +44,16 @@ class HFFS:
         self.fs = HfFileSystem()
         self.cache = HFFS_Cache.instance()
 
+    def set_repo_id(self, repo_id):
+        self.repo_id = repo_id
+
     def rpath(self, filename):
         return "/".join(["datasets",self.repo_id, filename])
 
-    def get_file_list(self, pattern="*.safetensors") -> list[str]:
-        return self.fs.glob(self.rpath(pattern))
+    def get_entry_list(self) -> list[str]:
+        return self.fs.glob(self.rpath(""))
     
-    def load_file(self, filename, filter:callable=lambda a:a):
+    def load_file(self, filename):
         print(f"Loading {filename}")
         if self.cache.is_in_cache(filename): 
             print("From cache")
@@ -58,7 +61,7 @@ class HFFS:
         with tempfile.NamedTemporaryFile() as tempname:
             print("Downloading")
             self.fs.get_file(rpath=filename, lpath=tempname)
-            data = filter(load_file(tempname))
+            data = load_file(tempname)
             self.cache.store_in_cache(filename, data)
         return data
     

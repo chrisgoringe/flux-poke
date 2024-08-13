@@ -23,9 +23,9 @@ class DiskCache:
         return load_file(os.path.join(self.directory.name, str(i)))
 
 class UploadThread(SingletonAddin):
+    hffs = HFFS("ChrisGoringe/fi")
     def __init__(self):
         self.queue  = queue.SimpleQueue()
-        self.hffs   = HFFS("ChrisGoringe/fi")
         threading.Thread(target=self.run, daemon=True).start()
 
     def run(self):
@@ -91,12 +91,11 @@ class HiddenStateTracker(torch.nn.Module):
         for k in cls.hidden_states: cls.hidden_states[k] = DiskCache()
 
     @classmethod
-    def save_all(cls, filepath, append=True):
-        if not os.path.exists(filepath): os.makedirs(filepath, exist_ok=True)
-        if not append: raise NotImplementedError() # need to empty the directory
+    def save_all(cls, repo_id):
+        UploadThread.hffs.set_repo_id(repo_id)
         length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
 
-        def label(r, layer_index): return "{:0>7}_{:0>2}.safetensors".format(r, layer_index)
+        def label(r, layer_index): return "{:0>7}/{:0>2}.safetensors".format(r, layer_index)
         for index in range(length):
             r = random.randint(1000000,9999999)
             for layer_index in cls.hidden_states:
