@@ -32,6 +32,7 @@ class UploadThread(SingletonAddin):
         while True:
             try:
                 (label, datum) = self.queue.get()
+                print(f"Save {label}...")
                 while not self.hffs.save_file(label, datum): 
                     print("Hit hffs rate limits...")
                     time.sleep(15) 
