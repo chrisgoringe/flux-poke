@@ -2,7 +2,7 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 import torch
 from safetensors.torch import save_file, load_file
 from tempfile import TemporaryDirectory
-import os, random, threading, queue, sys
+import os, random, threading, queue, sys, time
 from typing import Union
 from .hffs import HFFS
 from .utils import SingletonAddin
@@ -32,7 +32,9 @@ class UploadThread(SingletonAddin):
         while True:
             try:
                 (label, datum) = self.queue.get()
-                self.hffs.save_file(label, datum)
+                while not self.hffs.save_file(label, datum): 
+                    print("Hit hffs rate limits...")
+                    time.sleep(15) 
                 print(f"qsize returns {self.queue.qsize()}")
             except:
                 print(sys.exc_info())
@@ -93,14 +95,12 @@ class HiddenStateTracker(torch.nn.Module):
         if not os.path.exists(filepath): os.makedirs(filepath, exist_ok=True)
         if not append: raise NotImplementedError() # need to empty the directory
         length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
-        def gen():
-            for index in range(length):
-                r = random.randint(1000000,9999999)
-                for layer_index in cls.hidden_states:
-                    yield layer_index, r, cls.hidden_states[layer_index][index]
-        for layer_index, r, datum in gen():
-            label = "{:0>2}_{:0>7}.safetensors".format(layer_index, r)
-            cls.queue.put((label, datum))
+
+        def label(r, layer_index): return "{:0>7}_{:0>2}.safetensors".format(r, layer_index)
+        for index in range(length):
+            r = random.randint(1000000,9999999)
+            for layer_index in cls.hidden_states:
+                cls.queue.put((label(r,layer_index), cls.hidden_states[layer_index][index]))
             
         cls.reset_all()
 
