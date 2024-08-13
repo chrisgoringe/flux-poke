@@ -62,7 +62,7 @@ class HiddenStateTracker(torch.nn.Module):
         self.layer          = layer
         self.is_master      = is_master if is_master is not None else (layer==0)
         if layer   not in self.hidden_states and self.store_input: self.hidden_states[layer]   = DiskCache()
-        if layer+1 not in self.hidden_states and self.store_input: self.hidden_states[layer+1] = DiskCache()
+        if layer+1 not in self.hidden_states:                      self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
         img_out, txt_out = self.wrapped_module(img, txt, vec, pe)
