@@ -1,7 +1,7 @@
 from huggingface_hub import HfFileSystem
 from huggingface_hub.utils._errors import HfHubHTTPError
 from safetensors.torch import load_file, save_file
-import tempfile, os, torch
+import tempfile, os, torch, sys
 from .utils import SingletonAddin
 
 class HFFS_Cache(SingletonAddin):
@@ -74,4 +74,5 @@ class HFFS:
                 self.fs.put_file(lpath=temp.name, rpath=self.rpath(label))
                 return True
             except HfHubHTTPError:
+                print(sys.exc_info())
                 return False
