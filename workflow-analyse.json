@@ -91,7 +91,7 @@
       },
       "flags": {},
       "order": 1,
-      "mode": 0,
+      "mode": 4,
       "outputs": [
         {
           "name": "VAE",
@@ -149,7 +149,7 @@
         "Node name for S&R": "RandomNoise"
       },
       "widgets_values": [
-        329540470996111,
+        236524540414620,
         "randomize"
       ]
     },
@@ -166,7 +166,7 @@
       },
       "flags": {},
       "order": 22,
-      "mode": 0,
+      "mode": 4,
       "inputs": [
         {
           "name": "samples",
@@ -206,7 +206,7 @@
       },
       "flags": {},
       "order": 23,
-      "mode": 0,
+      "mode": 4,
       "inputs": [
         {
           "name": "IMAGE",
@@ -342,7 +342,7 @@
       },
       "flags": {},
       "order": 3,
-      "mode": 0,
+      "mode": 4,
       "inputs": [
         {
           "name": "images",
@@ -427,38 +427,6 @@
         "",
         "prefix",
         ""
-      ]
-    },
-    {
-      "id": 99,
-      "type": "Seed Everywhere",
-      "pos": [
-        12,
-        215
-      ],
-      "size": {
-        "0": 272.55206298828125,
-        "1": 82
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Seed Everywhere",
-        "group_restricted": 0,
-        "color_restricted": 0
-      },
-      "widgets_values": [
-        34180819241491,
-        "randomize"
       ]
     },
     {
@@ -574,7 +542,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -717,7 +685,7 @@
         "1": 78
       },
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -753,7 +721,7 @@
         "Node name for S&R": "Random Size"
       },
       "widgets_values": [
-        80,
+        11,
         "randomize",
         0.5
       ]
@@ -770,7 +738,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "outputs": [
         {
@@ -801,7 +769,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -842,7 +810,7 @@
         "1": 146
       },
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -885,7 +853,7 @@
       },
       "widgets_values": [
         -1,
-        884,
+        1418,
         "randomize",
         "no",
         "prompts_dataset"
@@ -903,7 +871,7 @@
         "1": 356.91949462890625
       },
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -924,7 +892,8 @@
         "Node name for S&R": "DisplayText"
       },
       "widgets_values": [
-        ""
+        "",
+        "colossal marble man points his index finger at viewer, text \"4090\" on his chest, speech bubble above him with text \"SUFFER!\""
       ]
     },
     {
@@ -964,6 +933,38 @@
       },
       "widgets_values": [
         "ChrisGoringe/fi"
+      ]
+    },
+    {
+      "id": 99,
+      "type": "Seed Everywhere",
+      "pos": [
+        12,
+        215
+      ],
+      "size": {
+        "0": 272.55206298828125,
+        "1": 82
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Seed Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": [
+        82714774560860,
+        "randomize"
       ]
     }
   ],

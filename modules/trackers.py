@@ -103,7 +103,7 @@ class HiddenStateTracker(torch.nn.Module):
             for (layer_from, layer_to) in division:
                 datum = {}
                 for layer_index in range(layer_from, layer_to+1):
-                    for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+"-{k}"] = cls.hidden_states[layer_index][index][k]
+                    for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+f"-{k}"] = cls.hidden_states[layer_index][index][k]
                 cls.queue.put((label(r,layer_from, layer_to), datum))
             
         cls.reset_all()
