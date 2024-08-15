@@ -75,7 +75,6 @@ def train_layer(layer_index:int, thickness:int):
     model = torch.nn.Sequential(
         *[load_pruned_layer(layer_number=x) for x in range(layer_index, layer_index+thickness)]
     )
-    log(str(shared.layer_stats[layer_index]))
 
     if args.cast_map:
         log("Casting")

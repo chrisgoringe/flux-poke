@@ -1,53 +1,20 @@
 {
-  "last_node_id": 107,
-  "last_link_id": 191,
+  "last_node_id": 110,
+  "last_link_id": 196,
   "nodes": [
-    {
-      "id": 62,
-      "type": "UNETLoader",
-      "pos": [
-        82.93661563110359,
-        191.73452025756836
-      ],
-      "size": {
-        "0": 226.83401489257812,
-        "1": 82.21080780029297
-      },
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            188
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "UNETLoader"
-      },
-      "widgets_values": [
-        "flux1-dev.sft",
-        "default"
-      ]
-    },
     {
       "id": 11,
       "type": "DualCLIPLoader",
       "pos": [
-        49.936615631103635,
-        331.73452025756905
+        78.62446127319332,
+        312.02690385131956
       ],
       "size": {
         "0": 276.0993957519531,
         "1": 106
       },
       "flags": {},
-      "order": 1,
+      "order": 0,
       "mode": 0,
       "outputs": [
         {
@@ -70,54 +37,18 @@
       ]
     },
     {
-      "id": 76,
-      "type": "Insert Hidden State Probes",
-      "pos": [
-        373.9366156311035,
-        270.734520257569
-      ],
-      "size": {
-        "0": 218.39999389648438,
-        "1": 26
-      },
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 188
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            187
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Insert Hidden State Probes"
-      }
-    },
-    {
       "id": 38,
       "type": "CLIPTextEncodeFlux",
       "pos": [
-        391.7939960510257,
-        389.26215997924834
+        420.48184169311605,
+        369.55454357299885
       ],
       "size": {
         "0": 210,
         "1": 98
       },
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -167,15 +98,15 @@
       "id": 103,
       "type": "Prompts",
       "pos": [
-        53,
-        483
+        81.68784564208971,
+        463.29238359375046
       ],
       "size": {
         "0": 210,
         "1": 146
       },
       "flags": {},
-      "order": 2,
+      "order": 1,
       "mode": 0,
       "inputs": [
         {
@@ -217,7 +148,7 @@
       },
       "widgets_values": [
         -1,
-        1442,
+        983,
         "randomize",
         "no",
         "prompts_dataset"
@@ -227,15 +158,15 @@
       "id": 16,
       "type": "KSamplerSelect",
       "pos": [
-        293,
-        535
+        321.6878456420902,
+        515.2923835937494
       ],
       "size": {
         "0": 210,
         "1": 58
       },
       "flags": {},
-      "order": 3,
+      "order": 2,
       "mode": 0,
       "outputs": [
         {
@@ -255,171 +186,24 @@
       ]
     },
     {
-      "id": 105,
-      "type": "Random Size",
-      "pos": [
-        378,
-        702
-      ],
-      "size": {
-        "0": 210,
-        "1": 78
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "seed",
-          "type": "INT",
-          "link": null,
-          "widget": {
-            "name": "seed"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "W",
-          "type": "INT",
-          "links": [
-            182
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "H",
-          "type": "INT",
-          "links": [
-            183
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Random Size"
-      },
-      "widgets_values": [
-        417,
-        "randomize",
-        0.5
-      ]
-    },
-    {
-      "id": 5,
-      "type": "EmptyLatentImage",
-      "pos": [
-        604,
-        641
-      ],
-      "size": {
-        "0": 210,
-        "1": 78
-      },
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "width",
-          "type": "INT",
-          "link": 182,
-          "widget": {
-            "name": "width"
-          }
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "link": 183,
-          "widget": {
-            "name": "height"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [
-            23
-          ],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "EmptyLatentImage"
-      },
-      "widgets_values": [
-        1024,
-        1024,
-        1
-      ]
-    },
-    {
-      "id": 25,
-      "type": "RandomNoise",
-      "pos": [
-        407,
-        108
-      ],
-      "size": {
-        "0": 277.2485046386719,
-        "1": 84.58332824707031
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "noise_seed",
-          "type": "INT",
-          "link": null,
-          "widget": {
-            "name": "noise_seed"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "NOISE",
-          "type": "NOISE",
-          "links": [
-            176
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "RandomNoise"
-      },
-      "widgets_values": [
-        794122703546630,
-        "randomize"
-      ]
-    },
-    {
       "id": 22,
       "type": "BasicGuider",
       "pos": [
-        624,
-        368
+        652.6878456420895,
+        348.2923835937505
       ],
       "size": {
         "0": 161.1999969482422,
         "1": 46.6132926940918
       },
       "flags": {},
-      "order": 11,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
           "name": "model",
           "type": "MODEL",
-          "link": 187,
+          "link": 194,
           "slot_index": 0
         },
         {
@@ -448,15 +232,15 @@
       "id": 13,
       "type": "SamplerCustomAdvanced",
       "pos": [
-        818,
-        355
+        846.6878456420886,
+        335.2923835937505
       ],
-      "size": [
-        236.8000030517578,
-        106
-      ],
+      "size": {
+        "0": 236.8000030517578,
+        "1": 106
+      },
       "flags": {},
-      "order": 12,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {
@@ -513,19 +297,282 @@
       }
     },
     {
-      "id": 106,
-      "type": "Flux Simple Scheduler",
+      "id": 62,
+      "type": "UNETLoader",
       "pos": [
-        88,
-        681
+        111.62446127319333,
+        172.02690385131834
       ],
       "size": {
-        "0": 210,
+        "0": 226.83401489257812,
+        "1": 82.21080780029297
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            193
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": [
+        "flux1-dev.sft",
+        "default"
+      ]
+    },
+    {
+      "id": 108,
+      "type": "Insert Probes",
+      "pos": [
+        391.6878456420903,
+        231.29238359375015
+      ],
+      "size": {
+        "0": 231.67721557617188,
         "1": 82
       },
       "flags": {},
-      "order": 6,
+      "order": 9,
       "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 193
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            194
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Insert Probes"
+      },
+      "widgets_values": [
+        "yes",
+        "yes"
+      ]
+    },
+    {
+      "id": 107,
+      "type": "Queue Limit Pause",
+      "pos": [
+        1114.68784564209,
+        338.2923835937505
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 190
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            195
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Queue Limit Pause"
+      },
+      "widgets_values": [
+        7
+      ]
+    },
+    {
+      "id": 109,
+      "type": "Save Probe Data",
+      "pos": [
+        1128.68784564209,
+        478.2923835937504
+      ],
+      "size": {
+        "0": 315,
+        "1": 82
+      },
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 195
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Save Probe Data"
+      },
+      "widgets_values": [
+        "internals.safetensors",
+        "ChrisGoringe/fi"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        703.4597176635737,
+        701.9333830139153
+      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 182,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 183,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            23
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 105,
+      "type": "Random Size",
+      "pos": [
+        469.45971766357445,
+        701.9333830139153
+      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "W",
+          "type": "INT",
+          "links": [
+            182
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "H",
+          "type": "INT",
+          "links": [
+            183
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Random Size"
+      },
+      "widgets_values": [
+        1555,
+        "randomize",
+        0.5
+      ]
+    },
+    {
+      "id": 106,
+      "type": "Flux Simple Scheduler",
+      "pos": [
+        567.4597176635737,
+        573.9333830139153
+      ],
+      "size": [
+        210,
+        72.19449348754904
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "steps",
+          "type": "INT",
+          "link": 196,
+          "widget": {
+            "name": "steps"
+          }
+        }
+      ],
       "outputs": [
         {
           "name": "SIGMAS",
@@ -546,87 +593,100 @@
       ]
     },
     {
-      "id": 107,
-      "type": "Queue Limit Pause",
+      "id": 110,
+      "type": "Random Int",
       "pos": [
-        1086,
-        358
+        212.45971766357425,
+        653.9333830139153
       ],
       "size": [
         210,
-        58
+        82
       ],
       "flags": {},
-      "order": 13,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
-          "name": "latent",
-          "type": "LATENT",
-          "link": 190
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
         }
       ],
       "outputs": [
         {
-          "name": "LATENT",
-          "type": "LATENT",
+          "name": "INT",
+          "type": "INT",
           "links": [
-            191
+            196
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "title": "Number of Steps",
+      "properties": {
+        "Node name for S&R": "Random Int"
+      },
+      "widgets_values": [
+        1527,
+        "randomize",
+        15,
+        30
+      ]
+    },
+    {
+      "id": 25,
+      "type": "RandomNoise",
+      "pos": [
+        549.602002453613,
+        144.35898150634765
+      ],
+      "size": [
+        210,
+        34
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            176
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "Queue Limit Pause"
+        "Node name for S&R": "RandomNoise"
       },
       "widgets_values": [
-        7
-      ]
-    },
-    {
-      "id": 98,
-      "type": "Save Hidden State Data",
-      "pos": [
-        1326,
-        356
-      ],
-      "size": {
-        "0": 221.0791015625,
-        "1": 58
-      },
-      "flags": {},
-      "order": 14,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "latent",
-          "type": "LATENT",
-          "link": 191
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Save Hidden State Data"
-      },
-      "widgets_values": [
-        "ChrisGoringe/fi"
+        1050171791248925,
+        "randomize"
       ]
     },
     {
       "id": 99,
       "type": "Seed Everywhere",
       "pos": [
-        937,
-        157
+        1123.68784564209,
+        172.29238359374997
       ],
       "size": {
         "0": 272.55206298828125,
@@ -649,7 +709,7 @@
         "color_restricted": 0
       },
       "widgets_values": [
-        1073047441929339,
+        854542741914001,
         "randomize"
       ]
     }
@@ -856,22 +916,6 @@
       "STRING"
     ],
     [
-      187,
-      76,
-      0,
-      22,
-      0,
-      "MODEL"
-    ],
-    [
-      188,
-      62,
-      0,
-      76,
-      0,
-      "MODEL"
-    ],
-    [
       190,
       13,
       0,
@@ -880,24 +924,48 @@
       "LATENT"
     ],
     [
-      191,
+      193,
+      62,
+      0,
+      108,
+      0,
+      "MODEL"
+    ],
+    [
+      194,
+      108,
+      0,
+      22,
+      0,
+      "MODEL"
+    ],
+    [
+      195,
       107,
       0,
-      98,
+      109,
       0,
       "LATENT"
+    ],
+    [
+      196,
+      110,
+      0,
+      106,
+      0,
+      "INT"
     ]
   ],
   "groups": [
     {
-      "title": "Sampling",
+      "title": "Group",
       "bounding": [
-        40,
-        34,
-        1517,
-        756
+        69,
+        70,
+        1385,
+        720
       ],
-      "color": "#A88",
+      "color": "#3f789e",
       "font_size": 24
     }
   ],
@@ -906,8 +974,8 @@
     "ds": {
       "scale": 0.6830134553650705,
       "offset": {
-        "0": 501.9336853027344,
-        "1": 128.5142059326172
+        "0": 299.88788530273456,
+        "1": 86.05530593261716
       }
     }
   },

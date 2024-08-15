@@ -3,7 +3,7 @@
 default: float8_e5m2
 
 mods:
-  - layers: 19
+  - layers: 0-56
     cast:   bfloat16
 
 
