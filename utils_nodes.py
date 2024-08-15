@@ -1,7 +1,8 @@
-import os, random, re
+import os, random, re, time
 from functools import partial 
 from safetensors.torch import load_file
 import torch
+from .modules.trackers import UploadThread
 
 filepath = partial(os.path.join,os.path.split(__file__)[0])
 
@@ -18,6 +19,18 @@ class SeedContext():
             random.seed(self.seed)
     def __exit__(self, exc_type, exc_val, exc_tb):
         random.setstate(self.state)
+
+class QPause:
+    RETURN_TYPES = ("LATENT",)
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
+    @classmethod
+    def INPUT_TYPES(s): return { "required": { "latent":("LATENT",{}), "limit":("INT",{"default":10})}}
+
+    def func(self, latent, limit):
+        while UploadThread.instance().queue.qsize() > limit:
+            time.sleep(10)
+        return (latent,)
 
 class Prompts:
     RETURN_TYPES = ("STRING","STRING","STRING")
@@ -73,7 +86,22 @@ class Counter:
         if restart=='yes': self.n = -1
         self.n = (self.n+1) % max
         return (self.n,str(self.n))
-    
+
+class RandomInt:
+    RETURN_TYPES = ("INT",)
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
+    @classmethod
+    def INPUT_TYPES(s): return { "required": {
+        "seed":    ("INT", {"default": 42 }), 
+        "minimum": ("INT", {"default": 15 }), 
+        "maximum": ("INT", {"default": 30 }),
+    }}
+
+    def func(self,seed, minimum, maximum):
+        with SeedContext(seed):
+            return (random.randint(minimum, maximum),)
+
 class RandomSize:
     SIZES = [
         (1024,1024),

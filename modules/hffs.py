@@ -2,7 +2,7 @@ from huggingface_hub import HfFileSystem
 from huggingface_hub.utils._errors import HfHubHTTPError
 from safetensors.torch import load_file, save_file
 import tempfile, os, torch, sys, random
-from .utils import SingletonAddin
+from .utils import SingletonAddin, Batcher
 
 class HFFS_Cache(SingletonAddin):
     def __init__(self):
@@ -53,16 +53,20 @@ class HFFS:
         return "/".join(["datasets",self.repo_id, filename])
 
     def get_entry_list(self) -> list[str]:
-        return self.fs.glob(self.rpath(""))
+        return self.fs.glob(self.rpath('[0-9]*/'))
     
     def load_file(self, filename):
-        print(f"Loading {filename}")
+        def convert(filename):
+            f = filename.split("/")
+            return Batcher.filename("/".join(f[:-1]), int(f[-1]))
+        filename = convert(filename)
+        #print(f"Loading {filename}")
         if self.cache.is_in_cache(filename): 
-            print("From cache")
+            #print("From cache")
             return self.cache.get_from_cache(filename)
         with tempfile.TemporaryDirectory() as tempdir:
-            tempname = os.path.join(tempdir,str(random.randint(1,1000000)))
-            print("Downloading")
+            tempname = os.path.join(tempdir,str(random.randint(1,1000000))+".safetensors")
+            #print("Downloading")
             self.fs.get_file(rpath=filename, lpath=tempname)
             data = load_file(tempname)
             self.cache.store_in_cache(filename, data)

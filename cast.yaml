@@ -1,6 +1,22 @@
-img_mod:  float8_e4m3fn
-img_attn: float8_e4m3fn
-img_mlp:  float8_e4m3fn
-txt_mod:  float8_e4m3fn
-txt_attn: float8_e4m3fn
-txt_mlp:  float8_e4m3fn
+
+# define a default to use
+default: float8_e5m2
+
+mods:
+  - layers: 19
+    cast:   bfloat16
+
+
+
+#  - layers: 0-56
+#    blocks: img
+#    cast:   bfloat16
+
+# layers is x or x-y. Required.
+# blocks is a simple string match. 
+
+# In layers 0-18, the blocks are named [txt|img]_[mod|attn|mlp], so '_' matches everything. If missing, it is '_'
+# In lauers 19-56, the blocks are named linear1, linear2, modulation
+# cast can be to bfloat16, float8_e4m3fn, float8_e5m2, none, or default. If missing, it's 'default'
+#
+# Looks like mod and mlp need to be the same

@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 import os, random, threading, queue, sys, time
 from typing import Union
 from .hffs import HFFS
-from .utils import SingletonAddin
+from .utils import SingletonAddin, Batcher
 
 class DiskCache:
     def __init__(self):
@@ -68,22 +68,24 @@ class HiddenStateTracker(torch.nn.Module):
         if layer+1 not in self.hidden_states:                      self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, *args, **kwargs): # img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
-        out = self.wrapped_module(*args, **kwargs)
-
+        
         if self.is_master: 
             HiddenStateTracker.active = (HiddenStateTracker.NEXT_SAVE_COUNTER == 0)
             HiddenStateTracker.NEXT_SAVE_COUNTER = (HiddenStateTracker.NEXT_SAVE_COUNTER + 1) % HiddenStateTracker.SAVE_EVERY
 
+        if HiddenStateTracker.active and self.store_input:
+            if self.is_double:
+                self.hidden_states[self.layer].append( { "img":kwargs['img'].cpu(), "txt":kwargs['txt'].cpu(), "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
+            else:
+                self.hidden_states[self.layer].append( { "x":args[0].cpu(),                                    "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
+
+        out = self.wrapped_module(*args, **kwargs)
+
         if HiddenStateTracker.active:
-            if self.store_input:
-                if self.is_double:
-                    self.hidden_states[self.layer].append( { "img":kwargs['img'].cpu(), "txt":kwargs['txt'].cpu(), "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
-                else:
-                    self.hidden_states[self.layer].append( { "x":args[0].cpu(),                                    "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
             if self.is_double: 
-                self.hidden_states[self.layer + 1].append( { "img":out[0].cpu(),        "txt":out[1].cpu(),        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
+                self.hidden_states[self.layer+1].append( { "img":out[0].cpu(),      "txt":out[1].cpu(),        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
             else:                
-                self.hidden_states[self.layer + 1].append( { "x":out.cpu(),                                        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
+                self.hidden_states[self.layer+1].append( { "x":out.cpu(),                                      "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
 
         return out
 
@@ -93,24 +95,22 @@ class HiddenStateTracker(torch.nn.Module):
 
     @classmethod
     def save_all(cls, repo_id):
-        UploadThread.hffs.set_repo_id(repo_id)
         length = min( [len(cls.hidden_states[k]) for k in cls.hidden_states] )
-
-        def label(r, layer_from, layer_to): return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(r, layer_from, layer_to)
-        division = (( 0, 6), ( 7,13), (14,18), (19,25), (26,31), (32,37), (38,43), (44,50), (51,57))     
+        if not length: return
+        UploadThread.hffs.set_repo_id(repo_id)
         for index in range(length):
             r = random.randint(1000000,9999999)
-            for (layer_from, layer_to) in division:
+            for batch  in Batcher.BATCHES:
                 datum = {}
-                for layer_index in range(layer_from, layer_to+1):
+                for layer_index in range(batch[0], batch[1]+1):
                     for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+f"-{k}"] = cls.hidden_states[layer_index][index][k]
-                cls.queue.put((label(r,layer_from, layer_to), datum))
+                cls.queue.put((Batcher.label(r,batch), datum))
             
         cls.reset_all()
 
 class InternalsTracker(torch.nn.Module):
     all_datasets = {}
-    def __init__(self,label:str, keep_last=12288):
+    def __init__(self, label:str, keep_last=0):
         super().__init__()
         self.label = label
         self.all_datasets[self.label] = 0
@@ -126,6 +126,7 @@ class InternalsTracker(torch.nn.Module):
 
     @classmethod
     def save_all(cls, filepath, append=True):
+        if not len(cls.all_datasets): return
         if append and os.path.exists(filepath):
             old = load_file(filename=filepath)
             for k in cls.all_datasets: cls.all_datasets[k] += old.pop(k,0)
@@ -134,14 +135,20 @@ class InternalsTracker(torch.nn.Module):
         cls.reset_all()
 
     @classmethod
-    def inject_internals_tracker(cls,block:Union[DoubleStreamBlock, SingleStreamBlock], index:int):
-        if isinstance( block.img_mlp[2], InternalsTracker ): return
+    def inject_internals_tracker(cls,block:Union[DoubleStreamBlock, SingleStreamBlock, HiddenStateTracker], index:int):
+
+        block = block.wrapped_module if isinstance(block, HiddenStateTracker) else block
+
+        if hasattr(block, 'internals_tracker_added') and block.internals_tracker_added:
+            return
 
         if isinstance(block, DoubleStreamBlock):
-            block.img_mlp.insert(2, InternalsTracker(f"double-img-{index}"))
-            block.txt_mlp.insert(2, InternalsTracker(f"double-txt-{index}"))
+            block.img_mlp.insert(2, InternalsTracker("{:0>2}-img".format(index)))
+            block.txt_mlp.insert(2, InternalsTracker("{:0>2}-txt".format(index)))
         elif isinstance(block, SingleStreamBlock):
-            block.linear2 = torch.nn.Sequential([
-                InternalsTracker((f"single-{index}")),
+            block.linear2 = torch.nn.Sequential(
+                InternalsTracker("{:0>2}-x".format(index), keep_last=block.mlp_hidden_dim),
                 block.linear2
-            ])
+            )
+
+        block.internals_tracker_added = True

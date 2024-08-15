@@ -1,4 +1,4 @@
-from comfy.ldm.flux.layers import DoubleStreamBlock
+from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 import torch, random
 
 def prune(t:torch.Tensor, mask):
@@ -8,13 +8,13 @@ def prune(t:torch.Tensor, mask):
     return t.T if transpose else t
 
 class Info:
-    def __init__(self,mlp):
-        mlp0:torch.nn.Linear = mlp[0]
-        self.clazz             = mlp0.__class__
-        self.dtype             = mlp0.weight.dtype
-        self.device            = mlp0.weight.device
-        self.hidden_size       = mlp0.in_features
-        self.intermediate_size = mlp0.out_features
+    def __init__(self,mlp_ssb):
+        linear                 = mlp_ssb.linear1 if isinstance(mlp_ssb, SingleStreamBlock) else mlp_ssb[0]
+        self.clazz             = linear.__class__
+        self.dtype             = linear.weight.dtype
+        self.device            = linear.weight.device
+        self.hidden_size       = linear.in_features
+        self.intermediate_size = linear.out_features
         
 def new_mlp(old_mlp, mask):
     assert len(mask)==old_mlp[0].weight.shape[0]
@@ -46,6 +46,20 @@ def get_mask(data, remove_below, remove_count, remove_nothing, return_threshold 
                 mask[pointer] = False
                 still_to_remove -= 1        
     return (mask, remove_below) if return_threshold else mask
+
+def slice_single_block(block:SingleStreamBlock, mask:list[bool]):
+    mask = [True] * 3 * block.hidden_size + mask
+    info = Info(block)
+
+    def new_linear(old_linear):
+        new = info.clazz(in_features=info.hidden_size, out_features=sum(mask), dtype=info.dtype, device=info.device)
+        old_sd = old_linear.state_dict()
+        new_sd = { k:prune(old_sd[k],mask) for k in old_sd }
+        new.load_state_dict( new_sd )
+        return new
+
+    block.linear1 = new_linear(block.linear1)
+    block.linear2 = new_linear(block.linear2)
 
 def slice_double_block(block:DoubleStreamBlock, img_mask:list[bool], txt_mask:list[bool]):
     block.img_mlp = new_mlp(block.img_mlp, img_mask)

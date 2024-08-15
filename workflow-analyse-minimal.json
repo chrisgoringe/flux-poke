@@ -1,274 +1,123 @@
 {
-  "last_node_id": 106,
-  "last_link_id": 189,
+  "last_node_id": 107,
+  "last_link_id": 191,
   "nodes": [
     {
-      "id": 22,
-      "type": "BasicGuider",
+      "id": 62,
+      "type": "UNETLoader",
       "pos": [
-        793.089211348289,
-        343.0157255019535
+        82.93661563110359,
+        191.73452025756836
       ],
       "size": {
-        "0": 161.1999969482422,
-        "1": 46.6132926940918
-      },
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 187,
-          "slot_index": 0
-        },
-        {
-          "name": "conditioning",
-          "type": "CONDITIONING",
-          "link": 67,
-          "slot_index": 1
-        }
-      ],
-      "outputs": [
-        {
-          "name": "GUIDER",
-          "type": "GUIDER",
-          "links": [
-            30
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "BasicGuider"
-      }
-    },
-    {
-      "id": 25,
-      "type": "RandomNoise",
-      "pos": [
-        672.9906707506331,
-        213.1531700527342
-      ],
-      "size": {
-        "0": 277.2485046386719,
-        "1": 84.58332824707031
+        "0": 226.83401489257812,
+        "1": 82.21080780029297
       },
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [
-        {
-          "name": "noise_seed",
-          "type": "INT",
-          "link": null,
-          "widget": {
-            "name": "noise_seed"
-          }
-        }
-      ],
       "outputs": [
         {
-          "name": "NOISE",
-          "type": "NOISE",
+          "name": "MODEL",
+          "type": "MODEL",
           "links": [
-            176
+            188
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "RandomNoise"
+        "Node name for S&R": "UNETLoader"
       },
       "widgets_values": [
-        210311446469310,
-        "randomize"
+        "flux1-dev.sft",
+        "default"
       ]
     },
     {
-      "id": 5,
-      "type": "EmptyLatentImage",
+      "id": 11,
+      "type": "DualCLIPLoader",
       "pos": [
-        754.1426195800781,
-        722.4723602783204
+        49.936615631103635,
+        331.73452025756905
       ],
       "size": {
-        "0": 210,
-        "1": 78
+        "0": 276.0993957519531,
+        "1": 106
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            165
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": [
+        "t5xxl_fp16.safetensors",
+        "clip_l.safetensors",
+        "flux"
+      ]
+    },
+    {
+      "id": 76,
+      "type": "Insert Hidden State Probes",
+      "pos": [
+        373.9366156311035,
+        270.734520257569
+      ],
+      "size": {
+        "0": 218.39999389648438,
+        "1": 26
       },
       "flags": {},
       "order": 8,
       "mode": 0,
       "inputs": [
         {
-          "name": "width",
-          "type": "INT",
-          "link": 182,
-          "widget": {
-            "name": "width"
-          }
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "link": 183,
-          "widget": {
-            "name": "height"
-          }
+          "name": "model",
+          "type": "MODEL",
+          "link": 188
         }
       ],
       "outputs": [
         {
-          "name": "LATENT",
-          "type": "LATENT",
+          "name": "MODEL",
+          "type": "MODEL",
           "links": [
-            23
-          ],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "EmptyLatentImage"
-      },
-      "widgets_values": [
-        1024,
-        1024,
-        1
-      ]
-    },
-    {
-      "id": 105,
-      "type": "Random Size",
-      "pos": [
-        528.1426195800778,
-        716.4723602783204
-      ],
-      "size": [
-        210,
-        78
-      ],
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "seed",
-          "type": "INT",
-          "link": null,
-          "widget": {
-            "name": "seed"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "W",
-          "type": "INT",
-          "links": [
-            182
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "H",
-          "type": "INT",
-          "links": [
-            183
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Random Size"
-      },
-      "widgets_values": [
-        208,
-        "randomize",
-        0.5
-      ]
-    },
-    {
-      "id": 106,
-      "type": "Flux Simple Scheduler",
-      "pos": [
-        267.1426195800782,
-        704.4723602783204
-      ],
-      "size": [
-        210,
-        82
-      ],
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "SIGMAS",
-          "type": "SIGMAS",
-          "links": [
-            184
+            187
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "Flux Simple Scheduler"
-      },
-      "widgets_values": [
-        20,
-        1
-      ]
-    },
-    {
-      "id": 16,
-      "type": "KSamplerSelect",
-      "pos": [
-        394.14261958007785,
-        563.4723602783204
-      ],
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "SAMPLER",
-          "type": "SAMPLER",
-          "links": [
-            19
-          ],
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "KSamplerSelect"
-      },
-      "widgets_values": [
-        "euler"
-      ]
+        "Node name for S&R": "Insert Hidden State Probes"
+      }
     },
     {
       "id": 38,
       "type": "CLIPTextEncodeFlux",
       "pos": [
-        546.142619580078,
-        402.4723602783207
+        391.7939960510257,
+        389.26215997924834
       ],
       "size": {
         "0": 210,
         "1": 98
       },
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
@@ -315,151 +164,18 @@
       ]
     },
     {
-      "id": 13,
-      "type": "SamplerCustomAdvanced",
-      "pos": [
-        994.6159153879166,
-        320.5863843798831
-      ],
-      "size": {
-        "0": 236.8000030517578,
-        "1": 106
-      },
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "noise",
-          "type": "NOISE",
-          "link": 176,
-          "slot_index": 0
-        },
-        {
-          "name": "guider",
-          "type": "GUIDER",
-          "link": 30,
-          "slot_index": 1
-        },
-        {
-          "name": "sampler",
-          "type": "SAMPLER",
-          "link": 19,
-          "slot_index": 2
-        },
-        {
-          "name": "sigmas",
-          "type": "SIGMAS",
-          "link": 184,
-          "slot_index": 3
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 23,
-          "slot_index": 4
-        }
-      ],
-      "outputs": [
-        {
-          "name": "output",
-          "type": "LATENT",
-          "links": [
-            189
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "denoised_output",
-          "type": "LATENT",
-          "links": [],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "SamplerCustomAdvanced"
-      }
-    },
-    {
-      "id": 99,
-      "type": "Seed Everywhere",
-      "pos": [
-        1034.142619580078,
-        114.47236027832011
-      ],
-      "size": {
-        "0": 272.55206298828125,
-        "1": 82
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "Seed Everywhere",
-        "group_restricted": 0,
-        "color_restricted": 0
-      },
-      "widgets_values": [
-        710215601569740,
-        "randomize"
-      ]
-    },
-    {
-      "id": 62,
-      "type": "UNETLoader",
-      "pos": [
-        116.14261958007825,
-        207.47236027832034
-      ],
-      "size": {
-        "0": 226.83401489257812,
-        "1": 82.21080780029297
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            188
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "UNETLoader"
-      },
-      "widgets_values": [
-        "flux1-dev.sft",
-        "default"
-      ]
-    },
-    {
       "id": 103,
       "type": "Prompts",
       "pos": [
-        159.14261958007825,
-        507.4723602783204
+        53,
+        483
       ],
       "size": {
         "0": 210,
         "1": 146
       },
       "flags": {},
-      "order": 6,
+      "order": 2,
       "mode": 0,
       "inputs": [
         {
@@ -501,93 +217,345 @@
       },
       "widgets_values": [
         -1,
-        273,
+        1442,
         "randomize",
         "no",
         "prompts_dataset"
       ]
     },
     {
-      "id": 11,
-      "type": "DualCLIPLoader",
+      "id": 16,
+      "type": "KSamplerSelect",
       "pos": [
-        83.14261958007829,
-        347.4723602783207
+        293,
+        535
       ],
       "size": {
-        "0": 276.0993957519531,
-        "1": 106
+        "0": 210,
+        "1": 58
       },
       "flags": {},
-      "order": 7,
+      "order": 3,
       "mode": 0,
       "outputs": [
         {
-          "name": "CLIP",
-          "type": "CLIP",
+          "name": "SAMPLER",
+          "type": "SAMPLER",
           "links": [
-            165
+            19
+          ],
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ]
+    },
+    {
+      "id": 105,
+      "type": "Random Size",
+      "pos": [
+        378,
+        702
+      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "W",
+          "type": "INT",
+          "links": [
+            182
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "H",
+          "type": "INT",
+          "links": [
+            183
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Random Size"
+      },
+      "widgets_values": [
+        417,
+        "randomize",
+        0.5
+      ]
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        604,
+        641
+      ],
+      "size": {
+        "0": 210,
+        "1": 78
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 182,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 183,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            23
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1024,
+        1024,
+        1
+      ]
+    },
+    {
+      "id": 25,
+      "type": "RandomNoise",
+      "pos": [
+        407,
+        108
+      ],
+      "size": {
+        "0": 277.2485046386719,
+        "1": 84.58332824707031
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise_seed",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "noise_seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            176
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "DualCLIPLoader"
+        "Node name for S&R": "RandomNoise"
       },
       "widgets_values": [
-        "t5xxl_fp16.safetensors",
-        "clip_l.safetensors",
-        "flux"
+        794122703546630,
+        "randomize"
       ]
     },
     {
-      "id": 76,
-      "type": "Insert Hidden State Probes",
+      "id": 22,
+      "type": "BasicGuider",
       "pos": [
-        407.1426195800778,
-        286.47236027832065
+        624,
+        368
       ],
       "size": {
-        "0": 218.39999389648438,
-        "1": 26
+        "0": 161.1999969482422,
+        "1": 46.6132926940918
       },
       "flags": {},
-      "order": 9,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
           "name": "model",
           "type": "MODEL",
-          "link": 188
+          "link": 187,
+          "slot_index": 0
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 67,
+          "slot_index": 1
         }
       ],
       "outputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
+          "name": "GUIDER",
+          "type": "GUIDER",
           "links": [
-            187
+            30
           ],
           "shape": 3,
           "slot_index": 0
         }
       ],
       "properties": {
-        "Node name for S&R": "Insert Hidden State Probes"
+        "Node name for S&R": "BasicGuider"
       }
     },
     {
-      "id": 98,
-      "type": "Save Hidden State Data",
+      "id": 13,
+      "type": "SamplerCustomAdvanced",
       "pos": [
-        1277.1426195800775,
-        322.47236027832065
+        818,
+        355
+      ],
+      "size": [
+        236.8000030517578,
+        106
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 176,
+          "slot_index": 0
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 30,
+          "slot_index": 1
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 19,
+          "slot_index": 2
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 184,
+          "slot_index": 3
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 23,
+          "slot_index": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            190
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": [],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      }
+    },
+    {
+      "id": 106,
+      "type": "Flux Simple Scheduler",
+      "pos": [
+        88,
+        681
       ],
       "size": {
-        "0": 221.0791015625,
-        "1": 58
+        "0": 210,
+        "1": 82
       },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            184
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Flux Simple Scheduler"
+      },
+      "widgets_values": [
+        20,
+        1
+      ]
+    },
+    {
+      "id": 107,
+      "type": "Queue Limit Pause",
+      "pos": [
+        1086,
+        358
+      ],
+      "size": [
+        210,
+        58
+      ],
       "flags": {},
       "order": 13,
       "mode": 0,
@@ -595,7 +563,46 @@
         {
           "name": "latent",
           "type": "LATENT",
-          "link": 189
+          "link": 190
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            191
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Queue Limit Pause"
+      },
+      "widgets_values": [
+        7
+      ]
+    },
+    {
+      "id": 98,
+      "type": "Save Hidden State Data",
+      "pos": [
+        1326,
+        356
+      ],
+      "size": {
+        "0": 221.0791015625,
+        "1": 58
+      },
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "link": 191
         }
       ],
       "outputs": [
@@ -612,6 +619,38 @@
       },
       "widgets_values": [
         "ChrisGoringe/fi"
+      ]
+    },
+    {
+      "id": 99,
+      "type": "Seed Everywhere",
+      "pos": [
+        937,
+        157
+      ],
+      "size": {
+        "0": 272.55206298828125,
+        "1": 82
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Seed Everywhere",
+        "group_restricted": 0,
+        "color_restricted": 0
+      },
+      "widgets_values": [
+        1073047441929339,
+        "randomize"
       ]
     }
   ],
@@ -833,8 +872,16 @@
       "MODEL"
     ],
     [
-      189,
+      190,
       13,
+      0,
+      107,
+      0,
+      "LATENT"
+    ],
+    [
+      191,
+      107,
       0,
       98,
       0,
@@ -845,10 +892,10 @@
     {
       "title": "Sampling",
       "bounding": [
-        73,
         40,
-        1435,
-        764
+        34,
+        1517,
+        756
       ],
       "color": "#A88",
       "font_size": 24

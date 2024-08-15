@@ -9,14 +9,15 @@ def process_arguments():
     a.add_argument('--first_layer', required=True, help="The first layer to be trained. Comma separated list to loop over layers.")
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
+    a.add_argument('--cast_map', default=None, help="Path to yaml file describing how the layer should be cast")
+
     a.add_argument('--save_dir', default="retrained_layers", help="directory, relative to cwd, to store results in")
     a.add_argument('--stats_yaml', default="layer_stats.yaml", help="filename (relative to save_dir) for stats to be saved in")
     a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files")
-    a.add_argument('--hffs_cache_whole', action="store_true", help="Keep in cache the whole dataset, not just this layer this layer")
     a.add_argument('--clear_cache_before', action="store_true", help="Clear the cache at the start of the run" )
     a.add_argument('--clear_cache_after', action="store_true", help="Clear the cache at the start of the run" )
 
-    a.add_argument('--cast_map', default=None, help="Path to yaml file describing how the layer should be cast")
+    
 
     img = a.add_mutually_exclusive_group(required=True)
     img.add_argument('--img_threshold', type=int, help="Threshold below which img lines are dropped")
@@ -28,7 +29,13 @@ def process_arguments():
     txt.add_argument('--txt_count', type=int, help="Number of txt lines to discard (of 12288)")
     txt.add_argument('--txt_no', action="store_true", help="Don't discard any txt lines")
 
-    a.add_argument('--hs_dir', default="hidden_states", help="directory, relative to cwd, data is found in")
+    x = a.add_mutually_exclusive_group(required=True)
+    x.add_argument('--x_threshold', type=int, help="Threshold below which x lines are dropped")
+    x.add_argument('--x_count', type=int, help="Number of x lines to discard (of 12288)")
+    x.add_argument('--x_no', action="store_true", help="Don't discard any x lines")
+
+    a.add_argument('--hs_dir', default="hidden_states", help="directory, relative to cwd, data is found in, or repo_id")
+    a.add_argument('--train_frac', default=0.8, type=float, help="fraction of dataset to train on")
     a.add_argument('--save_dtype', default="bfloat16", choices=["bfloat16", "float8_e4m3fn", "float8_e5m2", "float16", "float"], help="tensor dtype to save" )
     a.add_argument('--internals', default="internals.safetensors", help="internals file, relative to cwd")
 
@@ -83,4 +90,3 @@ def process_arguments():
 
 if args is None: 
     args = process_arguments()
-    shared.load(args)

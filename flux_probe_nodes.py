@@ -9,45 +9,44 @@ from functools import partial
 from comfy.model_management import cleanup_models
 
 filepath = partial(os.path.join,os.path.split(__file__)[0])
-    
-class AbstractModelModifier:
+ 
+class InsertProbes:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "func"
     CATEGORY = "flux_watcher"
     @classmethod
-    def INPUT_TYPES(s): return { "required": { "model": ("MODEL", ), } }    
-    def func(self, model, **kwargs):
+    def INPUT_TYPES(s): return { "required": { 
+        "model": ("MODEL", ), 
+        "track_hidden_states" : (["yes","no"],{}),
+        "track_internals" : (["yes","no"],{}),
+    } }  
+
+    def func(self, model, track_hidden_states, track_internals):
         m = model.clone()
-        print(self._func(m, **kwargs))
-        model = None
-        cleanup_models()
+        diffusion_model = m.model.diffusion_model
+        n_double = len(diffusion_model.double_blocks)
+
+        if track_hidden_states=='yes':
+            def replace_list(list_name, first_index):
+                new_list = [ HiddenStateTracker(dsb, i+first_index) for i, dsb in enumerate(getattr(diffusion_model,list_name)) ]
+                setattr(diffusion_model, list_name, torch.nn.ModuleList(new_list))
+
+            replace_list('double_blocks',0)
+            replace_list('single_blocks', n_double)
+            print (f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states")  
+
+        if track_internals=='yes':
+            def inject_internals_tracker(list_name, first_index):
+                for i, block in enumerate(getattr(diffusion_model, list_name)):
+                    InternalsTracker.inject_internals_tracker(block.wrapped_module if isinstance(block, HiddenStateTracker) else block, i+first_index)
+
+            inject_internals_tracker('double_blocks', 0)
+            inject_internals_tracker('single_blocks', n_double)
+            print( f"Added {len(InternalsTracker.all_datasets)} callouts" )
+
         return (m,)
- 
-class InsertInternalProbes(AbstractModelModifier):
-    def _func(self, model):
-        for i, block in enumerate(model.model.diffusion_model.double_blocks): 
-            if isinstance(block, HiddenStateTracker):
-                InternalsTracker.inject_internals_tracker(block.wrapped_module, i)
-            else:
-                InternalsTracker.inject_internals_tracker(block, i)
-        #for i, block in enumerate(model.model.diffusion_model.single_blocks): 
-        #    if isinstance(block.linear2, torch.nn.Sequential): block.linear2 = block.linear2[1]
-        #    InternalsTracker.inject_internals_tracker(block, i+len(model.model.diffusion_model.double_blocks))
 
-        return f"Added {len(InternalsTracker.all_datasets)} callouts"
-
-class InsertHiddenStateProbes(AbstractModelModifier):
-    def _func(self, model):
-        model.model.diffusion_model.double_blocks = torch.nn.ModuleList(
-            [ HiddenStateTracker(dsb, i) for i, dsb in enumerate(model.model.diffusion_model.double_blocks) ]
-        )
-        n_double = len(model.model.diffusion_model.double_blocks)
-        model.model.diffusion_model.single_blocks = torch.nn.ModuleList(
-            [ HiddenStateTracker(dsb, i+n_double) for i, dsb in enumerate(model.model.diffusion_model.single_blocks) ]
-        )        
-        return f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states"  
-
-class InternalsSaver:
+class SaveProbeData:
     RETURN_TYPES = ("LATENT",)
     OUTPUT_NODE = True
     FUNCTION = "func"
@@ -56,25 +55,12 @@ class InternalsSaver:
     def INPUT_TYPES(cls): 
         return { "required": { 
             "latent": ("LATENT", {}), 
-            "filename": ("STRING",{"default":"internals.safetensors"}),
+            "filename_for_internals": ("STRING",{"default":"internals.safetensors"}),
+            "repo_id_for_hidden": ("STRING",{"default":"ChrisGoringe/fi"}),
             } }      
-    def func(self, latent, filename):
-        InternalsTracker.save_all(filepath(filename))
-        return (latent,)     
-
-class HiddenStatesSaver:
-    RETURN_TYPES = ("LATENT",)
-    OUTPUT_NODE = True
-    FUNCTION = "func"
-    CATEGORY = "flux_watcher"
-    @classmethod
-    def INPUT_TYPES(cls): 
-        return { "required": { 
-            "latent": ("LATENT", {}), 
-            "repo_id": ("STRING",{"default":"ChrisGoringe/fi"}),
-            } }      
-    def func(self, latent, repo_id):
-        HiddenStateTracker.save_all(repo_id)
+    def func(self, latent, filename_for_internals, repo_id_for_hidden):
+        InternalsTracker.save_all(filepath(filename_for_internals))
+        HiddenStateTracker.save_all(repo_id_for_hidden)
         return (latent,)     
 
 class ReplaceLayers(UNETLoader):
