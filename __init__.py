@@ -1,6 +1,7 @@
 from .flux_probe_nodes import InsertProbes, SaveProbeData,  \
     LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold
 from .utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize, CommonSizes, QPause, RandomInt
+from .mixed_casting_node import UnetLoaderMixed
 
 NODE_CLASS_MAPPINGS = { 
     "Insert Probes"                 : InsertProbes,
@@ -9,6 +10,8 @@ NODE_CLASS_MAPPINGS = {
     "Load Pruned Model"             : LoadPrunedFluxModel,
     "Load Pruned Model (Threshold)" : LoadPrunedFluxModelThreshold,
     "Load Patched Model"            : ReplaceLayers,
+
+    "Load Mixed Cast Model"         : UnetLoaderMixed,
 
     "Random Int"                    : RandomInt,
     "Flux Simple Scheduler"         : FluxSimpleScheduler,
