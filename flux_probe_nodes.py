@@ -114,8 +114,8 @@ class LoadPrunedFluxModel(UNETLoader):
         img_masked, txt_masked = 0, 0
         for i in range(first_layer, last_layer+1):
             block = model.model.diffusion_model.double_blocks[i]
-            img_mask = get_mask(all_data[f"double-img-{i}"], img_threshold, img_cut)
-            txt_mask = get_mask(all_data[f"double-txt-{i}"], txt_threshold, txt_cut)
+            img_mask, _ = get_mask(all_data[f"double-img-{i}"], remove_below=img_threshold, remove_count=img_cut)
+            txt_mask, _ = get_mask(all_data[f"double-txt-{i}"], remove_below=txt_threshold, remove_count=txt_cut)
             img_masked += sum(not x for x in img_mask) 
             txt_masked += sum(not x for x in txt_mask)
             slice_double_block(block = block, img_mask = img_mask, txt_mask = txt_mask )

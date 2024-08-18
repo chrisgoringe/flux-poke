@@ -2,49 +2,78 @@ from argparse import ArgumentParser
 import torch, transformers, os
 from modules.utils import filepath, shared
 
+
+class CommentArgumentParser(ArgumentParser):
+    '''
+    An argument parser which:
+    allows lines to be commented out with #,
+    allows lines to have comments at the end starting #
+    ignores blank lines, 
+    strips whitespace and quotation marks around each side of any '='
+    allows substitutions defined @label=value to then be used as @label
+    allows conditional lines starting ?label which are ignored if @label is not defined or is blank
+    '''
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.lines = []
+        self.subs:dict[str,str] = {}
+        self.strips = ' \"\'\t'
+
+    def split_and_strip(self, s:str) -> list[str]:
+        return list(a.strip(self.strips) for a in s.split('='))
+
+    def convert_arg_line_to_args(self, arg_line:str) -> list[str]:
+        arg_line = arg_line.split('#')[0]
+
+        if arg_line.startswith('@'):
+            search, replace = self.split_and_strip(arg_line)
+            if replace: 
+                for a in self.subs: replace = replace.replace(a, self.subs[a])        
+                self.subs[search] = replace
+            return []
+        
+        if arg_line.startswith('?'):
+            condition, arg_line = arg_line.split(' ',1)
+            if "@"+condition[1:] not in self.subs: return []
+
+        for a in self.subs: arg_line = arg_line.replace(a, self.subs[a])
+        if '@' in arg_line: print(f"{arg_line} contains undefined @")
+
+        line = "=".join(self.split_and_strip(arg_line))
+        if len(line): self.lines.append(line)
+        return [line,] if len(line) else []
+    
 args = None
 
 def process_arguments():
-    a = ArgumentParser(fromfile_prefix_chars='@')
-    a.add_argument('--first_layer', required=True, help="The first layer to be trained. Comma separated list to loop over layers.")
+    a = CommentArgumentParser(fromfile_prefix_chars='@')
+    first = a.add_mutually_exclusive_group(required=True)
+    first.add_argument('--first_layer', help="The first layer in the sub-model.")
+    first.add_argument('--first_layers', help="The range of first layers in the submodel. The whole process runs for each in the range.")
+
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
-    a.add_argument('--cast_map', default=None, help="Path to yaml file describing how the layer should be cast")
+    
+    a.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
+    a.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")
+    a.add_argument('--train_map', default=None, help="Relative path to yaml/json file describing how the layers should be trained")
+    a.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file")
+    a.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
-    a.add_argument('--save_dir', default="retrained_layers", help="directory, relative to cwd, to store results in")
-    a.add_argument('--stats_yaml', default="layer_stats.yaml", help="filename (relative to save_dir) for stats to be saved in")
-    a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files")
+    a.add_argument('--save_dir', default="retrained_layers", help="Relative path of directory to store results in")
+    a.add_argument('--stats_file', default="layer_stats.yaml", help="Relative path for stats to be saved in")
+    a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files (absolute path)")
     a.add_argument('--clear_cache_before', action="store_true", help="Clear the cache at the start of the run" )
     a.add_argument('--clear_cache_after', action="store_true", help="Clear the cache at the start of the run" )
 
-    
-
-    img = a.add_mutually_exclusive_group(required=True)
-    img.add_argument('--img_threshold', type=int, help="Threshold below which img lines are dropped")
-    img.add_argument('--img_count', type=int, help="Number of img lines to discard (of 12288)")
-    img.add_argument('--img_no', action="store_true", help="Don't discard any img lines")
-
-    txt = a.add_mutually_exclusive_group(required=True)
-    txt.add_argument('--txt_threshold', type=int, help="Threshold below which txt lines are dropped")
-    txt.add_argument('--txt_count', type=int, help="Number of txt lines to discard (of 12288)")
-    txt.add_argument('--txt_no', action="store_true", help="Don't discard any txt lines")
-
-    x = a.add_mutually_exclusive_group(required=True)
-    x.add_argument('--x_threshold', type=int, help="Threshold below which x lines are dropped")
-    x.add_argument('--x_count', type=int, help="Number of x lines to discard (of 12288)")
-    x.add_argument('--x_no', action="store_true", help="Don't discard any x lines")
-
-    a.add_argument('--hs_dir', default="hidden_states", help="directory, relative to cwd, data is found in, or repo_id")
+    a.add_argument('--hs_dir', default="hidden_states", help="Relative path of directory data is found in, or repo_id")
     a.add_argument('--train_frac', default=0.8, type=float, help="fraction of dataset to train on")
-    a.add_argument('--save_dtype', default="bfloat16", choices=["bfloat16", "float8_e4m3fn", "float8_e5m2", "float16", "float"], help="tensor dtype to save" )
-    a.add_argument('--internals', default="internals.safetensors", help="internals file, relative to cwd")
+    a.add_argument('--save_dtype', default="bfloat16", choices=["bfloat16", "float8_e4m3fn", "float8_e5m2", "float8_e4m3fnuz", "float8_e5m2uz", "float16", "float"], 
+                   help="tensor dtype to save retrained layer in")
 
     a.add_argument('--just_evaluate', action='store_true', help='no training, just calculate the loss caused by the pruning')
 
     args, extra_args = a.parse_known_args([f"@{filepath('arguments.txt')}",])
-
-    for k in ['img_threshold', 'img_count', 'txt_threshold', 'txt_count']: 
-        if not hasattr(args,k): setattr(args, k, None)
 
     training_config = {
         "save_strategy"    : "no",
@@ -70,16 +99,7 @@ def process_arguments():
             sub, key = key.split(':')
             if not sub in dictionary: dictionary[sub] = {}
             dictionary = training_config[sub]
-        if   (value.lower()=='true'):  dictionary[key]=True
-        elif (value.lower()=='false'): dictionary[key]=False
-        else:
-            try: 
-                dictionary[key] = int(value)
-            except ValueError:
-                try:
-                    dictionary[key] = float(value)
-                except ValueError:
-                    dictionary[key] = value
+        dictionary[key] = magic_cast(value)
 
     setattr(args, 'training_args', transformers.TrainingArguments(**training_config))
 
@@ -87,6 +107,14 @@ def process_arguments():
     if not os.path.exists(filepath(args.save_dir)): os.makedirs(filepath(args.save_dir), exist_ok=True)
 
     return args
+
+def magic_cast(v:str):
+    if (v.lower()=='true'):  return True
+    if (v.lower()=='false'): return False
+    try: return int(v)
+    except ValueError: pass
+    try: return float(v)
+    except ValueError: return v
 
 if args is None: 
     args = process_arguments()

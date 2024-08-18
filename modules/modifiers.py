@@ -1,5 +1,6 @@
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 import torch, random
+from warnings import warn
 
 def prune(t:torch.Tensor, mask):
     t, transpose = (t.T, True) if len(t.shape)==2 and t.shape[1] == len(mask) else (t, False)
@@ -33,33 +34,38 @@ def new_mlp(old_mlp, mask):
     mlp.load_state_dict(sd)
     return mlp
 
-def get_mask(data, remove_below, remove_count, remove_nothing, return_threshold = False): 
-    if remove_nothing: return ([True]*len(data), -1) if return_threshold else [True]*len(data)
-    remove_below, remove_count = (remove_below, None) if remove_below is not None else (sorted(data)[remove_count], remove_count)
-    mask = [ d>=remove_below for d in data ] 
-    # because of equalities, we may well not have removed enough. Take more out at random from those which equal remove_below
-    if remove_count is not None and (still_to_remove := remove_count - sum(not x for x in mask)):
-        jumbled = [x for x in range(len(data))]
-        random.shuffle(jumbled)
-        for pointer in jumbled:
-            if still_to_remove>0 and data[pointer]==remove_below:
-                mask[pointer] = False
-                still_to_remove -= 1        
-    return (mask, remove_below) if return_threshold else mask
+def get_mask(data, remove_below=None, remove_count=None): 
+
+    if remove_count:
+        if remove_below: warn("remove_below and remove_count both set: using remove_count")
+        threshold = sorted(data)[remove_count]
+        mask = [ d>=threshold for d in data ]
+        matches_to_remove = (remove_count - sum(not x for x in mask))
+        if matches_to_remove:
+            matching_indices = [ index for index in range(len(mask)) if data[index]==threshold ]
+            for index in random.sample(matching_indices, matches_to_remove): mask[index] = False
+        return (mask, threshold)
+    elif remove_below:  
+        return ([ d>=remove_below for d in data ], remove_below)
+    else:
+        return ([True]*len(data), -1)
 
 def slice_single_block(block:SingleStreamBlock, mask:list[bool]):
-    mask = [True] * 3 * block.hidden_size + mask
     info = Info(block)
 
-    def new_linear(old_linear):
-        new = info.clazz(in_features=info.hidden_size, out_features=sum(mask), dtype=info.dtype, device=info.device)
+    def new_linear(old_linear, mask, out=False):
+        if out:
+            new = info.clazz(in_features=sum(mask), out_features=info.hidden_size, dtype=info.dtype, device=info.device)
+        else:
+            new = info.clazz(in_features=info.hidden_size, out_features=sum(mask), dtype=info.dtype, device=info.device)
         old_sd = old_linear.state_dict()
         new_sd = { k:prune(old_sd[k],mask) for k in old_sd }
         new.load_state_dict( new_sd )
         return new
 
-    block.linear1 = new_linear(block.linear1)
-    block.linear2 = new_linear(block.linear2)
+    block.linear1 = new_linear(block.linear1, mask = [True] * 3 * block.hidden_size + mask)
+    block.linear2 = new_linear(block.linear2, mask = [True] * block.hidden_size + mask, out=True)
+    block.mlp_hidden_dim = sum(mask)
 
 def slice_double_block(block:DoubleStreamBlock, img_mask:list[bool], txt_mask:list[bool]):
     block.img_mlp = new_mlp(block.img_mlp, img_mask)

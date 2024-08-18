@@ -5,13 +5,14 @@ from modules.utils import filepath, shared
 from safetensors.torch import load_file
 
 class TheDataset:
+    sources = None
     def __init__(self, dir, first_layer:int, split:str, thickness:int=1, train_frac=0.8):
         if os.path.isdir(local_dir:=filepath(dir)):
-            self.sources = [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
+            self.sources = self.sources or [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
             self.load_file = load_file
         else:
             self.hffs = HFFS(repo_id=dir)
-            self.sources = self.hffs.get_entry_list()
+            self.sources = self.sources or self.hffs.get_entry_list()
             self.load_file = partial(self.hffs.load_file)
                                      
         split_at = int(train_frac*len(self.sources))
@@ -39,8 +40,5 @@ class TheDataset:
         for k in ['img', 'txt', 'x', 'vec', 'pe']:
             if (x:=input.get( l1+k, None)) is not None:  data[k]        = x.squeeze(0)
             if (y:=output.get(l2+k, None)) is not None:  data[k+"_out"] = y.squeeze(0)
-
-        if 'x_out' in data and 'x' not in data: 
-            data['x'] = torch.cat((data['txt'], data['img']), 0)
 
         return data

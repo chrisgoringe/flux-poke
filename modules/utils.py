@@ -1,4 +1,4 @@
-import logging, time, yaml, os, shutil
+import logging, time, yaml, os, shutil, json
 from safetensors.torch import load_file
 from functools import partial
 
@@ -22,12 +22,19 @@ class Log(SingletonAddin):
 
 log = Log.instance().info
 
-def range_from_string(s):
-    if s is None: return []
-    if isinstance(s,int): return [s,]
-    if not '-' in s: return [int(s),]
-    a,b = (int(x.strip()) for x in s.split('-'))
-    return [x for x in range(a,b+1)]
+def load_config(config_filepath):
+    if os.path.splitext(config_filepath)[1]==".yaml":
+        with open(config_filepath, 'r') as f: return yaml.safe_load(f)
+    else:
+        with open(config_filepath, 'r') as f: return json.load(f)
+
+def int_list_from_string(s):
+    rnge = []
+    for section in (x.strip() for x in str(s or "").split(',')):
+        if section:
+            a,b = (int(x.strip()) for x in section.split('-')) if '-' in section else (int(section), int(section))
+            for i in range(a,b+1): rnge.append(i)
+    return rnge
 
 def preserve_existing_file(filename):
     if os.path.exists(filename):
@@ -43,20 +50,40 @@ class Shared(SingletonAddin):
         self.max_layer = 56
         self.last_double_layer = 18
         self.layer_stats = [{} for _ in range(57)]
+        self._sd        = None
+        self._internals = None
+        self.args       = None
+
+    @property
+    def sd(self):
+        if isinstance(self._sd,str): self._sd = load_file(self._sd)
+        return self._sd
+
+    @property
+    def internals(self):
+        if isinstance(self._internals, str): self._internals = load_file(self._internals)
+        return self._internals
 
     def load(self,args):
-        self.sd        = load_file(args.model)
-        self.internals = load_file(filepath(args.internals))
+        self._sd        = args.model
+        self._internals = filepath(args.internals)
 
     @property
     def layer_stats_yaml(self):
         return yaml.dump( { "layer{:0>2}".format(i):layer_stats for i, layer_stats in enumerate(self.layer_stats) if layer_stats} )
-    
+
+    @property
+    def layer_stats_json(self):
+        return json.dumps( { "layer{:0>2}".format(i):layer_stats for i, layer_stats in enumerate(self.layer_stats) if layer_stats}, indent=2 )
+        
     def save_stats(self, filename):
+        format_yaml = (os.path.splitext(filename)[1]==".yaml")
         preserve_existing_file(filename)
         with open(filename, 'w') as f: 
-            print(shared.layer_stats_yaml, file=f)
+            print(shared.layer_stats_yaml if format_yaml else shared.layer_stats_json, file=f)
             log(f"Saved stats in {filename}")
+
+def is_double(layer_number): return (layer_number <= shared.last_double_layer)
 
 class Batcher:
     BATCHES = (( 0, 6), ( 7,13), (14,18), (19,25), (26,31), (32,37), (38,43), (44,50), (51,57))
