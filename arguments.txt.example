@@ -1,19 +1,22 @@
---first_layers=all
+--first_layers=3-13
 --verbose
 
---default_cast = float8_e4m3fn
---stats_file   = float8_e4m3fn.yaml
+#--default_cast = no
+--stats_file   = img4000_3_13_train.yaml
 
---model=D:/models/unet/flux1-dev.sft
 --prune_map = settings.yaml
 --cast_map  = settings.yaml
 --train_map = settings.yaml
 
 --hs_dir=ChrisGoringe/fi
---eval_frac = 1.0
+--eval_frac = 0.2
+--shuffle
+--shuffle_seed=77
 --cache_dir = e:/.hfc
 
 --max_steps=1000
 --eval_steps=200
 --lr_scheduler_kwargs:num_cycles=0.3
 
+--model=D:/models/unet/flux1-dev.sft
+--saved_model=saved_model.safetensors
