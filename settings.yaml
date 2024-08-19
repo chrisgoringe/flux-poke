@@ -18,9 +18,9 @@
 # or 'none' (do not cast), or `default` (use the value defined in `--default_cast`)
 
 prunes:
-  - layers: 0-56
-    blocks: txt
-    remove: 8000
+  - layers: 3-13
+    blocks: img
+    remove: 4000
 
 casts:
   - layers: 0-56
@@ -28,5 +28,5 @@ casts:
     castto: default
 
 trains:
-  - layers: 0-56
-    blocks: none
+  - layers: 3-13
+    blocks: img_mlp

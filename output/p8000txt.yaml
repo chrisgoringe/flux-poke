@@ -1,0 +1,58 @@
+layer00:
+  loss: 0.12964606285095215
+  txt: Pruned by 8000 (threshold 30216)
+layer01:
+  loss: 0.0017973077483475208
+  txt: Pruned by 8000 (threshold 98)
+layer02:
+  loss: 0.004078337457031012
+  txt: Pruned by 8000 (threshold 880)
+layer03:
+  loss: 0.002842435846105218
+  txt: Pruned by 8000 (threshold 1958)
+layer04:
+  loss: 0.0025665441062301397
+  txt: Pruned by 8000 (threshold 1678)
+layer05:
+  loss: 0.002955152653157711
+  txt: Pruned by 8000 (threshold 2755)
+layer06:
+  loss: 0.0037498120218515396
+  txt: Pruned by 8000 (threshold 2232)
+layer07:
+  loss: 0.005991736892610788
+  txt: Pruned by 8000 (threshold 2988)
+layer08:
+  loss: 0.007117219734936953
+  txt: Pruned by 8000 (threshold 2029)
+layer09:
+  loss: 0.01620001532137394
+  txt: Pruned by 8000 (threshold 3760)
+layer10:
+  loss: 0.0018074739491567016
+  txt: Pruned by 8000 (threshold 1027)
+layer11:
+  loss: 0.015242236666381359
+  txt: Pruned by 8000 (threshold 2013)
+layer12:
+  loss: 0.0014571071369573474
+  txt: Pruned by 8000 (threshold 0)
+layer13:
+  loss: 0.0017308940878137946
+  txt: Pruned by 8000 (threshold 0)
+layer14:
+  loss: 0.0024088039062917233
+  txt: Pruned by 8000 (threshold 0)
+layer15:
+  loss: 0.16705885529518127
+  txt: Pruned by 8000 (threshold 7286)
+layer16:
+  loss: 0.4869958758354187
+  txt: Pruned by 8000 (threshold 2947)
+layer17:
+  loss: 0.6210846304893494
+  txt: Pruned by 8000 (threshold 4970)
+layer18:
+  loss: .inf
+  txt: Pruned by 8000 (threshold 9938)
+
