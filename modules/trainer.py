@@ -21,22 +21,23 @@ class TheTrainer(transformers.Trainer):
         img = inputs.get('img', None)
         txt = inputs.get('txt', None)
 
-        for layer in model: 
-            if isinstance(layer, DoubleStreamBlock): 
-                img, txt = layer( img, txt, vec, pe ) 
-                self.check_inf(img, txt)
+        with torch.autocast("cuda"):
+            for layer in model: 
+                if isinstance(layer, DoubleStreamBlock): 
+                    img, txt = layer( img, txt, vec, pe ) 
+                    self.check_inf(img, txt)
+                else:
+                    if x is None: x = torch.cat((txt, img), dim=1)
+                    x = layer( x, vec, pe )
+                    self.check_inf(x)
+
+            if 'img_out' in inputs:
+                loss = self.loss_fn(torch.cat((txt, img), dim=1), torch.cat((inputs['txt_out'], inputs['img_out']), dim=1))
+                return (loss, (img, txt)) if return_outputs else loss
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
-                x = layer( x, vec, pe )
-                self.check_inf(x)
-
-        if 'img_out' in inputs:
-            loss = self.loss_fn(torch.cat((txt, img), dim=1), torch.cat((inputs['txt_out'], inputs['img_out']), dim=1))
-            return (loss, (img, txt)) if return_outputs else loss
-        else:
-            if x is None: x = torch.cat((txt, img), dim=1)
-            loss = self.loss_fn(x, inputs['x_out'])
-            return (loss, x) if return_outputs else loss
+                loss = self.loss_fn(x, inputs['x_out'])
+                return (loss, x) if return_outputs else loss
 
 def prep_layer_for_train(layer, block_constraint, callback):
     def recurse(parent_name:str, child_module:torch.nn.Module, child_name:str):
@@ -52,7 +53,8 @@ def prep_layer_for_train(layer, block_constraint, callback):
     for child_name, child_module in layer.named_children():
         recurse("", child_module, child_name)
         
-def prep_for_train(model, train_config, layer_index):
+def prep_for_train(model, train_config, layer_index, verbose):
+    any_to_train = False
     for mod in train_config.get('trains',None) or []:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
         if block_constraint != 'none':
@@ -60,6 +62,10 @@ def prep_for_train(model, train_config, layer_index):
                 model_layer_index = global_layer_index - layer_index
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]
-                    def record(linear_name): shared.layer_stats[global_layer_index][linear_name] = "Set for training"
+                    def record(linear_name): 
+                        any_to_train = True
+                        if verbose: print(f"{global_layer_index}.{linear_name} set for training")
+                        shared.layer_stats[global_layer_index][linear_name] = "Set for training"
                     prep_layer_for_train(layer=layer, block_constraint=block_constraint, callback=record)
+    return any_to_train
 

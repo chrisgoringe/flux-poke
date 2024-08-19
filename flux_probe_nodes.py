@@ -69,7 +69,7 @@ class ReplaceLayers(UNETLoader):
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "unet_name":            (folder_paths.get_filename_list("unet"), ),
+        "unet_name":            (folder_paths.get_filename_list("diffusion_models"), ),
         "weight_dtype":         (["default", "fp8_e4m3fn", "fp8_e5m2"],),
         "replacement_directory":("STRING",{"default":"retrained_layers"}),
         "first_layer":          ("INT",{"default":0,  "min":0, "max":18}), 
@@ -96,7 +96,7 @@ class LoadPrunedFluxModel(UNETLoader):
     CATEGORY = "flux_watcher"
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "unet_name":    (folder_paths.get_filename_list("unet"), ),
+        "unet_name":    (folder_paths.get_filename_list("diffusion_models"), ),
         "weight_dtype": (["default", "fp8_e4m3fn", "fp8_e5m2"],),
         "file":         ("STRING", {"default":"internals.safetensors"}), 
         "img_cut":      ("INT", {"default":2000, "min":0, "max":12288}),
@@ -125,7 +125,7 @@ class LoadPrunedFluxModel(UNETLoader):
 class LoadPrunedFluxModelThreshold(LoadPrunedFluxModel):
     @classmethod
     def INPUT_TYPES(s): return { "required": { 
-        "unet_name":     (folder_paths.get_filename_list("unet"), ),
+        "unet_name":     (folder_paths.get_filename_list("diffusion_models"), ),
         "weight_dtype":  (["default", "fp8_e4m3fn", "fp8_e5m2"],),
         "file":          ("STRING", {"default":"internals.safetensors"}), 
         "img_threshold": ("INT", {"default":2000, "min":0}),

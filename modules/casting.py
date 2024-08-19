@@ -1,12 +1,9 @@
-import yaml, json, os
 import torch
 from .utils import int_list_from_string, log, shared
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
 import bitsandbytes.nn as bnb
-
-
 
 class CastLinear(torch.nn.Module):
     def __init__(self, linear:torch.nn.Linear, to):
@@ -15,10 +12,10 @@ class CastLinear(torch.nn.Module):
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
         else:
-            self.linear  = linear.to(to)
+            self.linear = linear.to(to)
 
-    def forward(self, x):
-        with torch.autocast("cuda"): return self.linear(x)
+    def forward(self, x:torch.Tensor):
+        return self.linear(x)
 
 def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callback:callable = None):
     def recursive_cast(parent_module:torch.nn.Module, parent_name:str, child_module:torch.nn.Module, child_name:str):
@@ -34,7 +31,7 @@ def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block
     for child_name, child_module in layer.named_children():
         recursive_cast(layer, "", child_module, child_name)
 
-def cast_model(model, cast_config, layer_index, default_cast):
+def cast_model(model, cast_config, layer_index, default_cast, verbose=False):
     for mod in cast_config.get('casts',None) or []:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint=None
         if (cast:=mod.get('castto', 'default')) != 'none' and block_constraint != 'none':
@@ -48,6 +45,8 @@ def cast_model(model, cast_config, layer_index, default_cast):
                 model_layer_index = global_layer_index - layer_index
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]
-                    def record(linear_name): shared.layer_stats[global_layer_index][linear_name] = f"{cast_to}"
+                    def record(linear_name): 
+                        if verbose: print(f"Cast {global_layer_index}{linear_name} to {cast_to}")
+                        shared.layer_stats[global_layer_index][linear_name] = f"{cast_to}"
                     cast_layer(layer=layer, cast_to=cast_to, block_constraint=block_constraint, callback=record)
 

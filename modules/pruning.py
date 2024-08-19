@@ -17,7 +17,7 @@ def prune_layer(layer, layer_number:int, count, constraint, callback):
         slice_single_block(layer, mask=mask)
         callback('x', mask, x_threshold)
 
-def prune_model(model, prune_config, layer_index):
+def prune_model(model, prune_config, layer_index, verbose):
     for mod in prune_config.get('prunes',None) or []:
         remove = mod.get('remove',0)
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
@@ -26,5 +26,7 @@ def prune_model(model, prune_config, layer_index):
                 model_layer_index = global_layer_index - layer_index
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]
-                    def record(block, number, threshold): shared.layer_stats[global_layer_index][block] = f"Pruned by {number} (threshold {threshold})"
+                    def record(block, number, threshold): 
+                        if verbose: print(f"{global_layer_index}.{block} pruned by {number} (threshold {threshold})")
+                        shared.layer_stats[global_layer_index][block] = f"Pruned by {number} (threshold {threshold})"
                     prune_layer(layer, model_layer_index, remove, block_constraint, record)

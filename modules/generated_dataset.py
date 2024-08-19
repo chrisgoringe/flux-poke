@@ -1,4 +1,4 @@
-import os, torch
+import os, torch, random
 from functools import partial
 from modules.hffs import HFFS
 from modules.utils import filepath, shared
@@ -6,18 +6,26 @@ from safetensors.torch import load_file
 
 class TheDataset:
     sources = None
-    def __init__(self, dir, first_layer:int, split:str, thickness:int=1, train_frac=0.8):
+    shuffle = False
+
+    @classmethod
+    def set_dataset_source(cls, dir, shuffle=False, seed=0):
         if os.path.isdir(local_dir:=filepath(dir)):
-            self.sources = self.sources or [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
-            self.load_file = load_file
+            cls.sources = cls.sources or [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
+            cls.load_file = load_file
         else:
-            self.hffs = HFFS(repo_id=dir)
-            self.sources = self.sources or self.hffs.get_entry_list()
-            self.load_file = partial(self.hffs.load_file)
-                                     
+            cls.hffs = HFFS(repo_id=dir)
+            cls.sources = cls.sources or cls.hffs.get_entry_list()
+            cls.load_file = partial(cls.hffs.load_file)
+        if shuffle:
+            if seed: random.seed(seed)
+            random.shuffle(cls.sources)
+
+    def __init__(self, first_layer:int, split:str, thickness:int=1, train_frac=0.8):                
         split_at = int(train_frac*len(self.sources))
-        if   split=='train': self.sources = self.sources[:split_at]
-        elif split=='eval':  self.sources = self.sources[split_at:]
+        if   split.lower()=='train': self.sources = self.sources[:split_at]
+        elif split.lower()=='eval':  self.sources = self.sources[split_at:]
+        else: assert False, f"Split must be train or eval, got {split}"
         self.first_layer = first_layer
         self.thickness   = thickness
     

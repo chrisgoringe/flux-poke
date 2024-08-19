@@ -83,7 +83,7 @@ class UnetLoaderMixed:
 
     @classmethod
     def INPUT_TYPES(s):
-        modelnames = [x for x in folder_paths.get_filename_list("unet")]
+        modelnames = [x for x in folder_paths.get_filename_list("diffusion_models")]
         return {
             "required": {
                 "modelname": (modelnames,),
@@ -104,7 +104,7 @@ class UnetLoaderMixed:
 
         MixedOps.reset_load_tracking()
         model = comfy.sd.load_diffusion_model_state_dict(
-            load_file(folder_paths.get_full_path("unet", modelname)), 
+            load_file(folder_paths.get_full_path("diffusion_models", modelname)), 
             model_options=model_options
         )
 

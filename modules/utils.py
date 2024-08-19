@@ -64,7 +64,7 @@ class Shared(SingletonAddin):
         if isinstance(self._internals, str): self._internals = load_file(self._internals)
         return self._internals
 
-    def load(self,args):
+    def set_shared_filepaths(self,args):
         self._sd        = args.model
         self._internals = filepath(args.internals)
 

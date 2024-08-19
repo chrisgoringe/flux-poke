@@ -53,6 +53,8 @@ def process_arguments():
 
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
+
+    a.add_argument('--verbose', action="store_true")
     
     a.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
     a.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")
@@ -60,20 +62,25 @@ def process_arguments():
     a.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file")
     a.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
-    a.add_argument('--save_dir', default="retrained_layers", help="Relative path of directory to store results in")
-    a.add_argument('--stats_file', default="layer_stats.yaml", help="Relative path for stats to be saved in")
+    a.add_argument('--save_dir', default="output", help="Relative path of directory to store results in")
+    a.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
     a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files (absolute path)")
     a.add_argument('--clear_cache_before', action="store_true", help="Clear the cache at the start of the run" )
     a.add_argument('--clear_cache_after', action="store_true", help="Clear the cache at the start of the run" )
 
     a.add_argument('--hs_dir', default="hidden_states", help="Relative path of directory data is found in, or repo_id")
-    a.add_argument('--train_frac', default=0.8, type=float, help="fraction of dataset to train on")
-    a.add_argument('--save_dtype', default="bfloat16", choices=["bfloat16", "float8_e4m3fn", "float8_e5m2", "float8_e4m3fnuz", "float8_e5m2uz", "float16", "float"], 
-                   help="tensor dtype to save retrained layer in")
+    fraction = a.add_mutually_exclusive_group()
+    fraction.add_argument('--train_frac', type=float, help="fraction of dataset to train on")
+    fraction.add_argument('--eval_frac', type=float, help="fraction of dataset to evalaute on")
+    a.add_argument('--shuffle', action='store_true', help="shuffle the dataset")
+    a.add_argument('--shuffle_seed', default=42)
 
     a.add_argument('--just_evaluate', action='store_true', help='no training, just calculate the loss caused by the pruning')
 
     args, extra_args = a.parse_known_args([f"@{filepath('arguments.txt')}",])
+
+    if args.train_frac is None:
+        args.train_frac = 1 - args.eval_frac if args.eval_frac is not None else 0.8
 
     training_config = {
         "save_strategy"    : "no",
@@ -85,8 +92,8 @@ def process_arguments():
         "max_steps"        : 1000,
         "logging_steps"    :   50,
         "eval_steps"       :  100,
-        "per_device_train_batch_size" : 8,
-        "per_device_eval_batch_size"  : 8,
+        "per_device_train_batch_size" : 1,
+        "per_device_eval_batch_size"  : 1,
         "learning_rate"               : 5e-5,
         "remove_unused_columns" : False,
         "label_names"           : [],
@@ -103,7 +110,6 @@ def process_arguments():
 
     setattr(args, 'training_args', transformers.TrainingArguments(**training_config))
 
-    args.save_dtype = getattr(torch, args.save_dtype)
     if not os.path.exists(filepath(args.save_dir)): os.makedirs(filepath(args.save_dir), exist_ok=True)
 
     return args

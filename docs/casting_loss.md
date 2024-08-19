@@ -1,5 +1,13 @@
 # Casting loss
 
+## Magnitudes
+
+Simply using autocast (without changing anything) generates a loss of the order of `0.03`. 
+
+The variation from using 50 samples, and then a different 50, is similar.
+
+So that's a reasonable benchmark for 'trivial'.
+
 ## to torch.float8_e4m3fn
 
 For Double Block s:
