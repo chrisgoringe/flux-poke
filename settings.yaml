@@ -19,7 +19,7 @@
 
 prunes:
   - layers: 0-56
-    blocks: all
+    blocks: txt
     remove: 4000
 
 casts:
