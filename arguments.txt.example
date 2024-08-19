@@ -1,17 +1,19 @@
---first_layer=0
---hs_dir=datasets/ChrisGoringe/fi
---cache_dir=.hfc
---hffs_cache_whole
---just_evaluate
---cast_map=cast.yaml
+--first_layers=all
+--verbose
 
---model=../../models/unet/flux1-dev.sft
---img_no
---txt_no
+--default_cast = float8_e4m3fn
+--stats_file   = float8_e4m3fn.yaml
+
+--model=D:/models/unet/flux1-dev.sft
+--prune_map = settings.yaml
+--cast_map  = settings.yaml
+--train_map = settings.yaml
+
+--hs_dir=ChrisGoringe/fi
+--eval_frac = 1.0
+--cache_dir = e:/.hfc
 
 --max_steps=1000
 --eval_steps=200
---per_device_train_batch_size=1
---per_device_eval_batch_size=1
 --lr_scheduler_kwargs:num_cycles=0.3
---save_dir=retrained_bigger
+
