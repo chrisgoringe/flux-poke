@@ -1,0 +1,419 @@
+layer00:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.010882767848670483
+layer01:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.05464019998908043
+layer02:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.11778111755847931
+layer03:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.02239999547600746
+layer04:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.03232977166771889
+layer05:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.017115198075771332
+layer06:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.020071526989340782
+layer07:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.030557211488485336
+layer08:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.033726535737514496
+layer09:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.03916921466588974
+layer10:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.04682329669594765
+layer11:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.06058657169342041
+layer12:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.07789246737957001
+layer13:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.09097328037023544
+layer14:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.2625789940357208
+layer15:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.13874366879463196
+layer16:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.5223222970962524
+layer17:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.2533700466156006
+layer18:
+  .img_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .img_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.proj: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_attn.qkv: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.0: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mlp.2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .txt_mod.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 10.952794075012207
+layer19:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.2828022241592407
+layer20:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.3053782284259796
+layer21:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.44280368089675903
+layer22:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.7501863837242126
+layer23:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.8977764844894409
+layer24:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 0.6950162053108215
+layer25:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.8236935138702393
+layer26:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 1.4443457126617432
+layer27:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 1.722353458404541
+layer28:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 1.9245936870574951
+layer29:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.6269326210021973
+layer30:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.474036693572998
+layer31:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.640805959701538
+layer32:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.0010340213775635
+layer33:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.5723347663879395
+layer34:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.5040383338928223
+layer35:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 18.334867477416992
+layer36:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.625232219696045
+layer37:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.83293080329895
+layer38:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.517890453338623
+layer39:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 2.6714611053466797
+layer40:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.2962217330932617
+layer41:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.4692912101745605
+layer42:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 3.892019033432007
+layer43:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 4.059939861297607
+layer44:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 5.998277187347412
+layer45:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 6.355554580688477
+layer46:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 8.304378509521484
+layer47:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 8.456789016723633
+layer48:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 8.652416229248047
+layer49:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 13.456788063049316
+layer50:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 17.03693199157715
+layer51:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 26.198246002197266
+layer52:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 25.615856170654297
+layer53:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 44.49979019165039
+layer54:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 54.76393127441406
+layer55:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 12.626705169677734
+layer56:
+  .linear1: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .linear2: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  .modulation.lin: <class 'bitsandbytes.nn.modules.LinearFP4'>
+  loss: 7.004480361938477
+

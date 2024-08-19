@@ -46,7 +46,7 @@ def train_or_evaluate():
     model.requires_grad_(False)
 
     if args.prune_map:
-        prune_model(model, prune_config=load_config(filepath(args.prune_map)), layer_index=args.first_layer, verbose=args.verbose)
+        prune_model(model, prune_config=load_config(filepath(args.prune_map)), model_first_layer=args.first_layer, verbose=args.verbose)
 
     if args.cast_map:
         cast_model(model, cast_config=load_config(filepath(args.cast_map)), layer_index=args.first_layer, default_cast=args.default_cast, verbose=args.verbose)

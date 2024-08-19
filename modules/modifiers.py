@@ -44,7 +44,7 @@ def get_mask(data, remove_below=None, remove_count=None):
         if matches_to_remove:
             matching_indices = [ index for index in range(len(mask)) if data[index]==threshold ]
             for index in random.sample(matching_indices, matches_to_remove): mask[index] = False
-        return (mask, threshold)
+        return (mask, int(threshold))
     elif remove_below:  
         return ([ d>=remove_below for d in data ], remove_below)
     else:
