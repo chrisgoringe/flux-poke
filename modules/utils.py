@@ -47,8 +47,11 @@ def preserve_existing_file(filename):
 
 class Shared(SingletonAddin):
     def __init__(self):
-        self.max_layer = 56
+        self.last_layer = 56
+        self.first_double_layer = 0
         self.last_double_layer = 18
+        self.first_single_layer = 19
+        self.last_single_layer = 56
         self.layer_stats = [{} for _ in range(57)]
         self._sd        = None
         self._internals = None

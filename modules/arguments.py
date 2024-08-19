@@ -53,6 +53,7 @@ def process_arguments():
 
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
+    a.add_argument('--saved_model', type=str, help="saved model when doing convert (absolute path)")
 
     a.add_argument('--verbose', action="store_true")
     
