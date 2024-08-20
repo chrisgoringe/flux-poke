@@ -18,9 +18,9 @@ class Info:
         self.intermediate_size = linear.out_features
         
 def new_mlp(old_mlp, mask):
-    assert len(mask)==old_mlp[0].weight.shape[0]
     if all(mask): return old_mlp
-
+    assert len(mask)==old_mlp[0].weight.shape[0]
+    
     info = Info(old_mlp)
     hidden_dim  = sum(mask)
 

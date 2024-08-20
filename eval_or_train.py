@@ -12,7 +12,7 @@ from modules.utils import log, shared, int_list_from_string, load_config, is_dou
 from modules.hffs import HFFS_Cache
 from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
-from modules.pruning import prune_model
+from modules.pruning import prune_model, apply_patches
 from modules.layer import load_single_layer
 
 
@@ -81,7 +81,16 @@ if __name__=="__main__":
         HFFS_Cache.clear_cache()
 
     if args.first_layers=='all': args.first_layers = f"0-{shared.last_layer}"
+
     shared.set_shared_filepaths(args=args)
+    
+    if args.load_patches:
+        patched = []
+        def record(key): patched.append(key)
+        for dir in args.load_patches:
+            apply_patches(shared.sd, filepath(dir), record)
+        assert len(patched)==len(set(patched))
+
     for l in int_list_from_string(args.first_layers or args.first_layer): 
         args.first_layer = l
         train_or_evaluate()

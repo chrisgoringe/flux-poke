@@ -1,15 +1,10 @@
 from modules.arguments import args
 from safetensors.torch import load_file, save_file
-from modules.utils import filepath, is_double, load_config, shared
+from modules.utils import filepath, load_config, shared, prefix
 from modules.casting import cast_layer_stack
 from modules.layer import load_single_layer
-import json, torch, os
-
-def prefix(layer_index):
-    if is_double(layer_index):
-        return f"double_blocks.{layer_index}."
-    else:
-        return f"single_blocks.{layer_index-shared.first_single_layer}."
+from modules.pruning import apply_patches
+import json, torch
 
 def convert():
     assert args.saved_model
@@ -17,17 +12,13 @@ def convert():
     # load state directory
     sd = load_file(args.model)
 
-    # load and apply patches
-    def patch_list():
-        for x in range(57): 
-            path = filepath(args.save_dir,"{:0>2}.safetensors".format(x))
-            if os.path.exists(path): yield x, path
-
-    for patch_layer_index, patch_filepath in patch_list():
-        patch = load_file(patch_filepath)
-        for k in patch:
-            assert (key:=f"{prefix(patch_layer_index)}{k}") in sd
-            sd[key] = patch[k]
+    # patch it
+    if args.load_patches:
+        patched = []
+        def record(key): patched.append(key)
+        for dir in args.load_patches:
+            apply_patches(sd, filepath(dir), record)
+        assert len(patched)==len(set(patched))
 
     # load layers
     shared._sd = sd

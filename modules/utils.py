@@ -98,5 +98,11 @@ class Batcher:
             
     @classmethod
     def label(cls, base_name, batch): return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name, *batch)
+
+def prefix(layer_index):
+    if is_double(layer_index):
+        return f"double_blocks.{layer_index}."
+    else:
+        return f"single_blocks.{layer_index-shared.first_single_layer}."
     
 shared = Shared.instance()

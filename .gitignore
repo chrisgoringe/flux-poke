@@ -161,3 +161,4 @@ cython_debug/
 arguments.txt
 settings.yaml
 output
+output_*

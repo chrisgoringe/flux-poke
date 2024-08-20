@@ -53,6 +53,8 @@ def process_arguments():
 
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
+    a.add_argument('--load_patches', action="append", type=str, help="directory to load existing patches from (can have multiple)")
+    a.add_argument('--save_dir', default="output", help="Relative path of directory to store results in (includes patches if training)")
     a.add_argument('--saved_model', type=str, help="saved model when doing convert (absolute path)")
 
     a.add_argument('--verbose', action="store_true")
@@ -63,7 +65,7 @@ def process_arguments():
     a.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file")
     a.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
-    a.add_argument('--save_dir', default="output", help="Relative path of directory to store results in")
+    
     a.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
     a.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files (absolute path)")
     a.add_argument('--clear_cache_before', action="store_true", help="Clear the cache at the start of the run" )
