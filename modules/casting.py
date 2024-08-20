@@ -13,7 +13,7 @@ class CastLinear(torch.nn.Module):
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
         elif isinstance(to, GGMLQuantizationType):
-
+            raise NotImplementedError()
         else:
             self.linear = linear.to(to)
 
