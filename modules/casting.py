@@ -4,13 +4,16 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
 import bitsandbytes.nn as bnb
+from gguf import GGMLQuantizationType
 
 class CastLinear(torch.nn.Module):
     def __init__(self, linear:torch.nn.Linear, to):
         super().__init__()
-        if hasattr(to, '__call__'):
+        if hasattr(to, '__call__'):  
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
+        elif isinstance(to, GGMLQuantizationType):
+
         else:
             self.linear = linear.to(to)
 
