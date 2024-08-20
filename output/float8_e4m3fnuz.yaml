@@ -1,0 +1,419 @@
+layer00:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.0007489569834433496
+layer01:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.010211796499788761
+layer02:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.015749938786029816
+layer03:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.003474301425740123
+layer04:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.003507298184558749
+layer05:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.0022145358379930258
+layer06:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.002203193726018071
+layer07:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.0029356228187680244
+layer08:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.002910675946623087
+layer09:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.00345594878308475
+layer10:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.004315969999879599
+layer11:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.004065672401338816
+layer12:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.005426955409348011
+layer13:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.006502219010144472
+layer14:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.02015611343085766
+layer15:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.01244942843914032
+layer16:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.0155237577855587
+layer17:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: 0.019715098664164543
+layer18:
+  .img_attn.proj: torch.float8_e4m3fnuz
+  .img_attn.qkv: torch.float8_e4m3fnuz
+  .img_mlp.0: torch.float8_e4m3fnuz
+  .img_mlp.2: torch.float8_e4m3fnuz
+  .img_mod.lin: torch.float8_e4m3fnuz
+  .txt_attn.proj: torch.float8_e4m3fnuz
+  .txt_attn.qkv: torch.float8_e4m3fnuz
+  .txt_mlp.0: torch.float8_e4m3fnuz
+  .txt_mlp.2: torch.float8_e4m3fnuz
+  .txt_mod.lin: torch.float8_e4m3fnuz
+  loss: .inf
+layer19:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.016085170209407806
+layer20:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.017944741994142532
+layer21:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.030011584982275963
+layer22:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.028284741565585136
+layer23:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.040293190628290176
+layer24:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.04389883577823639
+layer25:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.057800620794296265
+layer26:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.1666547656059265
+layer27:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.0687907338142395
+layer28:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.11675098538398743
+layer29:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.17452451586723328
+layer30:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.14217182993888855
+layer31:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.1509796380996704
+layer32:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.20233049988746643
+layer33:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.18901608884334564
+layer34:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.17950546741485596
+layer35:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.24784886837005615
+layer36:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.18523095548152924
+layer37:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.15883177518844604
+layer38:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.16463907063007355
+layer39:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.1680474728345871
+layer40:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.1624186635017395
+layer41:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.21617749333381653
+layer42:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.23702552914619446
+layer43:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.24317248165607452
+layer44:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.32963407039642334
+layer45:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.3764955699443817
+layer46:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.41560837626457214
+layer47:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.3993998169898987
+layer48:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.37424972653388977
+layer49:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.6029024720191956
+layer50:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.6873969435691833
+layer51:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 1.3133306503295898
+layer52:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 1.1390482187271118
+layer53:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 2.058156967163086
+layer54:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 2.3916876316070557
+layer55:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.8272231221199036
+layer56:
+  .linear1: torch.float8_e4m3fnuz
+  .linear2: torch.float8_e4m3fnuz
+  .modulation.lin: torch.float8_e4m3fnuz
+  loss: 0.8851620554924011
+
