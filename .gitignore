@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 arguments.txt
 settings.yaml
+output

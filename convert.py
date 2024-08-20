@@ -3,7 +3,7 @@ from safetensors.torch import load_file, save_file
 from modules.utils import filepath, is_double, load_config, shared
 from modules.casting import cast_layer_stack
 from modules.layer import load_single_layer
-import json, torch
+import json, torch, os
 
 def prefix(layer_index):
     if is_double(layer_index):
@@ -19,7 +19,9 @@ def convert():
 
     # load and apply patches
     def patch_list():
-        for x in range(57): yield x, filepath(args.save_dir,"{:>0.2}.safetensors".format(x))
+        for x in range(57): 
+            path = filepath(args.save_dir,"{:0>2}.safetensors".format(x))
+            if os.path.exists(path): yield x, path
 
     for patch_layer_index, patch_filepath in patch_list():
         patch = load_file(patch_filepath)

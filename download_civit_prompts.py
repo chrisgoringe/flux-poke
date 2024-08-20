@@ -1,5 +1,5 @@
 
-import time, requests
+import requests, datasets
 from tqdm import trange, tqdm
 
 def prompts(period="Week"):
@@ -16,18 +16,16 @@ def prompts(period="Week"):
             print(f"Getting {i}: {j}")
             break
 
-def scrape():
-    with open('prompts.txt','w', encoding='UTF-8') as f:
-        for prompt in prompts(): print(prompt, file=f)
-        for prompt in prompts(period="Day"): print(prompt, file=f)
+def main(add=True):
+    dataset = datasets.Dataset.load_from_disk('prompts_dataset')
+    print(len(dataset))
+    if add:
+        for prompt in prompts():             dataset = dataset.add_item({"prompt":prompt})
+        for prompt in prompts(period="Day"): dataset = dataset.add_item({"prompt":prompt})
+        print(len(dataset))
+        dataset = datasets.Dataset.from_dict( {'prompt':dataset.unique('prompt')} )
+        print(len(dataset))
+        dataset.save_to_disk('new_prompts_dataset')
 
-def unique():
-    with open('prompts.txt','r', encoding='UTF-8') as f:
-        s = set()
-        for prompt in f.readlines(): s.add(prompt)
-    with open('prompts.txt','w', encoding='UTF-8') as f:
-        for prompt in s: print(prompt, file=f, end="") 
-    
 if __name__=='__main__': 
-    scrape()
-    unique()
+    main()

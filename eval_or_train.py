@@ -67,7 +67,7 @@ def train_or_evaluate():
         shared.layer_stats[args.first_layer]['final_loss']   = TheCallback.eval_losses()[-1]
         shared.layer_stats[args.first_layer]['train_loss']   = TheCallback.losses()[-1]
         for i,layer in enumerate(model):
-            savefile = filepath(args.save_dir,"{:>0.2}.safetensors".format(args.first_layer+i))
+            savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
             save_file(layer.state_dict(), savefile)
             log(f"Saved in {savefile}")
 

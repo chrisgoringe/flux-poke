@@ -32,7 +32,7 @@ def upload_dataset(repo, directory):
 if __name__=='__main__':
     a = ArgumentParser()
     b = a.add_mutually_exclusive_group(required=True)
-    b.add_argument('--create', action='store_true')
+    a.add_argument('--create', action='store_true')
     b.add_argument('--hidden_states', action='store_true')
     b.add_argument('--prompts', action='store_true')
     a.add_argument('--repo', required=True)
