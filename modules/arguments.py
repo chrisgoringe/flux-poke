@@ -54,6 +54,7 @@ def process_arguments():
     a.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
     a.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
     a.add_argument('--load_patches', action="append", type=str, help="directory to load existing patches from (can have multiple)")
+    a.add_argument('--allow_overpatching', action="store_true", help="allow one patch to overwrite a previous one (default is an assertion fail)")
     a.add_argument('--save_dir', default="output", help="Relative path of directory to store results in (includes patches if training)")
     a.add_argument('--saved_model', type=str, help="saved model when doing convert (absolute path)")
 

@@ -12,32 +12,27 @@ def convert():
     # load state directory
     sd = load_file(args.model)
 
-    # patch it
+    # replace with loaded patches
     if args.load_patches:
         patched = []
         def record(key): patched.append(key)
-        for dir in args.load_patches:
-            apply_patches(sd, filepath(dir), [record,])
-        assert len(patched)==len(set(patched))
+        for dir in args.load_patches: apply_patches(sd, filepath(dir), [record,])
+        assert (len(patched)==len(set(patched)) or args.allow_overpatching), "Loaded patches overlapped. To allow this use --allow_overpatching"
 
     # load layers
     shared._sd = sd
     all_layers = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in range(args.first_layer, args.first_layer+args.thickness)] )
         
     # prune layers - hopefully not ones we've patched....
-    pruned = []
-    def record(parent,block, number, threshold): pruned.append(f"{parent}{block}"})
     if args.prune_map:
+        pruned = []
+        def record(parent,block, number, threshold): pruned.append(f"{parent}{block}")
         prune_config = load_config(filepath(args.prune_config))
         prune_model(all_layers, prune_config, model_first_layer=0, verbose=args.verbose, callbacks=[record,])
 
     # cast layers
     if args.cast_map:
         cast_config = load_config(filepath(args.cast_map))
-        casting_metadata = json.dumps(cast_config['casts'])
-        if args.default_cast and args.default_cast != 'no':
-            casting_metadata = casting_metadata.replace('default',args.default_cast)
-
         all_casts = {}
         def track_casts(name, type): all_casts[name] = str(type)
         cast_layer_stack(layer_stack=all_layers, cast_config=cast_config, stack_starts_at_layer=0,
@@ -46,7 +41,10 @@ def convert():
 
 
     # create final sd
+    # First, everything that isn't in one of the two layers:
     sd = { k:sd[k] for k in sd if '_blocks.' not in k }
+
+    # Then the layers
     for layer_index, layer in enumerate(all_layers):
         for k in (layer_sd:=layer.state_dict()):
             sd[f"{prefix(layer_index)}{k}"] = layer_sd[k]
