@@ -17,8 +17,9 @@
 # a bitsandbytes Linear replacement: Linear8bitLt, Linear4bit (==LinearFP4), LinearNF4
 # or 'none' (do not cast), or `default` (use the value defined in `--default_cast`)
 
+
 prunes:
-  - layers: 3-13
+  - layers: 0-18
     blocks: txt
     remove: 4000
 
@@ -28,5 +29,5 @@ casts:
     castto: default
 
 trains:
-  - layers: 3-13
-    blocks: txt_mlp
+  - layers: 0-18
+    blocks: txt
