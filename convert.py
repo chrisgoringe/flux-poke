@@ -3,7 +3,7 @@ from safetensors.torch import load_file, save_file
 from modules.utils import filepath, load_config, shared, prefix
 from modules.casting import cast_layer_stack
 from modules.layer import load_single_layer
-from modules.pruning import apply_patches
+from modules.pruning import apply_patches, prune_model
 import json, torch
 
 def convert():
@@ -17,13 +17,20 @@ def convert():
         patched = []
         def record(key): patched.append(key)
         for dir in args.load_patches:
-            apply_patches(sd, filepath(dir), record)
+            apply_patches(sd, filepath(dir), [record,])
         assert len(patched)==len(set(patched))
 
     # load layers
     shared._sd = sd
     all_layers = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in range(args.first_layer, args.first_layer+args.thickness)] )
         
+    # prune layers - hopefully not ones we've patched....
+    pruned = []
+    def record(parent,block, number, threshold): pruned.append(f"{parent}{block}"})
+    if args.prune_map:
+        prune_config = load_config(filepath(args.prune_config))
+        prune_model(all_layers, prune_config, model_first_layer=0, verbose=args.verbose, callbacks=[record,])
+
     # cast layers
     if args.cast_map:
         cast_config = load_config(filepath(args.cast_map))
@@ -35,6 +42,8 @@ def convert():
         def track_casts(name, type): all_casts[name] = str(type)
         cast_layer_stack(layer_stack=all_layers, cast_config=cast_config, stack_starts_at_layer=0,
                          default_cast=args.default_cast, verbose=True, callbacks=[track_casts,])
+        
+
 
     # create final sd
     sd = { k:sd[k] for k in sd if '_blocks.' not in k }

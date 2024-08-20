@@ -83,12 +83,12 @@ if __name__=="__main__":
     if args.first_layers=='all': args.first_layers = f"0-{shared.last_layer}"
 
     shared.set_shared_filepaths(args=args)
-    
+
     if args.load_patches:
         patched = []
         def record(key): patched.append(key)
         for dir in args.load_patches:
-            apply_patches(shared.sd, filepath(dir), record)
+            apply_patches(shared.sd, filepath(dir), [record,])
         assert len(patched)==len(set(patched))
 
     for l in int_list_from_string(args.first_layers or args.first_layer): 

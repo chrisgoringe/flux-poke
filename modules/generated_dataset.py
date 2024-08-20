@@ -20,6 +20,7 @@ class TheDataset:
         if shuffle:
             if seed: random.seed(seed)
             random.shuffle(cls.sources)
+        print("Dataset contains {:>5} folders".format(len(cls.sources)))
 
     def __init__(self, first_layer:int, split:str, thickness:int=1, train_frac=0.8):                
         split_at = int(train_frac*len(self.sources))

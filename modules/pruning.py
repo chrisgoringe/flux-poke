@@ -4,7 +4,7 @@ from modules.modifiers import slice_double_block, get_mask, slice_single_block
 import os
 from safetensors.torch import load_file
 
-def prune_layer(layer, global_layer_number:int, count, constraint, callback):   
+def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[]):   
 
     if is_double(global_layer_number):
         do_img = constraint is None or 'img' in constraint
@@ -12,14 +12,16 @@ def prune_layer(layer, global_layer_number:int, count, constraint, callback):
         img_mask, img_threshold = get_mask(shared.internals["{:0>2}-img".format(global_layer_number)], remove_count=count if do_img else None) 
         txt_mask, txt_threshold = get_mask(shared.internals["{:0>2}-txt".format(global_layer_number)], remove_count=count if do_txt else None)
         slice_double_block(layer, img_mask=img_mask, txt_mask=txt_mask)
-        if do_img and callback: callback('double_blocks','img_mlp', count, img_threshold)
-        if do_txt and callback: callback('double_blocks','txt_mlp', count, txt_threshold)
+        if do_img: 
+            for callback in callbacks: callback('double_blocks','img_mlp', count, img_threshold)
+        if do_txt:
+            for callback in callbacks: callback('double_blocks','txt_mlp', count, txt_threshold)
     else:
         mask, x_threshold = get_mask(shared.internals["{:0>2}-x".format(global_layer_number)], remove_count=count) 
         slice_single_block(layer, mask=mask)
         if callback: callback('single_blocks','', mask, x_threshold)
 
-def prune_model(model, prune_config, model_first_layer, verbose):
+def prune_model(model, prune_config, model_first_layer, verbose, callbacks=[]):
     for mod in prune_config.get('prunes',None) or []:
         remove = mod.get('remove',0)
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
@@ -31,9 +33,9 @@ def prune_model(model, prune_config, model_first_layer, verbose):
                     def record(parent,block, number, threshold): 
                         if verbose: print(f"{parent}.{global_layer_number}.{block} pruned by {number} (threshold {threshold})")
                         shared.layer_stats[global_layer_number][block] = f"Pruned by {number} (threshold {threshold})"
-                    prune_layer(layer, global_layer_number=global_layer_number, count=remove, constraint=block_constraint, callback=record)
+                    prune_layer(layer, global_layer_number=global_layer_number, count=remove, constraint=block_constraint, callbacks=callbacks+[record,])
 
-def apply_patches(sd, from_directory, callback=None):
+def apply_patches(sd, from_directory, callbacks=[]):
     def patch_list():
         for x in range(57): 
             path = os.path.join(from_directory,"{:0>2}.safetensors".format(x))
@@ -44,4 +46,4 @@ def apply_patches(sd, from_directory, callback=None):
         for k in patch:
             assert (key:=f"{prefix(patch_layer_index)}{k}") in sd
             sd[key] = patch[k]
-            if callback: callback(key)
+            for callback in callbacks: callback(key)
