@@ -19,7 +19,9 @@ def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[])
     else:
         mask, x_threshold = get_mask(shared.internals["{:0>2}-x".format(global_layer_number)], remove_count=count) 
         slice_single_block(layer, mask=mask)
-        if callback: callback('single_blocks','', mask, x_threshold)
+        for callback in callbacks: 
+            callback('single_blocks','linear1', count, x_threshold)
+            callback('single_blocks','linear2', count, x_threshold)
 
 def prune_model(model, prune_config, model_first_layer, verbose, callbacks=[]):
     for mod in prune_config.get('prunes',None) or []:
