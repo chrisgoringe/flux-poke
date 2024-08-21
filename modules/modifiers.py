@@ -51,6 +51,7 @@ def get_mask(data, remove_below=None, remove_count=None):
         return ([True]*len(data), -1)
 
 def slice_single_block(block:SingleStreamBlock, mask:list[bool]):
+    if all(mask): return
     info = Info(block)
 
     def new_linear(old_linear, mask, out=False):

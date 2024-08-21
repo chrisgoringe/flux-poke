@@ -25,7 +25,7 @@ prunes:
 
 casts:
   - layers: 0-18
-    blocks: txt
+    blocks: 
     castto: default
 
 trains:

@@ -6,7 +6,6 @@ from safetensors.torch import load_file
 
 def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[]):   
     if not count: return
-    
     if is_double(global_layer_number):
         do_img = constraint is None or 'img' in constraint
         do_txt = constraint is None or 'txt' in constraint

@@ -1,0 +1,362 @@
+layer00:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.00010891766578424722
+  time: 84.19520179199753
+layer01:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.001952235121279955
+  time: 68.04985477300943
+layer02:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.004316193982958794
+  time: 66.94306291500106
+layer03:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.002287577372044325
+  time: 65.59969524299959
+layer04:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.001987147144973278
+  time: 65.98691148700891
+layer05:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0014716032892465591
+  time: 65.8015825880284
+layer06:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.001408511190675199
+  time: 92.56261736000306
+layer07:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.00165763427503407
+  time: 85.51644916599616
+layer08:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0013964392710477114
+  time: 64.9403187269927
+layer09:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0015180399641394615
+  time: 65.22893928701524
+layer10:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0014537128154188395
+  time: 66.00607932498679
+layer11:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0012969353701919317
+  time: 66.10600715799956
+layer12:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0016272286884486675
+  time: 64.43737768402207
+layer13:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0019378368742763996
+  time: 80.69438055998762
+layer14:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.002776491455733776
+  time: 73.46493466600077
+layer15:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.0026466604322195053
+  time: 60.987645296001574
+layer16:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.003185463836416602
+  time: 61.338185410015285
+layer17:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: 0.004864854738116264
+  time: 61.99482975198771
+layer18:
+  .img_attn.proj: Q8_0
+  .img_attn.qkv: Q8_0
+  .img_mlp.0: Q8_0
+  .img_mlp.2: Q8_0
+  .img_mod.lin: Q8_0
+  .txt_attn.proj: Q8_0
+  .txt_attn.qkv: Q8_0
+  .txt_mlp.0: Q8_0
+  .txt_mlp.2: Q8_0
+  .txt_mod.lin: Q8_0
+  loss: .inf
+  time: 81.55817737799953
+layer19:
+  loss: 0.002209231723099947
+  time: 38.3340164499823
+layer20:
+  loss: 0.0026313092093914747
+  time: 20.00500583599205
+layer21:
+  loss: 0.00518448231741786
+  time: 20.58709328097757
+layer22:
+  loss: 0.00411771796643734
+  time: 21.33736680302536
+layer23:
+  loss: 0.004715453367680311
+  time: 20.61386647701147
+layer24:
+  loss: 0.005476698745042086
+  time: 20.443296698009362
+layer25:
+  loss: 0.009779597632586956
+  time: 42.952458881016355
+layer26:
+  loss: 0.0131927989423275
+  time: 34.04564205399947
+layer27:
+  loss: 0.010677854530513287
+  time: 18.333366915001534
+layer28:
+  loss: 0.011294931173324585
+  time: 18.105144320987165
+layer29:
+  loss: 0.016526751220226288
+  time: 18.25118597500841
+layer30:
+  loss: 0.017370041459798813
+  time: 18.185966602002736
+layer31:
+  loss: 0.014294678345322609
+  time: 36.43768867600011
+layer32:
+  loss: 0.018091697245836258
+  time: 35.02132205298403
+layer33:
+  loss: 0.016959084197878838
+  time: 18.230408831994282
+layer34:
+  loss: 0.021385760977864265
+  time: 18.1751967589953
+layer35:
+  loss: 0.026439813897013664
+  time: 18.466784115997143
+layer36:
+  loss: 0.025416219606995583
+  time: 18.060624887992162
+layer37:
+  loss: 0.019867921248078346
+  time: 37.04955531700398
+layer38:
+  loss: 0.016511384397745132
+  time: 34.56184708001092
+layer39:
+  loss: 0.019955657422542572
+  time: 18.27308020700002
+layer40:
+  loss: 0.020666079595685005
+  time: 18.277411227987614
+layer41:
+  loss: 0.02011265978217125
+  time: 18.22884113600594
+layer42:
+  loss: 0.020729465410113335
+  time: 18.244827309972607
+layer43:
+  loss: 0.023231005296111107
+  time: 42.41654520301381
+layer44:
+  loss: 0.028740402311086655
+  time: 39.6711359610199
+layer45:
+  loss: 0.04070747271180153
+  time: 20.236165344016626
+layer46:
+  loss: 0.037568263709545135
+  time: 21.086955860984745
+layer47:
+  loss: 0.025432046502828598
+  time: 21.87037897799746
+layer48:
+  loss: 0.024542387574911118
+  time: 20.800188836001325
+layer49:
+  loss: 0.026243258267641068
+  time: 21.388483385992004
+layer50:
+  loss: 0.03259796276688576
+  time: 48.84635875798995
+layer51:
+  loss: 0.047381527721881866
+  time: 38.854707329999655
+layer52:
+  loss: 0.06139093264937401
+  time: 20.67983366799308
+layer53:
+  loss: 0.09243081510066986
+  time: 21.499867834005272
+layer54:
+  loss: 0.11247111856937408
+  time: 21.28245074499864
+layer55:
+  loss: 0.08699973672628403
+  time: 20.990289743000176
+layer56:
+  loss: 0.21766667068004608
+  time: 20.930300520994933
+
