@@ -52,7 +52,7 @@ def calulate_error_propogation(stack, dataset, perturb_before:int, perturb_magni
     return statistics.mean(losses), statistics.stdev(losses)/math.sqrt(len(losses))
 
 def main():
-    stack = torch.nn.ModuleList(load_single_layer(layer_number=x) for x in range(57))
+    stack = torch.nn.ModuleList(load_single_layer(layer_number=x, remove_from_sd=True) for x in range(57))
     stack.cuda()
     dataset = TheDataset(first_layer=0, thickness=57, split='eval', train_frac=0.0)
     with open('pb.txt','w') as f:
