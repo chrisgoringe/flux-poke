@@ -30,7 +30,7 @@ def calulate_error_propogation(stack, dataset, perturb_before:int, perturb_magni
         x_out:torch.Tensor  = datum.get('x_out').cuda().unsqueeze_(0)
 
         for ti in range(tests_per_sample):
-            log(f"Test {ti}/{len(tests_per_sample)}")
+            log(f"Test {ti}/{tests_per_sample}")
             x   = None
             img = img0.clone()
             txt = txt0.clone()
