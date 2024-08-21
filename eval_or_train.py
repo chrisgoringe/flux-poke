@@ -1,7 +1,4 @@
-import sys, os
-sys.path.insert(0,os.getcwd())
-sys.path.insert(0,os.path.join(os.getcwd(),'..','..'))
-
+import add_paths
 
 import torch
 from safetensors.torch import save_file
@@ -14,6 +11,7 @@ from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
 from modules.pruning import prune_model, apply_patches
 from modules.layer import load_single_layer
+import time
 
 
 class TheCallback(transformers.TrainerCallback):
@@ -56,6 +54,7 @@ def train_or_evaluate():
         callbacks     = [TheCallback,],
     )
 
+    start_time = time.monotonic()
     if args.evaluate:
         t.evaluate()
         shared.layer_stats[args.first_layer]['loss'] = TheCallback.eval_losses()[0]
@@ -68,6 +67,7 @@ def train_or_evaluate():
             savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
             save_file(layer.state_dict(), savefile)
             log(f"Saved in {savefile}")
+    shared.layer_stats[args.first_layer]['time'] = time.monotonic() - start_time
 
     log(str(shared.layer_stats[args.first_layer]))
 

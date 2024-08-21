@@ -162,3 +162,6 @@ arguments.txt
 settings.yaml
 output
 output_*
+modules/gguf_py/examples
+modules/gguf_py/scripts
+modules/gguf_py/tests
