@@ -5,7 +5,7 @@ from modules.layer import load_single_layer
 from modules.generated_dataset import TheDataset
 from modules.utils import is_double, shared
 from modules.hffs import HFFS_Cache
-from tqdm import tqdm
+from modules.arguments import args
 
 class Perturb(torch.nn.Module):
     def __init__(self, fac):
@@ -58,11 +58,7 @@ def main():
             print("pb {:>2} loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f)
 
 if __name__=='__main__': 
-    class FakeArgs:
-        model = 'D:/models/unet/flux1-dev.sft'
-        internals = ''
-
-    shared.set_shared_filepaths(args=FakeArgs())
-    HFFS_Cache.set_cache_directory("e:/.hfc")
-    TheDataset.set_dataset_source(dir="ChrisGoringe/fi")
+    shared.set_shared_filepaths(args=args)
+    HFFS_Cache.set_cache_directory(args.cache_dir)
+    TheDataset.set_dataset_source(dir=args.hs_dir)
     main()

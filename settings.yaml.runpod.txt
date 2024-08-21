@@ -1,0 +1,32 @@
+# Define how layers should be (a) pruned, (b) cast, and (c) trained
+#
+# In each entry, `layers` defines the layers to which this rule applies
+# `layers` can be an int, a range (inclusive), or a comma separated list of int or ranges.
+# 
+# In all sections, `blocks` an optional  restriction of the blocks that are matched.
+# For pruning, blocks only applies for double layers (0-18), and can be 'img' or 'txt' 
+# For casting and training, blocks is a simple text match to the full name of the block
+# 'none' can be used to turn this off, 'all' for all blocks
+#
+# In pruning, there is an additional required parameter, 
+# `remove` defines the number of lines to be removed.
+#
+# In casting, there is an additional optional parameter,
+# `castto` which can be:
+# a torch dtype: float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, flopat8_e5m2uz
+# a bitsandbytes Linear replacement: Linear8bitLt, Linear4bit (==LinearFP4), LinearNF4
+# or 'none' (do not cast), or `default` (use the value defined in `--default_cast`)
+
+prunes:
+  - layers: 3-13
+    blocks: img
+    remove: 4000
+
+casts:
+  - layers: 0-56
+    blocks: none
+    castto: default
+
+trains:
+  - layers: 3-13
+    blocks: img_mlp
