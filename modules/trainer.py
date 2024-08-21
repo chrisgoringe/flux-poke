@@ -2,6 +2,7 @@ import transformers
 import torch
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from .utils import int_list_from_string, shared
+from .arguments import args
 
 class TheTrainer(transformers.Trainer):
     def __init__(self, *args, **kwargs):
@@ -21,7 +22,7 @@ class TheTrainer(transformers.Trainer):
         img = inputs.get('img', None)
         txt = inputs.get('txt', None)
 
-        with torch.autocast("cuda"):
+        with torch.autocast("cuda", enabled=args.autocast):
             for layer in model: 
                 if isinstance(layer, DoubleStreamBlock): 
                     img, txt = layer( img, txt, vec, pe ) 

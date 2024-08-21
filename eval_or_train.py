@@ -78,7 +78,9 @@ if __name__=="__main__":
         log("Clearing hffs cache")
         HFFS_Cache.clear_cache()
 
-    if args.first_layers=='all': args.first_layers = f"0-{shared.last_layer}"
+    if args.first_layers=='all':    args.first_layers = f"0-{shared.last_layer}"
+    if args.first_layers=='double': args.first_layers = f"{shared.first_double_layer}-{shared.last_double_layer}"
+    if args.first_layers=='single': args.first_layers = f"{shared.first_single_layer}-{shared.last_single_layer}"
 
     shared.set_shared_filepaths(args=args)
 
