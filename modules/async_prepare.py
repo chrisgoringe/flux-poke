@@ -1,8 +1,10 @@
 import torch
 import asyncio
+from .arguments import args
 
-def setup_prepares(module:torch.nn.Module):
-    preparable = [m for m in module.modules() if hasattr(m,'prepare')]
-    def prepare(*args):
-        for p in preparable: asyncio.run(p.prepare()) 
-    module.register_forward_pre_hook(prepare)
+def async_run_prepares(module:torch.nn.Module):
+    if args.run_asyncs:
+        preparable = [m for m in module.modules() if hasattr(m,'prepare')]
+        async def run_prepares():
+            for p in preparable: p.prepare()
+        asyncio.run(run_prepares)

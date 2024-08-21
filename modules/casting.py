@@ -9,6 +9,7 @@ from warnings import warn
 
 from .gguf_py.gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
+from .async_prepare import async_run_prepares
 
 class TensorPlus(object):
     def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
@@ -75,7 +76,7 @@ class DequantingLinear(torch.nn.Module):
         bias   = self.get_weight(self.bias,   dtype, device) if self.bias is not None else None
         return (weight, bias)
     
-    async def prepare(self):
+    def prepare(self):
         if self.dtype and self.device:
             self.preparing = True
             self.prepared = self.get_weight_and_bias(dtype=self.dtype, device=self.device)
@@ -147,3 +148,5 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                         if verbose: print(f"Cast {global_layer_index}{linear_name} to {cast_name}")
                         shared.layer_stats[global_layer_index][linear_name] = f"{cast_name}"
                     cast_layer(layer=layer, cast_to=cast_to, block_constraint=block_constraint, callbacks=callbacks + [record,])
+                    async_run_prepares(layer)
+

@@ -59,6 +59,7 @@ def process_arguments():
     a.add_argument('--saved_model', type=str, help="saved model when doing convert (absolute path)")
 
     a.add_argument('--verbose', action="store_true")
+    a.add_argument('--run_asyncs', action="store_true", help="Experimental; try to cast asynchronously")
     
     a.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
     a.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")
