@@ -26,10 +26,12 @@ class TheTrainer(transformers.Trainer):
             for layer in model: 
                 if isinstance(layer, DoubleStreamBlock): 
                     img, txt = layer( img, txt, vec, pe ) 
+                    txt = txt.clip(-65504, 65504)
                     self.check_inf(img, txt)
                 else:
                     if x is None: x = torch.cat((txt, img), dim=1)
                     x = layer( x, vec, pe )
+                    x = x.clip(-65504, 65504)
                     self.check_inf(x)
 
             if 'img_out' in inputs:
