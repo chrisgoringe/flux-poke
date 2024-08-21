@@ -83,6 +83,7 @@ def process_arguments():
     act = a.add_mutually_exclusive_group(required=True)
     act.add_argument('--evaluate', action='store_true', help='no training, just calculate the loss caused by the pruning')
     act.add_argument('--train', action='store_true')
+    act.add_argument('--convert', action='store_true')
 
     args, extra_args = a.parse_known_args([f"@{filepath('arguments.txt')}",])
 

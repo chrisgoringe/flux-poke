@@ -112,7 +112,7 @@ class CastLinear(torch.nn.Module):
     def forward(self, x:torch.Tensor):
         return self.linear(x)
 
-def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callbacks:list[callable] = []):
+def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callbacks:list[callable] = [], initial_name=""):
     def recursive_cast(parent_module:torch.nn.Module, parent_name:str, child_module:torch.nn.Module, child_name:str):
         child_fullname = ".".join((parent_name,child_name))
         if isinstance(child_module, torch.nn.Linear):
@@ -125,7 +125,7 @@ def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block
                 recursive_cast(child_module, child_fullname, grandchild_module, grandchild_name)
 
     for child_name, child_module in layer.named_children():
-        recursive_cast(layer, "", child_module, child_name)
+        recursive_cast(layer, initial_name, child_module, child_name)
 
 def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_cast, verbose=False, callbacks=[]):
     for mod in cast_config.get('casts',None) or []:
@@ -145,8 +145,12 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                 if model_layer_index>=0 and model_layer_index<len(layer_stack):
                     layer = layer_stack[model_layer_index]
                     def record(linear_name, cast_name): 
-                        if verbose: print(f"Cast {global_layer_index}{linear_name} to {cast_name}")
+                        if verbose: print(f"Cast {linear_name} to {cast_name}")
                         shared.layer_stats[global_layer_index][linear_name] = f"{cast_name}"
-                    cast_layer(layer=layer, cast_to=cast_to, block_constraint=block_constraint, callbacks=callbacks + [record,])
+                    cast_layer(layer=layer, 
+                               cast_to=cast_to, 
+                               block_constraint=block_constraint, 
+                               callbacks=callbacks + [record,],
+                               initial_name=f"{global_layer_index}")
                     async_run_prepares(layer)
 
