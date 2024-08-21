@@ -79,7 +79,9 @@ def process_arguments():
     a.add_argument('--shuffle', action='store_true', help="shuffle the dataset")
     a.add_argument('--shuffle_seed', default=42)
 
-    a.add_argument('--just_evaluate', action='store_true', help='no training, just calculate the loss caused by the pruning')
+    act = a.add_mutually_exclusive_group(required=True)
+    act.add_argument('--evaluate', action='store_true', help='no training, just calculate the loss caused by the pruning')
+    act.add_argument('--train', action='store_true')
 
     args, extra_args = a.parse_known_args([f"@{filepath('arguments.txt')}",])
 

@@ -4,7 +4,13 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
 import bitsandbytes.nn as bnb
-from gguf import GGMLQuantizationType
+from gguf import GGMLQuantizationType, quants
+from .city_gguf.ops import GGMLOps
+
+def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType):
+    if t.dtype not in (torch.float16, torch.float32):
+        t = t.to(torch.float32)
+    t = quants.quantize(t.squeeze().numpy(), gtype)
 
 class CastLinear(torch.nn.Module):
     def __init__(self, linear:torch.nn.Linear, to):
@@ -13,7 +19,9 @@ class CastLinear(torch.nn.Module):
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
         elif isinstance(to, GGMLQuantizationType):
-            raise NotImplementedError()
+            self.linear = GGMLOps.Linear(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
+            sd = linear.state_dict()
+            self.linear.load_state_dict({k:quantise_tensor(sd[k], to)} for k in sd)
         else:
             self.linear = linear.to(to)
 
@@ -40,9 +48,12 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
         if (cast:=mod.get('castto', 'default')) != 'none' and block_constraint != 'none':
             if cast == "default": cast = default_cast
 
-            if hasattr(bnb, cast):     cast_to = getattr(bnb,cast)
-            elif hasattr(torch, cast): cast_to = getattr(torch,cast)
-            else: raise NotImplementedError(f"Type {cast} not known")
+            cast_to = None
+            for source in [bnb, torch, GGMLQuantizationType]:
+                if hasattr(source, cast):
+                    cast_to = getattr(source, cast)
+                    break
+            if cast_to is None: raise NotImplementedError(f"Type {cast} not known")
 
             for global_layer_index in int_list_from_string(mod.get('layers',None)):
                 model_layer_index = global_layer_index - stack_starts_at_layer

@@ -41,12 +41,10 @@ def train_or_evaluate():
     if args.cast_map:
         cast_layer_stack(model, cast_config=load_config(filepath(args.cast_map)), stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, verbose=args.verbose)
 
-    any_to_train = False
-    if args.train_map and not args.just_evaluate:
+    if args.train:
+        assert args.train_map, "No train map specified"
         any_to_train = prep_for_train(model, train_config=load_config(filepath(args.train_map)), layer_index=args.first_layer, verbose=args.verbose)
-        
-    if not (any_to_train or args.just_evaluate):
-        print(f"Nothing to train{' - no ' if not args.train_map else ' defined in '}train_map.")
+        assert any_to_train, "Nothing to train"
     
     TheDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed)
     t = TheTrainer(
@@ -58,7 +56,7 @@ def train_or_evaluate():
         callbacks     = [TheCallback,],
     )
 
-    if not any_to_train:
+    if args.evaluate:
         t.evaluate()
         shared.layer_stats[args.first_layer]['loss'] = TheCallback.eval_losses()[0]
     else:

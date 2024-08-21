@@ -20,14 +20,14 @@
 
 prunes:
   - layers: 19-56
-    blocks: 
-    remove: 2000
+    blocks: none
+    remove: 0
 
 casts:
-  - layers: 0-56
-    blocks: none
+  - layers: 0-18
+    blocks: txt
     castto: default
 
 trains:
   - layers: 19-56
-    blocks: linear
+    blocks: none
