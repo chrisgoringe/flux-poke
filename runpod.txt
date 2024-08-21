@@ -1,5 +1,6 @@
-git clone https://github.com/chrisgoringe/runpod-setup ; cd runpod-setup ; bash runpod.bash
-
-python main.py --listen 
+git clone https://github.com/chrisgoringe/runpod-setup
+cd runpod-setup
+bash flux-experiments.bash
+cd /workspace/ComfyUI/custom_nodes/flux-poke
 
 

@@ -1,7 +1,6 @@
 --first_layers=all
 --verbose
---evaluatels
-
+--evaluate
 
 #--default_cast = no
 --stats_file   = img4000_3_13_train.yaml
