@@ -11,9 +11,13 @@ class TheTrainer(transformers.Trainer):
         self.can_return_loss = True
 
     def check_inf(self,*args):
-        for a in args:
-            if torch.isinf(a).any():
-                print("INF")
+        def clmp(x:torch.Tensor):
+            if torch.isinf(x).any():
+                print("\r\nclamping inf")
+                fi = torch.finfo(x.dtype)
+                return torch.clamp(x, fi.min, fi.max)
+            else: return x
+        return tuple(clmp(x) for x in args)
 
     def compute_loss(self, model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], return_outputs=False):
         vec = inputs.get('vec', None)
@@ -26,11 +30,11 @@ class TheTrainer(transformers.Trainer):
             for layer in model: 
                 if isinstance(layer, DoubleStreamBlock): 
                     img, txt = layer( img, txt, vec, pe ) 
-                    self.check_inf(img, txt)
+                    img, txt = self.check_inf(img, txt)
                 else:
                     if x is None: x = torch.cat((txt, img), dim=1)
                     x = layer( x, vec, pe )
-                    self.check_inf(x)
+                    x = self.check_inf(x)
 
             if 'img_out' in inputs:
                 loss = self.loss_fn(torch.cat((txt, img), dim=1), torch.cat((inputs['txt_out'], inputs['img_out']), dim=1))
