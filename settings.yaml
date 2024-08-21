@@ -24,8 +24,8 @@ prunes:
     remove: 0
 
 casts:
-  - layers: 0-18
-    blocks: 
+  - layers: 0-56
+    blocks: all
     castto: default
 
 trains:
