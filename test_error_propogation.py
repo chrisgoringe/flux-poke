@@ -6,6 +6,7 @@ from modules.generated_dataset import TheDataset
 from modules.utils import is_double, shared, log
 from modules.hffs import HFFS_Cache
 from modules.arguments import args
+import json
 
 class Onlies:
     IMG=0
@@ -84,6 +85,26 @@ def main():
                                                       tests_per_sample=2,
                                                       only=Onlies.TXT)
             print("pb {:>2} (txt) loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
+
+def rms():
+    rmses = [{i:[] for i in range(57)}, {i:[] for i in range(57)}, {i:[] for i in range(57)}, ]
+
+    for layer_index in range(57):
+        print(layer_index)
+        rms_img = rmses[0][layer_index]
+        rms_txt = rmses[1][layer_index]
+        rms_x = rmses[2][layer_index]
+        loss = torch.nn.MSELoss()
+        rms = lambda a: float(loss(a.cuda(), torch.zeros_like(a).cuda()))
+        dataset = TheDataset(first_layer=layer_index, thickness=1, split='all')
+        for entry in dataset:
+            if is_double(layer_index):
+                rms_img.append( rms(entry['img']) )
+                rms_txt.append( rms(entry['txt']) )
+            else:
+                rms_x.append( rms(entry['x']) )
+
+    with open('rmses.json', 'w') as f: print(json.dumps(rmses), file=f)
 
 if __name__=='__main__': 
     shared.set_shared_filepaths(args=args)

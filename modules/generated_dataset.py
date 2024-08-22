@@ -39,7 +39,7 @@ class TheDataset:
         return len(self.sources)
 
     def __getitem__(self, i):
-        print(f"Using {self.sources[i]}")
+        #print(f"Using {self.sources[i]}")
         input  = self.load_file(filename="/".join((self.sources[i], str(self.first_layer))))
         output = self.load_file(filename="/".join((self.sources[i], str(self.first_layer+self.thickness))))
         l1, l2 = "{:0>2}-".format(self.first_layer) , "{:0>2}-".format(self.first_layer+self.thickness)
