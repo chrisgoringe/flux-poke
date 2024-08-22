@@ -7,19 +7,27 @@ from modules.utils import is_double, shared, log
 from modules.hffs import HFFS_Cache
 from modules.arguments import args
 
+class Onlies:
+    IMG=0
+    TXT=1
+    X  =2
+
 class Perturb(torch.nn.Module):
-    def __init__(self, fac):
+    def __init__(self, fac, only:Onlies=None):
         super().__init__()
-        self.fac = fac
+        self.fac  = fac
+        self.only = only
     
     def forward(self, *args):
-        return ( (a * (1+(torch.rand_like(a)-0.5)*self.fac) if a is not None else None) for a in args  )
+        def should_mod(a,i):
+            return (a is not None and (self.only is None or self.only==i))
+        return ( (a * (1+(torch.rand_like(a)-0.5)*self.fac) if should_mod(a,i) else a) for i,a in enumerate(args)  )
 
 LOW_VRAM = False
 
-def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude, tests_per_sample=1):
+def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude, tests_per_sample=1, only=None):
     
-    perturb = Perturb( perturb_magnitude )
+    perturb = Perturb( perturb_magnitude, only )
     losses    = []
     loss_fn   = torch.nn.MSELoss()
 
@@ -39,7 +47,8 @@ def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, pe
             with torch.no_grad():
                 for layer_index, layer in enumerate(stack):
                     if LOW_VRAM: layer.cuda()
-                    if layer_index==perturb_before: img, txt, x = perturb(img, txt, x)     
+                    if layer_index==perturb_before: 
+                        img, txt, x = perturb(img, txt, x)     
 
                     if is_double(layer_index): img, txt = layer( img,  txt,  vec, pe ) 
                     else:                      x        = layer( x if x is not None else torch.cat((txt,img ), dim=1),  vec, pe ) 
@@ -60,13 +69,21 @@ def main():
     mag = 0.01
     with open('pb.txt','w') as f:
         print(f"Perturbation magnitude {mag}", file=f, flush=True)
-        for pb in range(-1,57):
+        for pb in range(0,19):
             loss, stderr = calulate_error_propogation(stack=stack, 
                                                       dataset=dataset, 
                                                       perturb_before=pb, 
                                                       perturb_magnitude=mag, 
-                                                      tests_per_sample=2)
-            print("pb {:>2} by loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
+                                                      tests_per_sample=2,
+                                                      only=Onlies.IMG)
+            print("pb {:>2} (img) loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
+            loss, stderr = calulate_error_propogation(stack=stack, 
+                                                      dataset=dataset, 
+                                                      perturb_before=pb, 
+                                                      perturb_magnitude=mag, 
+                                                      tests_per_sample=2,
+                                                      only=Onlies.TXT)
+            print("pb {:>2} (txt) loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
 
 if __name__=='__main__': 
     shared.set_shared_filepaths(args=args)
