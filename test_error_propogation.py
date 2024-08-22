@@ -57,10 +57,9 @@ def main():
     stack = torch.nn.ModuleList(load_single_layer(layer_number=x, remove_from_sd=True) for x in range(57))
     if not LOW_VRAM: stack.cuda()
     dataset = TheDataset(first_layer=0, thickness=57, split='all')
-    calulate_error_propogation(stack, dataset, perturb_before=40)
     with open('pb.txt','w') as f:
         for pb in range(57):
-            loss, stderr = calulate_error_propogation(stack, dataset, perturb_before=pb)
+            loss, stderr = calulate_error_propogation(stack=stack, dataset=dataset, perturb_before=pb)
             print("pb {:>2} loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
 
 if __name__=='__main__': 
