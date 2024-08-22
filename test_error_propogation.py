@@ -17,7 +17,7 @@ class Perturb(torch.nn.Module):
 
 LOW_VRAM = False
 
-def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude = 0.001, tests_per_sample=1):
+def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude = 0.01, tests_per_sample=1):
     
     perturb = Perturb( perturb_magnitude )
     losses    = []
