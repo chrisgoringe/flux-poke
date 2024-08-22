@@ -59,9 +59,13 @@ def main():
     if not LOW_VRAM: stack.cuda()
     mag = 0.01
     with open('pb.txt','w') as f:
-        print(mag)
+        print(f"Perturbation magnitude {mag}", file=f, flush=True)
         for pb in range(-1,57):
-            loss, stderr = calulate_error_propogation(stack=stack, dataset=dataset, perturb_before=pb, perturb_magnitude=mag, tests_per_sample=10)
+            loss, stderr = calulate_error_propogation(stack=stack, 
+                                                      dataset=dataset, 
+                                                      perturb_before=pb, 
+                                                      perturb_magnitude=mag, 
+                                                      tests_per_sample=2)
             print("pb {:>2} by loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
 
 if __name__=='__main__': 

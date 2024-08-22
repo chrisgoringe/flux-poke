@@ -4,7 +4,7 @@ from modules.hffs import HFFS
 from modules.utils import filepath, shared
 from safetensors.torch import load_file
 
-EXCLUDE = [
+EXCLUDE = [2657297,
 ]
 
 class TheDataset:
