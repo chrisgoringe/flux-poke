@@ -17,7 +17,7 @@ class Perturb(torch.nn.Module):
 
 LOW_VRAM = False
 
-def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude = 0.01, tests_per_sample=1):
+def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude, tests_per_sample=1):
     
     perturb = Perturb( perturb_magnitude )
     losses    = []
@@ -57,10 +57,12 @@ def main():
     stack = torch.nn.ModuleList(load_single_layer(layer_number=x, remove_from_sd=True) for x in range(57))
     dataset = TheDataset(first_layer=0, thickness=57, split='all')
     if not LOW_VRAM: stack.cuda()
+    mag = 0.01
     with open('pb.txt','w') as f:
+        print(mag)
         for pb in range(-1,57):
-            loss, stderr = calulate_error_propogation(stack=stack, dataset=dataset, perturb_before=pb)
-            print("pb {:>2} loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
+            loss, stderr = calulate_error_propogation(stack=stack, dataset=dataset, perturb_before=pb, perturb_magnitude=mag, tests_per_sample=10)
+            print("pb {:>2} by loss {:>8.4f} +/- {:>8.4f}".format(pb, loss, stderr), file=f, flush=True)
 
 if __name__=='__main__': 
     shared.set_shared_filepaths(args=args)
