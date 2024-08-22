@@ -34,7 +34,7 @@ class TheTrainer(transformers.Trainer):
                 else:
                     if x is None: x = torch.cat((txt, img), dim=1)
                     x = layer( x, vec, pe )
-                    x = self.check_inf(x)
+                    x = self.check_inf(x)[0]
 
             if 'img_out' in inputs:
                 loss = self.loss_fn(torch.cat((txt, img), dim=1), torch.cat((inputs['txt_out'], inputs['img_out']), dim=1))
