@@ -11,8 +11,9 @@ from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
 from modules.pruning import prune_model, apply_patches
 from modules.layer import load_single_layer
+from modules.sensitivity import Sensitivity
 import time
-
+from functools import partial
 
 class TheCallback(transformers.TrainerCallback):
     log:list[dict] = None
@@ -23,8 +24,6 @@ class TheCallback(transformers.TrainerCallback):
     def eval_losses(cls): return [l['eval_loss'] for l in cls.log if 'eval_loss' in l]
     @classmethod
     def losses(cls): return [l['loss'] for l in cls.log if 'loss' in l]
-
-
 
 def train_or_evaluate():
     log(f"Model is layers {args.first_layer} to {args.first_layer+args.thickness-1}" if args.thickness > 1 else f"Model is layer {args.first_layer}")
@@ -55,14 +54,19 @@ def train_or_evaluate():
     )
 
     start_time = time.monotonic()
+    sensitivity = partial(Sensitivity.impact_of_mseloss, args.first_layer+args.thickness, getattr(Sensitivity, args.sensitive_hack))
     if args.evaluate:
         t.evaluate()
         shared.layer_stats[args.first_layer]['loss'] = TheCallback.eval_losses()[0]
+        shared.layer_stats[args.first_layer]['sensitivity'] = sensitivity(TheCallback.eval_losses()[0])
     else:
         t.train()
         shared.layer_stats[args.first_layer]['initial_loss'] = TheCallback.eval_losses()[0]
         shared.layer_stats[args.first_layer]['final_loss']   = TheCallback.eval_losses()[-1]
         shared.layer_stats[args.first_layer]['train_loss']   = TheCallback.losses()[-1]
+        shared.layer_stats[args.first_layer]['initial_sensitivity'] = sensitivity(TheCallback.eval_losses()[0])
+        shared.layer_stats[args.first_layer]['final_sensitivity']   = sensitivity(TheCallback.eval_losses()[-1])
+        shared.layer_stats[args.first_layer]['train_sensitivity']   = sensitivity(TheCallback.losses()[-1])
         for i,layer in enumerate(model):
             savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
             save_file(layer.state_dict(), savefile)

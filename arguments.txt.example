@@ -1,15 +1,21 @@
---first_layers=3-13
+--first_layers=0-17
 --verbose
+#--autocast
+@cast=Q5_1
 
-#--default_cast = no
---stats_file   = img4000_3_13_train.yaml
+--default_cast = @cast
+--stats_file   = cast_txt_@cast.yaml
+--evaluate
+--sensitive_hack = TXT
 
---prune_map = settings.yaml
+--saved_model=D:/models/unet/saved_model.safetensors
+
+#--prune_map = settings.yaml
 --cast_map  = settings.yaml
---train_map = settings.yaml
+#--train_map = settings.yaml
 
 --hs_dir=ChrisGoringe/fi
---eval_frac = 0.2
+--eval_frac = 0.1
 --shuffle
 --shuffle_seed=77
 --cache_dir = e:/.hfc
@@ -19,4 +25,3 @@
 --lr_scheduler_kwargs:num_cycles=0.3
 
 --model=D:/models/unet/flux1-dev.sft
---saved_model=saved_model.safetensors

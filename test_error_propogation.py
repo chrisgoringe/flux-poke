@@ -89,7 +89,7 @@ def main():
 def rms():
     rmses = [{i:[] for i in range(57)}, {i:[] for i in range(57)}, {i:[] for i in range(57)}, ]
 
-    for layer_index in range(57):
+    for layer_index in range(19,57):
         print(layer_index)
         rms_img = rmses[0][layer_index]
         rms_txt = rmses[1][layer_index]
@@ -102,12 +102,30 @@ def rms():
                 rms_img.append( rms(entry['img']) )
                 rms_txt.append( rms(entry['txt']) )
             else:
+                if 'x' not in entry: entry['x'] = torch.cat((entry['txt'], entry['img']))
                 rms_x.append( rms(entry['x']) )
 
-    with open('rmses.json', 'w') as f: print(json.dumps(rmses), file=f)
+    with open('rmses2.json', 'w') as f: print(json.dumps(rmses), file=f)
+
+def final():
+    dataset = TheDataset(first_layer=56, thickness=1, split='all')
+    loss = torch.nn.MSELoss()
+    rms = lambda a: float(loss(a.cuda(), torch.zeros_like(a).cuda()))
+    rmses = [rms(entry['x_out']) for entry in dataset]
+    mean = statistics.mean(rmses)
+
+def rms_analysis():
+    with open('rmses.json','r') as f: rmses = json.load(f)
+    with open('rmses2.json','r') as f: rmses2 = json.load(f)
+    mn = lambda a: statistics.mean(a) if a else None
+    for layer_index in range(0,57):
+        img = mn(rmses[0][str(layer_index)]) or mn(rmses2[0][str(layer_index)])
+        txt = mn(rmses[1][str(layer_index)]) or mn(rmses2[1][str(layer_index)]) 
+        x   = mn(rmses[2][str(layer_index)]) or mn(rmses2[2][str(layer_index)])
+        print(f"|{layer_index}|{img or ''}|{txt or ''}|{x or ''}|")
 
 if __name__=='__main__': 
     shared.set_shared_filepaths(args=args)
     HFFS_Cache.set_cache_directory(args.cache_dir)
     TheDataset.set_dataset_source(dir=args.hs_dir)
-    main()
+    final()

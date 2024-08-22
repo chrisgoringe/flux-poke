@@ -65,6 +65,7 @@ def process_arguments():
     a.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
     a.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")
     a.add_argument('--train_map', default=None, help="Relative path to yaml/json file describing how the layers should be trained")
+    a.add_argument('--sensitive_hack', help="IMG, TXT or X - sensitivity hack")
     a.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file")
     a.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
