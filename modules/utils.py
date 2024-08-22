@@ -1,6 +1,8 @@
 import logging, time, yaml, os, shutil, json
 from safetensors.torch import load_file
 from functools import partial
+from warnings import warn
+import torch
 
 filepath = partial(os.path.join,os.path.split(__file__)[0],"..")
 
@@ -45,6 +47,12 @@ def preserve_existing_file(filename):
         shutil.move(filename, nth_copy(copy_number) )
         log(f"Renamed {filename} to {nth_copy(copy_number)}")
 
+def prefix(layer_index):
+    if is_double(layer_index):
+        return f"double_blocks.{layer_index}."
+    else:
+        return f"single_blocks.{layer_index-shared.first_single_layer}."
+    
 class Shared(SingletonAddin):
     def __init__(self):
         self.last_layer = 56
@@ -53,14 +61,30 @@ class Shared(SingletonAddin):
         self.first_single_layer = 19
         self.last_single_layer = 56
         self.layer_stats = [{} for _ in range(57)]
-        self._sd        = None
+        self._sd:dict[str,torch.Tensor] = None
         self._internals = None
         self.args       = None
+        self._layerssd:dict[str,dict[str,torch.Tensor]]  = None
 
     @property
     def sd(self):
         if isinstance(self._sd,str): self._sd = load_file(self._sd)
         return self._sd
+    
+    def layer_sd(self, layer_index):
+        if self._layerssd is None: self.split_sd()
+        return self._layerssd[prefix(layer_index)]
+    
+    def drop_layer(self, layer_index):
+        for k in self._layerssd.pop(prefix(layer_index)): self._sd.pop(prefix(layer_index)+k)
+        
+    def split_sd(self):
+        self._layerssd = { prefix(x):{} for x in range(self.last_layer+1) }
+        for k in self.sd:
+            for pf in self._layerssd:
+                if k.startswith(pf): 
+                    self._layerssd[pf][k[len(pf):]] = self.sd[k]
+                    break
 
     @property
     def internals(self):
@@ -99,10 +123,6 @@ class Batcher:
     @classmethod
     def label(cls, base_name, batch): return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name, *batch)
 
-def prefix(layer_index):
-    if is_double(layer_index):
-        return f"double_blocks.{layer_index}."
-    else:
-        return f"single_blocks.{layer_index-shared.first_single_layer}."
+
     
 shared = Shared.instance()

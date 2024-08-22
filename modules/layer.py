@@ -6,11 +6,12 @@ import torch
 
 def load_single_layer(layer_number:int, remove_from_sd=False) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     log(f"Loading layer {layer_number}")
-    layer_prefix = prefix(layer_number)
-    layer_sd = { k[len(layer_prefix):]:shared.sd[k] for k in shared.sd if k.startswith(layer_prefix) }
-    if remove_from_sd: 
-        for k in [k for k in shared.sd]:
-            if k.startswith(layer_prefix): shared.sd.pop(k)
+    #layer_prefix = prefix(layer_number)
+    #layer_sd = { k[len(layer_prefix):]:shared.sd[k] for k in shared.sd if k.startswith(layer_prefix) }
+    layer_sd = shared.layer_sd(layer_number)
+    if remove_from_sd: shared.drop_layer(layer_number)
+    #    for k in [k for k in shared.sd]:
+    #        if k.startswith(layer_prefix): shared.sd.pop(k)
     if is_double(layer_number):
         layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
         prune_layer(layer, layer_number, int(layer.txt_mlp[0].bias.shape[0] - layer_sd['txt_mlp.0.bias'].shape[0]), "txt")
