@@ -26,7 +26,8 @@ class TheDataset:
         split_at = int(train_frac*len(self.sources))
         if   split.lower()=='train': self.sources = self.sources[:split_at]
         elif split.lower()=='eval':  self.sources = self.sources[split_at:]
-        else: assert False, f"Split must be train or eval, got {split}"
+        elif split.lower()=='all':   pass
+        else: assert False, f"Split must be 'train', 'eval', or 'all': got {split}"
         self.first_layer = first_layer
         self.thickness   = thickness
     

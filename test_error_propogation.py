@@ -13,17 +13,17 @@ class Perturb(torch.nn.Module):
         self.fac = fac
     
     def forward(self, *args):
-        return ( (a * (1+torch.rand_like(a)*self.fac) if a is not None else None) for a in args  )
+        return ( (a * (1+(torch.rand_like(a)-0.5)*self.fac) if a is not None else None) for a in args  )
 
-LOW_VRAM = True
+LOW_VRAM = False
 
-def calulate_error_propogation(stack, dataset, perturb_before:int, perturb_magnitude = 0.001, tests_per_sample=1):
+def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, perturb_magnitude = 0.001, tests_per_sample=1):
     
     perturb = Perturb( perturb_magnitude )
     losses    = []
     loss_fn   = torch.nn.MSELoss()
 
-    for di, datum in enumerate(dataset[0]):
+    for di, datum in enumerate(dataset):
         log(f"Datum {di}/{len(dataset)}")
         vec:torch.Tensor    = datum.get('vec').cuda().unsqueeze_(0)
         pe:torch.Tensor     = datum.get('pe').cuda().unsqueeze_(0)
@@ -56,8 +56,8 @@ def calulate_error_propogation(stack, dataset, perturb_before:int, perturb_magni
 def main():
     stack = torch.nn.ModuleList(load_single_layer(layer_number=x, remove_from_sd=True) for x in range(57))
     if not LOW_VRAM: stack.cuda()
-    dataset = TheDataset(first_layer=0, thickness=57, split='eval', train_frac=0.0)
-    calulate_error_propogation(stack, dataset, perturb_before=-1)
+    dataset = TheDataset(first_layer=0, thickness=57, split='all')
+    calulate_error_propogation(stack, dataset, perturb_before=40)
     with open('pb.txt','w') as f:
         for pb in range(57):
             loss, stderr = calulate_error_propogation(stack, dataset, perturb_before=pb)
