@@ -55,6 +55,7 @@ def calulate_error_propogation(stack, dataset:TheDataset, perturb_before:int, pe
 
 def main():
     stack = torch.nn.ModuleList(load_single_layer(layer_number=x, remove_from_sd=True) for x in range(57))
+    dataset = TheDataset(first_layer=0, thickness=57, split='all')
     if not LOW_VRAM: stack.cuda()
     with open('pb.txt','w') as f:
         for pb in range(-1,57):
