@@ -2,7 +2,6 @@ from .flux_probe_nodes import InsertProbes, SaveProbeData,  \
     LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold
 from .utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize, CommonSizes, QPause, RandomInt
 from .mixed_casting_node import UnetLoaderMixed
-#from .cpu_offload_node import CPUOffLoad
 
 NODE_CLASS_MAPPINGS = { 
     "Insert Probes"                 : InsertProbes,
@@ -13,7 +12,6 @@ NODE_CLASS_MAPPINGS = {
     "Load Patched Model"            : ReplaceLayers,
 
     "Load Mixed Cast Model"         : UnetLoaderMixed,
-    #"CPU Offload Layers"            : CPUOffLoad,
 
     "Random Int"                    : RandomInt,
     "Flux Simple Scheduler"         : FluxSimpleScheduler,
