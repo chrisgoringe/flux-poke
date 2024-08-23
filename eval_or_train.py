@@ -36,7 +36,9 @@ def train_or_evaluate():
         prune_model(model, prune_config=load_config(filepath(args.prune_map)), model_first_layer=args.first_layer, verbose=args.verbose)
 
     if args.cast_map:
-        cast_layer_stack(model, cast_config=load_config(filepath(args.cast_map)), stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, verbose=args.verbose)
+        cast_layer_stack(model, cast_config=load_config(filepath(args.cast_map)), 
+                         stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, 
+                         verbose=args.verbose, autocast=args.autocast)
 
     have_touched_img = False
     have_touched_txt = False

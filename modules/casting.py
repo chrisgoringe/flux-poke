@@ -97,9 +97,10 @@ class DequantingLinear(torch.nn.Module):
         return x
     
 class CastLinear(torch.nn.Module):
-    def __init__(self, linear:torch.nn.Linear, to):
+    def __init__(self, linear:torch.nn.Linear, to, autocast=False):
         super().__init__()
         self.description = str(to)
+        self.autocast = autocast
         if hasattr(to, '__call__'):  
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
@@ -110,14 +111,15 @@ class CastLinear(torch.nn.Module):
             self.linear = linear.to(to)
 
     def forward(self, x:torch.Tensor):
-        return self.linear(x)
+        with torch.autocast(device_type="cuda", enabled=self.autocast):
+            return self.linear(x)
 
-def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callbacks:list[callable] = [], initial_name=""):
+def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callbacks:list[callable] = [], initial_name="", autocast=False):
     def recursive_cast(parent_module:torch.nn.Module, parent_name:str, child_module:torch.nn.Module, child_name:str):
         child_fullname = ".".join((parent_name,child_name))
         if isinstance(child_module, torch.nn.Linear):
             if block_constraint is None or block_constraint in child_fullname:
-                cast_value = CastLinear(child_module,cast_to)
+                cast_value = CastLinear(child_module,cast_to,autocast)
                 setattr(parent_module, child_name, cast_value)
                 for callback in callbacks: callback(child_fullname, cast_value.description)
         else:
@@ -127,7 +129,7 @@ def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block
     for child_name, child_module in layer.named_children():
         recursive_cast(layer, initial_name, child_module, child_name)
 
-def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_cast, verbose=False, callbacks=[]):
+def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_cast, verbose=False, callbacks=[], autocast=False):
     for mod in cast_config.get('casts',None) or []:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint=None
         if (cast:=mod.get('castto', 'default')) != 'none' and block_constraint != 'none':
@@ -151,6 +153,7 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                                cast_to=cast_to, 
                                block_constraint=block_constraint, 
                                callbacks=callbacks + [record,],
-                               initial_name=f"{global_layer_index}")
+                               initial_name=f"{global_layer_index}",
+                               autocast=autocast)
                     async_run_prepares(layer)
 
