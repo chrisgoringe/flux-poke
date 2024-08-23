@@ -38,6 +38,16 @@ def train_or_evaluate():
     if args.cast_map:
         cast_layer_stack(model, cast_config=load_config(filepath(args.cast_map)), stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, verbose=args.verbose)
 
+    have_touched_img = False
+    have_touched_txt = False
+    for l in shared.layer_stats:
+        for block in l:
+            have_touched_img = have_touched_img or 'img' in block
+            have_touched_txt = have_touched_txt or 'txt' in block
+
+    element = 'X' if (not is_double(args.first_layer+args.thickness)) or (have_touched_img and have_touched_txt) else ('TXT' if have_touched_txt else 'IMG')
+    print(f"Sensitivity element to be applied: {element}")
+
     if args.train:
         assert args.train_map, "No train map specified"
         any_to_train = prep_for_train(model, train_config=load_config(filepath(args.train_map)), layer_index=args.first_layer, verbose=args.verbose)
@@ -48,13 +58,14 @@ def train_or_evaluate():
         model         = model,
         args          = args.training_args,
         train_dataset = TheDataset(first_layer=args.first_layer, split="train", train_frac=args.train_frac, thickness=args.thickness),
-        eval_dataset  = TheDataset(first_layer=args.first_layer, split="eval",  train_frac=args.train_frac, thickness=args.thickness),
+        eval_dataset  = TheDataset(first_layer=args.first_layer, split="eval",  eval_frac =args.eval_frac,  thickness=args.thickness),
         data_collator = transformers.DefaultDataCollator(),
         callbacks     = [TheCallback,],
     )
 
     start_time = time.monotonic()
-    sensitivity = partial(Sensitivity.impact_of_mseloss, args.first_layer+args.thickness, getattr(Sensitivity, args.sensitive_hack))
+
+    sensitivity = partial(Sensitivity.impact_of_mseloss, args.first_layer+args.thickness, getattr(Sensitivity, element))
     if args.evaluate:
         t.evaluate()
         shared.layer_stats[args.first_layer]['loss'] = TheCallback.eval_losses()[0]
@@ -78,9 +89,6 @@ def train_or_evaluate():
         
 if __name__=="__main__": 
     HFFS_Cache.set_cache_directory(args.cache_dir)
-    if args.clear_cache_before: 
-        log("Clearing hffs cache")
-        HFFS_Cache.clear_cache()
 
     if args.first_layers=='all':    args.first_layers = f"0-{shared.last_layer}"
     if args.first_layers=='double': args.first_layers = f"{shared.first_double_layer}-{shared.last_double_layer}"
@@ -100,7 +108,3 @@ if __name__=="__main__":
         train_or_evaluate()
 
     shared.save_stats(filepath(args.save_dir,args.stats_file))
-
-    if args.clear_cache_after: 
-        log("Clearing hffs cache")
-        HFFS_Cache.clear_cache()

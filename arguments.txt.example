@@ -1,12 +1,11 @@
 --first_layers=0-17
 --verbose
 #--autocast
-@cast=Q5_1
+@cast=Q8_0
 
 --default_cast = @cast
---stats_file   = cast_txt_@cast.yaml
+--stats_file   = @cast.yaml
 --evaluate
---sensitive_hack = TXT
 
 --saved_model=D:/models/unet/saved_model.safetensors
 
@@ -15,7 +14,7 @@
 #--train_map = settings.yaml
 
 --hs_dir=ChrisGoringe/fi
---eval_frac = 0.1
+--eval_frac = 1.0
 --shuffle
 --shuffle_seed=77
 --cache_dir = e:/.hfc

@@ -165,3 +165,4 @@ output_*
 modules/gguf_py/examples
 modules/gguf_py/scripts
 modules/gguf_py/tests
+prompts_dataset.last
