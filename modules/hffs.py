@@ -56,11 +56,10 @@ class HFFS:
         entries = self.fs.glob(self.rpath('[0-9]*/'))
         if validate:
             valid = []
-            print("Validating...")
-            for e in tqdm(entries):
+            print("Validating dataset...")
+            for e in tqdm.tqdm(entries):
                 if len(self.fs.glob(f"{e}/*.safetensors"))==9: valid.append(e)
-            if len(entries)!=len(valid):
-                print(f"Invalid directories ignored: {[e.split('/')[-1] for e in entries if not e in valid]}")
+                else: print(f"{e.split('/')[-1]} not valid")
             return valid
         return entries
     
