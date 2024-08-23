@@ -5,7 +5,7 @@ from safetensors.torch import save_file
 import transformers
 from modules.arguments import args, filepath
 from modules.generated_dataset import TheDataset
-from modules.utils import log, shared, int_list_from_string, load_config, is_double
+from modules.utils import log, shared, layer_iteratable_from_string, load_config, is_double
 from modules.hffs import HFFS_Cache
 from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
@@ -90,10 +90,6 @@ def train_or_evaluate():
 if __name__=="__main__": 
     HFFS_Cache.set_cache_directory(args.cache_dir)
 
-    if args.first_layers=='all':    args.first_layers = f"0-{shared.last_layer}"
-    if args.first_layers=='double': args.first_layers = f"{shared.first_double_layer}-{shared.last_double_layer}"
-    if args.first_layers=='single': args.first_layers = f"{shared.first_single_layer}-{shared.last_single_layer}"
-
     shared.set_shared_filepaths(args=args)
 
     if args.load_patches:
@@ -103,7 +99,7 @@ if __name__=="__main__":
             apply_patches(shared.sd, filepath(dir), [record,])
         assert len(patched)==len(set(patched))
 
-    for l in int_list_from_string(args.first_layers or args.first_layer): 
+    for l in layer_iteratable_from_string(args.first_layers or args.first_layer): 
         args.first_layer = l
         train_or_evaluate()
 

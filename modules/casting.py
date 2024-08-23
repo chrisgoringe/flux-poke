@@ -1,6 +1,6 @@
 import torch
 import asyncio, time
-from .utils import int_list_from_string, log, shared
+from .utils import layer_iteratable_from_string, log, shared
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
@@ -140,7 +140,7 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                     break
             if cast_to is None: raise NotImplementedError(f"Type {cast} not known")
 
-            for global_layer_index in int_list_from_string(mod.get('layers',None)):
+            for global_layer_index in layer_iteratable_from_string(mod.get('layers',None)):
                 model_layer_index = global_layer_index - stack_starts_at_layer
                 if model_layer_index>=0 and model_layer_index<len(layer_stack):
                     layer = layer_stack[model_layer_index]

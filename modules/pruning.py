@@ -1,5 +1,5 @@
 from .arguments import args
-from .utils import shared, is_double, int_list_from_string, prefix
+from .utils import shared, is_double, layer_iteratable_from_string, prefix
 from modules.modifiers import slice_double_block, get_mask, slice_single_block
 import os
 from safetensors.torch import load_file
@@ -28,7 +28,7 @@ def prune_model(model, prune_config, model_first_layer, verbose, callbacks=[]):
         remove = mod.get('remove',0)
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
         if remove and block_constraint != 'none':
-            for global_layer_number in int_list_from_string(mod.get('layers',None)):
+            for global_layer_number in layer_iteratable_from_string(mod.get('layers',None)):
                 model_layer_index = global_layer_number - model_first_layer
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]

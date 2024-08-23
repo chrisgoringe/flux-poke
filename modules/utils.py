@@ -3,6 +3,7 @@ from safetensors.torch import load_file
 from functools import partial
 from warnings import warn
 import torch
+from typing import Iterable
 
 filepath = partial(os.path.join,os.path.split(__file__)[0],"..")
 
@@ -30,13 +31,17 @@ def load_config(config_filepath):
     else:
         with open(config_filepath, 'r') as f: return json.load(f)
 
-def int_list_from_string(s):
-    rnge = []
-    for section in (x.strip() for x in str(s or "").split(',')):
-        if section:
-            a,b = (int(x.strip()) for x in section.split('-')) if '-' in section else (int(section), int(section))
-            for i in range(a,b+1): rnge.append(i)
-    return rnge
+def layer_iteratable_from_string(s) -> Iterable[int]:
+    if s.lower()=='all':    return range(shared.last_layer+1)
+    if s.lower()=='double': return range(shared.first_double_layer, shared.last_double_layer+1)
+    if s.lower()=='single': return range(shared.first_single_layer, shared.last_single_layer+1)
+
+    def parse():
+        for section in (x.strip() for x in str(s or "").split(',')):
+            if section:
+                a,b = (int(x.strip()) for x in section.split('-')) if '-' in section else (int(section), int(section))
+                for i in range(a,b+1): yield i
+    return parse()
 
 def preserve_existing_file(filename):
     if os.path.exists(filename):

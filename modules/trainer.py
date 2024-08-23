@@ -1,7 +1,7 @@
 import transformers
 import torch
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
-from .utils import int_list_from_string, shared
+from .utils import layer_iteratable_from_string, shared
 from .arguments import args
 
 class TheTrainer(transformers.Trainer):
@@ -65,7 +65,7 @@ def prep_for_train(model, train_config, layer_index, verbose):
     for mod in train_config.get('trains',None) or []:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
         if block_constraint != 'none':
-            for global_layer_index in int_list_from_string(mod.get('layers',None)):
+            for global_layer_index in layer_iteratable_from_string(mod.get('layers',None)):
                 model_layer_index = global_layer_index - layer_index
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]
