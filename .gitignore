@@ -160,7 +160,6 @@ cython_debug/
 #.idea/
 arguments.txt
 settings.yaml
-output
 output_*
 modules/gguf_py/examples
 modules/gguf_py/scripts
