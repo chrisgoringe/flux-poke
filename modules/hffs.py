@@ -1,7 +1,7 @@
 from huggingface_hub import HfFileSystem
 from huggingface_hub.utils._errors import HfHubHTTPError
 from safetensors.torch import load_file, save_file
-import tempfile, os, torch, sys, random
+import tempfile, os, torch, sys, random, tqdm
 from .utils import SingletonAddin, Batcher
 
 class HFFS_Cache(SingletonAddin):
@@ -55,7 +55,10 @@ class HFFS:
     def get_entry_list(self, validate=False) -> list[str]:
         entries = self.fs.glob(self.rpath('[0-9]*/'))
         if validate:
-            valid = [e for e in entries if len(self.fs.glob(f"{e}/*.safetensors"))==9]
+            valid = []
+            print("Validating...")
+            for e in tqdm(entries):
+                if len(self.fs.glob(f"{e}/*.safetensors"))==9: valid.append(e)
             if len(entries)!=len(valid):
                 print(f"Invalid directories ignored: {[e.split('/')[-1] for e in entries if not e in valid]}")
             return valid
