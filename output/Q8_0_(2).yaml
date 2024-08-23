@@ -1,0 +1,163 @@
+layer00:
+  0.txt_attn.proj: Q8_0
+  0.txt_attn.qkv: Q8_0
+  0.txt_mlp.0: Q8_0
+  0.txt_mlp.2: Q8_0
+  0.txt_mod.lin: Q8_0
+  loss: 5.284180952003226e-05
+  sensitivity: 0.062262979043561754
+  time: 77.875
+layer01:
+  1.txt_attn.proj: Q8_0
+  1.txt_attn.qkv: Q8_0
+  1.txt_mlp.0: Q8_0
+  1.txt_mlp.2: Q8_0
+  1.txt_mod.lin: Q8_0
+  loss: 0.0005762917571701109
+  sensitivity: 0.11116163988957045
+  time: 73.875
+layer02:
+  2.txt_attn.proj: Q8_0
+  2.txt_attn.qkv: Q8_0
+  2.txt_mlp.0: Q8_0
+  2.txt_mlp.2: Q8_0
+  2.txt_mod.lin: Q8_0
+  loss: 0.0008969568880274892
+  sensitivity: 0.1222047830759784
+  time: 71.59400000004098
+layer03:
+  3.txt_attn.proj: Q8_0
+  3.txt_attn.qkv: Q8_0
+  3.txt_mlp.0: Q8_0
+  3.txt_mlp.2: Q8_0
+  3.txt_mod.lin: Q8_0
+  loss: 0.00012847092875745147
+  sensitivity: 0.04389477419769075
+  time: 71.54699999990407
+layer04:
+  4.txt_attn.proj: Q8_0
+  4.txt_attn.qkv: Q8_0
+  4.txt_mlp.0: Q8_0
+  4.txt_mlp.2: Q8_0
+  4.txt_mod.lin: Q8_0
+  loss: 8.921308472054079e-05
+  sensitivity: 0.03537574071917392
+  time: 71.92200000002049
+layer05:
+  5.txt_attn.proj: Q8_0
+  5.txt_attn.qkv: Q8_0
+  5.txt_mlp.0: Q8_0
+  5.txt_mlp.2: Q8_0
+  5.txt_mod.lin: Q8_0
+  loss: 6.680960359517485e-05
+  sensitivity: 0.02713622488320681
+  time: 70.60900000005495
+layer06:
+  6.txt_attn.proj: Q8_0
+  6.txt_attn.qkv: Q8_0
+  6.txt_mlp.0: Q8_0
+  6.txt_mlp.2: Q8_0
+  6.txt_mod.lin: Q8_0
+  loss: 7.042256038403139e-05
+  sensitivity: 0.027351543936847293
+  time: 72.125
+layer07:
+  7.txt_attn.proj: Q8_0
+  7.txt_attn.qkv: Q8_0
+  7.txt_mlp.0: Q8_0
+  7.txt_mlp.2: Q8_0
+  7.txt_mod.lin: Q8_0
+  loss: 0.00010250951163470745
+  sensitivity: 0.03150324094138766
+  time: 72.18799999996554
+layer08:
+  8.txt_attn.proj: Q8_0
+  8.txt_attn.qkv: Q8_0
+  8.txt_mlp.0: Q8_0
+  8.txt_mlp.2: Q8_0
+  8.txt_mod.lin: Q8_0
+  loss: 0.00011575091048143804
+  sensitivity: 0.031983382287635406
+  time: 75.20299999997951
+layer09:
+  9.txt_attn.proj: Q8_0
+  9.txt_attn.qkv: Q8_0
+  9.txt_mlp.0: Q8_0
+  9.txt_mlp.2: Q8_0
+  9.txt_mod.lin: Q8_0
+  loss: 0.00014846927660983056
+  sensitivity: 0.03379626626396719
+  time: 74.23499999998603
+layer10:
+  10.txt_attn.proj: Q8_0
+  10.txt_attn.qkv: Q8_0
+  10.txt_mlp.0: Q8_0
+  10.txt_mlp.2: Q8_0
+  10.txt_mod.lin: Q8_0
+  loss: 0.00029539800016209483
+  sensitivity: 0.034894236253169654
+  time: 74.79700000002049
+layer11:
+  11.txt_attn.proj: Q8_0
+  11.txt_attn.qkv: Q8_0
+  11.txt_mlp.0: Q8_0
+  11.txt_mlp.2: Q8_0
+  11.txt_mod.lin: Q8_0
+  loss: 0.00022277727839536965
+  sensitivity: 0.028556692460337155
+  time: 72.43800000008196
+layer12:
+  12.txt_attn.proj: Q8_0
+  12.txt_attn.qkv: Q8_0
+  12.txt_mlp.0: Q8_0
+  12.txt_mlp.2: Q8_0
+  12.txt_mod.lin: Q8_0
+  loss: 0.0004514757019933313
+  sensitivity: 0.03190777496257627
+  time: 72.64100000006147
+layer13:
+  13.txt_attn.proj: Q8_0
+  13.txt_attn.qkv: Q8_0
+  13.txt_mlp.0: Q8_0
+  13.txt_mlp.2: Q8_0
+  13.txt_mod.lin: Q8_0
+  loss: 0.0003139894106425345
+  sensitivity: 0.024279884126307785
+  time: 378.9220000000205
+layer14:
+  14.txt_attn.proj: Q8_0
+  14.txt_attn.qkv: Q8_0
+  14.txt_mlp.0: Q8_0
+  14.txt_mlp.2: Q8_0
+  14.txt_mod.lin: Q8_0
+  loss: 0.0005080883274786174
+  sensitivity: 0.019666578730141868
+  time: 80.20300000009593
+layer15:
+  15.txt_attn.proj: Q8_0
+  15.txt_attn.qkv: Q8_0
+  15.txt_mlp.0: Q8_0
+  15.txt_mlp.2: Q8_0
+  15.txt_mod.lin: Q8_0
+  loss: 0.0004886375390924513
+  sensitivity: 0.017937343080989487
+  time: 76.28099999995902
+layer16:
+  16.txt_attn.proj: Q8_0
+  16.txt_attn.qkv: Q8_0
+  16.txt_mlp.0: Q8_0
+  16.txt_mlp.2: Q8_0
+  16.txt_mod.lin: Q8_0
+  loss: 0.0006608229596167803
+  sensitivity: 0.018325570880858982
+  time: 74.48499999998603
+layer17:
+  17.txt_attn.proj: Q8_0
+  17.txt_attn.qkv: Q8_0
+  17.txt_mlp.0: Q8_0
+  17.txt_mlp.2: Q8_0
+  17.txt_mod.lin: Q8_0
+  loss: 0.0011613867245614529
+  sensitivity: 0.020626109306847933
+  time: 76.56299999996554
+
