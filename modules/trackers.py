@@ -21,6 +21,14 @@ class DiskCache:
 
     def __getitem__(self, i): 
         return load_file(os.path.join(self.directory.name, str(i)))
+    
+from server import PromptServer
+from aiohttp import web
+routes = PromptServer.instance.routes
+@routes.get('/upload_queue')
+async def upload_queue():
+    return web.json_response({"upload_queue":UploadThread.instance().queue.qsize()})
+
 
 class UploadThread(SingletonAddin):
     hffs = HFFS("ChrisGoringe/fi")
