@@ -1,0 +1,163 @@
+layer00:
+  0.img_attn.proj: Q8_0
+  0.img_attn.qkv: Q8_0
+  0.img_mlp.0: Q8_0
+  0.img_mlp.2: Q8_0
+  0.img_mod.lin: Q8_0
+  loss: 8.860191883286461e-05
+  sensitivity: 0.13835983568969407
+  time: 240.8279999999795
+layer01:
+  1.img_attn.proj: Q8_0
+  1.img_attn.qkv: Q8_0
+  1.img_mlp.0: Q8_0
+  1.img_mlp.2: Q8_0
+  1.img_mod.lin: Q8_0
+  loss: 0.0016073499573394656
+  sensitivity: 0.0832148731739269
+  time: 62.21799999999348
+layer02:
+  2.img_attn.proj: Q8_0
+  2.img_attn.qkv: Q8_0
+  2.img_mlp.0: Q8_0
+  2.img_mlp.2: Q8_0
+  2.img_mod.lin: Q8_0
+  loss: 0.003963321913033724
+  sensitivity: 0.07564634184257647
+  time: 64.28200000000652
+layer03:
+  3.img_attn.proj: Q8_0
+  3.img_attn.qkv: Q8_0
+  3.img_mlp.0: Q8_0
+  3.img_mlp.2: Q8_0
+  3.img_mod.lin: Q8_0
+  loss: 0.0006850973586551845
+  sensitivity: 0.029804280292965526
+  time: 62.125
+layer04:
+  4.img_attn.proj: Q8_0
+  4.img_attn.qkv: Q8_0
+  4.img_mlp.0: Q8_0
+  4.img_mlp.2: Q8_0
+  4.img_mod.lin: Q8_0
+  loss: 0.0006553352577611804
+  sensitivity: 0.026916081309717545
+  time: 64.46900000004098
+layer05:
+  5.img_attn.proj: Q8_0
+  5.img_attn.qkv: Q8_0
+  5.img_mlp.0: Q8_0
+  5.img_mlp.2: Q8_0
+  5.img_mod.lin: Q8_0
+  loss: 0.0002495530352462083
+  sensitivity: 0.01635423086224902
+  time: 67.59400000004098
+layer06:
+  6.img_attn.proj: Q8_0
+  6.img_attn.qkv: Q8_0
+  6.img_mlp.0: Q8_0
+  6.img_mlp.2: Q8_0
+  6.img_mod.lin: Q8_0
+  loss: 0.0002844860136974603
+  sensitivity: 0.017941569176604142
+  time: 889.234999999986
+layer07:
+  7.img_attn.proj: Q8_0
+  7.img_attn.qkv: Q8_0
+  7.img_mlp.0: Q8_0
+  7.img_mlp.2: Q8_0
+  7.img_mod.lin: Q8_0
+  loss: 0.00039468493196181953
+  sensitivity: 0.019476344209856746
+  time: 65.17200000002049
+layer08:
+  8.img_attn.proj: Q8_0
+  8.img_attn.qkv: Q8_0
+  8.img_mlp.0: Q8_0
+  8.img_mlp.2: Q8_0
+  8.img_mod.lin: Q8_0
+  loss: 0.00039500693674199283
+  sensitivity: 0.01760143241726935
+  time: 63.53100000007544
+layer09:
+  9.img_attn.proj: Q8_0
+  9.img_attn.qkv: Q8_0
+  9.img_mlp.0: Q8_0
+  9.img_mlp.2: Q8_0
+  9.img_mod.lin: Q8_0
+  loss: 0.00047890550922602415
+  sensitivity: 0.017680144874050844
+  time: 65.93800000008196
+layer10:
+  10.img_attn.proj: Q8_0
+  10.img_attn.qkv: Q8_0
+  10.img_mlp.0: Q8_0
+  10.img_mlp.2: Q8_0
+  10.img_mod.lin: Q8_0
+  loss: 0.0006658628117293119
+  sensitivity: 0.017677870030997505
+  time: 65.68799999996554
+layer11:
+  11.img_attn.proj: Q8_0
+  11.img_attn.qkv: Q8_0
+  11.img_mlp.0: Q8_0
+  11.img_mlp.2: Q8_0
+  11.img_mod.lin: Q8_0
+  loss: 0.0006575150764547288
+  sensitivity: 0.015683628278907177
+  time: 63.875
+layer12:
+  12.img_attn.proj: Q8_0
+  12.img_attn.qkv: Q8_0
+  12.img_mlp.0: Q8_0
+  12.img_mlp.2: Q8_0
+  12.img_mod.lin: Q8_0
+  loss: 0.0008787675178609788
+  sensitivity: 0.01714203999978807
+  time: 68.90600000007544
+layer13:
+  13.img_attn.proj: Q8_0
+  13.img_attn.qkv: Q8_0
+  13.img_mlp.0: Q8_0
+  13.img_mlp.2: Q8_0
+  13.img_mod.lin: Q8_0
+  loss: 0.0011162696173414588
+  sensitivity: 0.01585148486115083
+  time: 535.5629999999655
+layer14:
+  14.img_attn.proj: Q8_0
+  14.img_attn.qkv: Q8_0
+  14.img_mlp.0: Q8_0
+  14.img_mlp.2: Q8_0
+  14.img_mod.lin: Q8_0
+  loss: 0.0023157193791121244
+  sensitivity: 0.019647483763751743
+  time: 77.76599999994505
+layer15:
+  15.img_attn.proj: Q8_0
+  15.img_attn.qkv: Q8_0
+  15.img_mlp.0: Q8_0
+  15.img_mlp.2: Q8_0
+  15.img_mod.lin: Q8_0
+  loss: 0.0015519872540608048
+  sensitivity: 0.013748909796032731
+  time: 77.78099999995902
+layer16:
+  16.img_attn.proj: Q8_0
+  16.img_attn.qkv: Q8_0
+  16.img_mlp.0: Q8_0
+  16.img_mlp.2: Q8_0
+  16.img_mod.lin: Q8_0
+  loss: 0.002849727403372526
+  sensitivity: 0.01616499188928569
+  time: 80.79700000002049
+layer17:
+  17.img_attn.proj: Q8_0
+  17.img_attn.qkv: Q8_0
+  17.img_mlp.0: Q8_0
+  17.img_mlp.2: Q8_0
+  17.img_mod.lin: Q8_0
+  loss: 0.003647147910669446
+  sensitivity: 0.012275184437366667
+  time: 78.04700000002049
+
