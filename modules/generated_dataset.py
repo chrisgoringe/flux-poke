@@ -4,23 +4,16 @@ from modules.hffs import HFFS
 from modules.utils import filepath
 from safetensors.torch import load_file
 
-EXCLUDE = [9091578,7438693,
-]
-
 class TheDataset:
     _sources = None
     shuffle = False
 
     @classmethod
-    def set_dataset_source(cls, dir, shuffle=False, seed=0):
-        if os.path.isdir(local_dir:=filepath(dir)):
-            cls._sources = cls._sources or [ os.path.join(local_dir,x) for x in os.listdir(local_dir) if x.endswith(".safetensors") ]
-            cls.load_file = load_file
-        else:
-            cls.hffs = HFFS(repo_id=dir)
-            cls._sources = cls._sources or cls.hffs.get_entry_list()
-            cls._sources = [x for x in cls._sources if int(x.split('/')[-1]) not in EXCLUDE]
-            cls.load_file = partial(cls.hffs.load_file)
+    def set_dataset_source(cls, dir, shuffle=False, seed=0, exclusions:list[int]=[]):
+        cls.hffs = HFFS(repo_id=dir)
+        cls._sources = cls._sources or cls.hffs.get_entry_list()
+        cls._sources = [x for x in cls._sources if int(x.split('/')[-1]) not in exclusions]
+        cls.load_file = partial(cls.hffs.load_file)
         if shuffle:
             if seed: random.seed(seed)
             random.shuffle(cls._sources)

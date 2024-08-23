@@ -79,8 +79,10 @@ class Arguments(HintingArguments, SingletonAddin):
         self.model:str                  = self.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
         self.load_patches:list[str]     = self.add_argument('--load_patches', action="append", type=str, help="directory to load existing patches from (can have multiple)")
         self.allow_overpatching:bool    = self.add_argument('--allow_overpatching', action="store_true", help="allow one patch to overwrite a previous one (default is an assertion fail)")
-        self.save_dir:str               = self.add_argument('--save_dir', default="output", help="Relative path of directory to store results in (includes patches if training)")
-        self.saved_model:str            = self.add_argument('--saved_model', help="saved model when doing convert (absolute path)")
+        
+        self.save_dir:str       = self.add_argument('--save_dir', default="output", help="Relative path of directory to store results in (includes patches if training)")
+        self.saved_model:str    = self.add_argument('--saved_model', help="saved model when doing convert (absolute path)")
+        self.stats_file:str     = self.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
 
         self.verbose:bool       = self.add_argument('--verbose', action="store_true")
         self.run_asyncs:bool    = self.add_argument('--run_asyncs', action="store_true", help="Experimental; try to cast asynchronously")
@@ -92,12 +94,11 @@ class Arguments(HintingArguments, SingletonAddin):
         self.internals:str      = self.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file for prune_map")
         self.default_cast:str   = self.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
-        self.stats_file:str     = self.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
-        self.cache_dir:str      = self.add_argument('--cache_dir', default=None, help="If using HFFS, where to cache files (absolute path)")
-
-        self.hs_dir:str         = self.add_argument('--hs_dir', default="hidden_states", help="Relative path of directory data is found in, or repo_id")
+        self.hs_dir:str         = self.add_argument('--hs_dir', default="hidden_states", help="Hugging face repo_id for data")
+        self.cache_dir:str      = self.add_argument('--cache_dir', default=None, help="Cache directory for files retrieved from repo")
         self.shuffle:bool       = self.add_argument('--shuffle', action='store_true', help="shuffle the dataset")
         self.shuffle_seed:int   = self.add_argument('--shuffle_seed', default=42)
+        self.exclude:list[int]  = self.add_argument('--exclude', action="append", type=int, help="Exclude this folder from the repo (can be used multiple times)")
         
         fraction                = self.add_mutually_exclusive_group()
         self.train_frac:float   = fraction.add_argument('--train_frac', type=float, default=0.8, help="fraction of dataset to train on")
