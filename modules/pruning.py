@@ -32,7 +32,7 @@ def prune_model(model, prune_config, model_first_layer, verbose, callbacks=[]):
                 model_layer_index = global_layer_number - model_first_layer
                 if model_layer_index>=0 and model_layer_index<len(model):
                     layer = model[model_layer_index]
-                    def record(parent,block, number, threshold): 
+                    def record(parent, block, number, threshold): 
                         if verbose: print(f"{parent}.{global_layer_number}.{block} pruned by {number} (threshold {threshold})")
                         shared.layer_stats[global_layer_number][block] = f"Pruned by {number} (threshold {threshold})"
                     prune_layer(layer, global_layer_number=global_layer_number, count=remove, constraint=block_constraint, callbacks=callbacks+[record,])
