@@ -1,0 +1,172 @@
+layer00:
+  0.txt_attn.proj: Q5_1
+  0.txt_attn.qkv: Q5_1
+  0.txt_mlp.0: Q5_1
+  0.txt_mlp.2: Q5_1
+  0.txt_mod.lin: Q5_1
+  loss: 0.0006801741546951234
+  sensitivity: 0.22338351393692904
+  time: 163.67647857003612
+layer01:
+  1.txt_attn.proj: Q5_1
+  1.txt_attn.qkv: Q5_1
+  1.txt_mlp.0: Q5_1
+  1.txt_mlp.2: Q5_1
+  1.txt_mod.lin: Q5_1
+  loss: 0.0006783932913094759
+  sensitivity: 0.1206075549880283
+  time: 28.62700344400946
+layer02:
+  2.txt_attn.proj: Q5_1
+  2.txt_attn.qkv: Q5_1
+  2.txt_mlp.0: Q5_1
+  2.txt_mlp.2: Q5_1
+  2.txt_mod.lin: Q5_1
+  loss: 0.0011811548611149192
+  sensitivity: 0.14023481329647794
+  time: 28.641876251029316
+layer03:
+  3.txt_attn.proj: Q5_1
+  3.txt_attn.qkv: Q5_1
+  3.txt_mlp.0: Q5_1
+  3.txt_mlp.2: Q5_1
+  3.txt_mod.lin: Q5_1
+  loss: 0.00034764347947202623
+  sensitivity: 0.07220668904800488
+  time: 27.923688151000533
+layer04:
+  4.txt_attn.proj: Q5_1
+  4.txt_attn.qkv: Q5_1
+  4.txt_mlp.0: Q5_1
+  4.txt_mlp.2: Q5_1
+  4.txt_mod.lin: Q5_1
+  loss: 0.0002973128284793347
+  sensitivity: 0.06458000708585138
+  time: 28.50639453099575
+layer05:
+  5.txt_attn.proj: Q5_1
+  5.txt_attn.qkv: Q5_1
+  5.txt_mlp.0: Q5_1
+  5.txt_mlp.2: Q5_1
+  5.txt_mod.lin: Q5_1
+  loss: 0.0002459895913489163
+  sensitivity: 0.052070092324693056
+  time: 28.491084448993206
+layer06:
+  6.txt_attn.proj: Q5_1
+  6.txt_attn.qkv: Q5_1
+  6.txt_mlp.0: Q5_1
+  6.txt_mlp.2: Q5_1
+  6.txt_mod.lin: Q5_1
+  loss: 0.00034509386750869453
+  sensitivity: 0.06054726939671091
+  time: 294.7674457730027
+layer07:
+  7.txt_attn.proj: Q5_1
+  7.txt_attn.qkv: Q5_1
+  7.txt_mlp.0: Q5_1
+  7.txt_mlp.2: Q5_1
+  7.txt_mod.lin: Q5_1
+  loss: 0.0005033648922108114
+  sensitivity: 0.06980951382364749
+  time: 30.644820194982458
+layer08:
+  8.txt_attn.proj: Q5_1
+  8.txt_attn.qkv: Q5_1
+  8.txt_mlp.0: Q5_1
+  8.txt_mlp.2: Q5_1
+  8.txt_mod.lin: Q5_1
+  loss: 0.0006174748996272683
+  sensitivity: 0.07387063551222194
+  time: 28.011509803996887
+layer09:
+  9.txt_attn.proj: Q5_1
+  9.txt_attn.qkv: Q5_1
+  9.txt_mlp.0: Q5_1
+  9.txt_mlp.2: Q5_1
+  9.txt_mod.lin: Q5_1
+  loss: 0.0008880070527084172
+  sensitivity: 0.08265300243944952
+  time: 27.871588393987622
+layer10:
+  10.txt_attn.proj: Q5_1
+  10.txt_attn.qkv: Q5_1
+  10.txt_mlp.0: Q5_1
+  10.txt_mlp.2: Q5_1
+  10.txt_mod.lin: Q5_1
+  loss: 0.0011084420839324594
+  sensitivity: 0.06759373190048285
+  time: 28.13582092098659
+layer11:
+  11.txt_attn.proj: Q5_1
+  11.txt_attn.qkv: Q5_1
+  11.txt_mlp.0: Q5_1
+  11.txt_mlp.2: Q5_1
+  11.txt_mod.lin: Q5_1
+  loss: 0.0013042371720075607
+  sensitivity: 0.06909565599558297
+  time: 27.668382973992266
+layer12:
+  12.txt_attn.proj: Q5_1
+  12.txt_attn.qkv: Q5_1
+  12.txt_mlp.0: Q5_1
+  12.txt_mlp.2: Q5_1
+  12.txt_mod.lin: Q5_1
+  loss: 0.0017838770290836692
+  sensitivity: 0.06342519133251659
+  time: 27.856467105972115
+layer13:
+  13.txt_attn.proj: Q5_1
+  13.txt_attn.qkv: Q5_1
+  13.txt_mlp.0: Q5_1
+  13.txt_mlp.2: Q5_1
+  13.txt_mod.lin: Q5_1
+  loss: 0.0009479133295826614
+  sensitivity: 0.04218649305171264
+  time: 178.9206008220208
+layer14:
+  14.txt_attn.proj: Q5_1
+  14.txt_attn.qkv: Q5_1
+  14.txt_mlp.0: Q5_1
+  14.txt_mlp.2: Q5_1
+  14.txt_mod.lin: Q5_1
+  loss: 0.0013247898314148188
+  sensitivity: 0.03175650496597352
+  time: 28.793736550956964
+layer15:
+  15.txt_attn.proj: Q5_1
+  15.txt_attn.qkv: Q5_1
+  15.txt_mlp.0: Q5_1
+  15.txt_mlp.2: Q5_1
+  15.txt_mod.lin: Q5_1
+  loss: 0.0023742986377328634
+  sensitivity: 0.039539609187197906
+  time: 27.150173805013765
+layer16:
+  16.txt_attn.proj: Q5_1
+  16.txt_attn.qkv: Q5_1
+  16.txt_mlp.0: Q5_1
+  16.txt_mlp.2: Q5_1
+  16.txt_mod.lin: Q5_1
+  loss: 0.0029234595131129026
+  sensitivity: 0.0385445955291342
+  time: 27.493380112980958
+layer17:
+  17.txt_attn.proj: Q5_1
+  17.txt_attn.qkv: Q5_1
+  17.txt_mlp.0: Q5_1
+  17.txt_mlp.2: Q5_1
+  17.txt_mod.lin: Q5_1
+  loss: 0.007158240303397179
+  sensitivity: 0.05120731716534892
+  time: 27.206743114977144
+layer18:
+  18.txt_attn.proj: Q5_1
+  18.txt_attn.qkv: Q5_1
+  18.txt_mlp.0: Q5_1
+  18.txt_mlp.2: Q5_1
+  18.txt_mod.lin: Q5_1
+  loss: 0.4211575388908386
+  sensitivity: 0.13628296836026862
+  time: 329.83496357500553
+

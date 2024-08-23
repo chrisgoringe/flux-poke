@@ -1,0 +1,267 @@
+layer19:
+  19.linear1: Q5_1
+  19.linear2: Q5_1
+  19.modulation.lin: Q5_1
+  loss: 0.030577367171645164
+  sensitivity: 0.011700573908106776
+  time: 39.660390669014305
+layer20:
+  20.linear1: Q5_1
+  20.linear2: Q5_1
+  20.modulation.lin: Q5_1
+  loss: 0.031085578724741936
+  sensitivity: 0.00922363863270032
+  time: 43.85316603601677
+layer21:
+  21.linear1: Q5_1
+  21.linear2: Q5_1
+  21.modulation.lin: Q5_1
+  loss: 0.040694255381822586
+  sensitivity: 0.007971741394927167
+  time: 27.18193328200141
+layer22:
+  22.linear1: Q5_1
+  22.linear2: Q5_1
+  22.modulation.lin: Q5_1
+  loss: 0.047963667660951614
+  sensitivity: 0.006092049274277014
+  time: 24.572038878977764
+layer23:
+  23.linear1: Q5_1
+  23.linear2: Q5_1
+  23.modulation.lin: Q5_1
+  loss: 0.07402941584587097
+  sensitivity: 0.005486824145017049
+  time: 24.369826667010784
+layer24:
+  24.linear1: Q5_1
+  24.linear2: Q5_1
+  24.modulation.lin: Q5_1
+  loss: 0.062744140625
+  sensitivity: 0.003852765959329593
+  time: 23.868796472030226
+layer25:
+  25.linear1: Q5_1
+  25.linear2: Q5_1
+  25.modulation.lin: Q5_1
+  loss: 0.14834780991077423
+  sensitivity: 0.005059148854779196
+  time: 332.91731215798063
+layer26:
+  26.linear1: Q5_1
+  26.linear2: Q5_1
+  26.modulation.lin: Q5_1
+  loss: 0.1326729953289032
+  sensitivity: 0.0045253581322204596
+  time: 27.445723048003856
+layer27:
+  27.linear1: Q5_1
+  27.linear2: Q5_1
+  27.modulation.lin: Q5_1
+  loss: 0.11881178617477417
+  sensitivity: 0.0039305312012181915
+  time: 24.135714550036937
+layer28:
+  28.linear1: Q5_1
+  28.linear2: Q5_1
+  28.modulation.lin: Q5_1
+  loss: 0.18007613718509674
+  sensitivity: 0.004613365598448253
+  time: 23.70645895897178
+layer29:
+  29.linear1: Q5_1
+  29.linear2: Q5_1
+  29.modulation.lin: Q5_1
+  loss: 0.20288583636283875
+  sensitivity: 0.004772335032700043
+  time: 23.826056179008447
+layer30:
+  30.linear1: Q5_1
+  30.linear2: Q5_1
+  30.modulation.lin: Q5_1
+  loss: 0.2593670189380646
+  sensitivity: 0.005204056666888473
+  time: 23.80059405299835
+layer31:
+  31.linear1: Q5_1
+  31.linear2: Q5_1
+  31.modulation.lin: Q5_1
+  loss: 0.27082669734954834
+  sensitivity: 0.005045133122401815
+  time: 280.35663047700655
+layer32:
+  32.linear1: Q5_1
+  32.linear2: Q5_1
+  32.modulation.lin: Q5_1
+  loss: 0.3192562162876129
+  sensitivity: 0.005378115997589464
+  time: 32.93606640899088
+layer33:
+  33.linear1: Q5_1
+  33.linear2: Q5_1
+  33.modulation.lin: Q5_1
+  loss: 0.3335857689380646
+  sensitivity: 0.005417117524671436
+  time: 23.5035503480467
+layer34:
+  34.linear1: Q5_1
+  34.linear2: Q5_1
+  34.modulation.lin: Q5_1
+  loss: 0.3117825388908386
+  sensitivity: 0.005367205715594599
+  time: 23.86508464702638
+layer35:
+  35.linear1: Q5_1
+  35.linear2: Q5_1
+  35.modulation.lin: Q5_1
+  loss: 0.5176976919174194
+  sensitivity: 0.006683388358028605
+  time: 23.20108532102313
+layer36:
+  36.linear1: Q5_1
+  36.linear2: Q5_1
+  36.modulation.lin: Q5_1
+  loss: 0.4239676296710968
+  sensitivity: 0.006204407618962405
+  time: 23.680859721964225
+layer37:
+  37.linear1: Q5_1
+  37.linear2: Q5_1
+  37.modulation.lin: Q5_1
+  loss: 0.3224848508834839
+  sensitivity: 0.005159675304880897
+  time: 290.6827943439712
+layer38:
+  38.linear1: Q5_1
+  38.linear2: Q5_1
+  38.modulation.lin: Q5_1
+  loss: 0.2966557741165161
+  sensitivity: 0.004918403522076477
+  time: 29.886022540042177
+layer39:
+  39.linear1: Q5_1
+  39.linear2: Q5_1
+  39.modulation.lin: Q5_1
+  loss: 0.2908761203289032
+  sensitivity: 0.004757686085983698
+  time: 23.586867828969844
+layer40:
+  40.linear1: Q5_1
+  40.linear2: Q5_1
+  40.modulation.lin: Q5_1
+  loss: 0.3241589665412903
+  sensitivity: 0.005023747287825289
+  time: 23.714234615967143
+layer41:
+  41.linear1: Q5_1
+  41.linear2: Q5_1
+  41.modulation.lin: Q5_1
+  loss: 0.3672472834587097
+  sensitivity: 0.005277183609817837
+  time: 23.640280329971574
+layer42:
+  42.linear1: Q5_1
+  42.linear2: Q5_1
+  42.modulation.lin: Q5_1
+  loss: 0.44052934646606445
+  sensitivity: 0.005674050396868742
+  time: 23.868175374052953
+layer43:
+  43.linear1: Q5_1
+  43.linear2: Q5_1
+  43.modulation.lin: Q5_1
+  loss: 0.4632493555545807
+  sensitivity: 0.005625059865771267
+  time: 391.45242189697456
+layer44:
+  44.linear1: Q5_1
+  44.linear2: Q5_1
+  44.modulation.lin: Q5_1
+  loss: 0.6564094424247742
+  sensitivity: 0.006458377533216772
+  time: 32.640279884042684
+layer45:
+  45.linear1: Q5_1
+  45.linear2: Q5_1
+  45.modulation.lin: Q5_1
+  loss: 0.6753427982330322
+  sensitivity: 0.006607480686231069
+  time: 24.15976067399606
+layer46:
+  46.linear1: Q5_1
+  46.linear2: Q5_1
+  46.modulation.lin: Q5_1
+  loss: 0.8549107313156128
+  sensitivity: 0.0071174756837396255
+  time: 24.454844404011965
+layer47:
+  47.linear1: Q5_1
+  47.linear2: Q5_1
+  47.modulation.lin: Q5_1
+  loss: 0.8164461255073547
+  sensitivity: 0.006604021483869176
+  time: 24.343791658000555
+layer48:
+  48.linear1: Q5_1
+  48.linear2: Q5_1
+  48.modulation.lin: Q5_1
+  loss: 0.8206313848495483
+  sensitivity: 0.006420152117742616
+  time: 24.221901732031256
+layer49:
+  49.linear1: Q5_1
+  49.linear2: Q5_1
+  49.modulation.lin: Q5_1
+  loss: 1.3962053060531616
+  sensitivity: 0.00851344455521222
+  time: 24.472670516988728
+layer50:
+  50.linear1: Q5_1
+  50.linear2: Q5_1
+  50.modulation.lin: Q5_1
+  loss: 1.6898915767669678
+  sensitivity: 0.009141215755071565
+  time: 287.9721377490205
+layer51:
+  51.linear1: Q5_1
+  51.linear2: Q5_1
+  51.modulation.lin: Q5_1
+  loss: 2.8370535373687744
+  sensitivity: 0.010975066905373908
+  time: 31.792803771968465
+layer52:
+  52.linear1: Q5_1
+  52.linear2: Q5_1
+  52.modulation.lin: Q5_1
+  loss: 2.910554885864258
+  sensitivity: 0.010533345735140403
+  time: 24.523095151991583
+layer53:
+  53.linear1: Q5_1
+  53.linear2: Q5_1
+  53.modulation.lin: Q5_1
+  loss: 4.498086929321289
+  sensitivity: 0.01215868117084502
+  time: 24.1043028300046
+layer54:
+  54.linear1: Q5_1
+  54.linear2: Q5_1
+  54.modulation.lin: Q5_1
+  loss: 5.534438610076904
+  sensitivity: 0.011623891653033508
+  time: 24.556803821003996
+layer55:
+  55.linear1: Q5_1
+  55.linear2: Q5_1
+  55.modulation.lin: Q5_1
+  loss: 0.9880421161651611
+  sensitivity: 0.004119786899144756
+  time: 24.0254232409643
+layer56:
+  56.linear1: Q5_1
+  56.linear2: Q5_1
+  56.modulation.lin: Q5_1
+  loss: 0.3068399131298065
+  sensitivity: 0.0023442434618423324
+  time: 24.32245417300146
+

@@ -1,0 +1,172 @@
+layer00:
+  0.img_attn.proj: Q5_1
+  0.img_attn.qkv: Q5_1
+  0.img_mlp.0: Q5_1
+  0.img_mlp.2: Q5_1
+  0.img_mod.lin: Q5_1
+  loss: 0.0003480305604171008
+  sensitivity: 0.27421876104168735
+  time: 418.6082345600007
+layer01:
+  1.img_attn.proj: Q5_1
+  1.img_attn.qkv: Q5_1
+  1.img_mlp.0: Q5_1
+  1.img_mlp.2: Q5_1
+  1.img_mod.lin: Q5_1
+  loss: 0.0065362113527953625
+  sensitivity: 0.16780649935302885
+  time: 40.0201514029759
+layer02:
+  2.img_attn.proj: Q5_1
+  2.img_attn.qkv: Q5_1
+  2.img_mlp.0: Q5_1
+  2.img_mlp.2: Q5_1
+  2.img_mod.lin: Q5_1
+  loss: 0.012293255887925625
+  sensitivity: 0.13322683710188785
+  time: 37.53471406502649
+layer03:
+  3.img_attn.proj: Q5_1
+  3.img_attn.qkv: Q5_1
+  3.img_mlp.0: Q5_1
+  3.img_mlp.2: Q5_1
+  3.img_mod.lin: Q5_1
+  loss: 0.0031115820165723562
+  sensitivity: 0.06351745943345069
+  time: 37.96281091298442
+layer04:
+  4.img_attn.proj: Q5_1
+  4.img_attn.qkv: Q5_1
+  4.img_mlp.0: Q5_1
+  4.img_mlp.2: Q5_1
+  4.img_mod.lin: Q5_1
+  loss: 0.00392986461520195
+  sensitivity: 0.06591266310998531
+  time: 36.23573546099942
+layer05:
+  5.img_attn.proj: Q5_1
+  5.img_attn.qkv: Q5_1
+  5.img_mlp.0: Q5_1
+  5.img_mlp.2: Q5_1
+  5.img_mod.lin: Q5_1
+  loss: 0.0019115266622975469
+  sensitivity: 0.04526253523468495
+  time: 36.297031781985424
+layer06:
+  6.img_attn.proj: Q5_1
+  6.img_attn.qkv: Q5_1
+  6.img_mlp.0: Q5_1
+  6.img_mlp.2: Q5_1
+  6.img_mod.lin: Q5_1
+  loss: 0.0022597541101276875
+  sensitivity: 0.05056622776174764
+  time: 467.7040463050362
+layer07:
+  7.img_attn.proj: Q5_1
+  7.img_attn.qkv: Q5_1
+  7.img_mlp.0: Q5_1
+  7.img_mlp.2: Q5_1
+  7.img_mod.lin: Q5_1
+  loss: 0.0033482748549431562
+  sensitivity: 0.0567273790840741
+  time: 46.26142803399125
+layer08:
+  8.img_attn.proj: Q5_1
+  8.img_attn.qkv: Q5_1
+  8.img_mlp.0: Q5_1
+  8.img_mlp.2: Q5_1
+  8.img_mod.lin: Q5_1
+  loss: 0.0035563877318054438
+  sensitivity: 0.05281413886149973
+  time: 35.132566196029074
+layer09:
+  9.img_attn.proj: Q5_1
+  9.img_attn.qkv: Q5_1
+  9.img_mlp.0: Q5_1
+  9.img_mlp.2: Q5_1
+  9.img_mod.lin: Q5_1
+  loss: 0.003987024538218975
+  sensitivity: 0.051013527710090247
+  time: 36.000798780005425
+layer10:
+  10.img_attn.proj: Q5_1
+  10.img_attn.qkv: Q5_1
+  10.img_mlp.0: Q5_1
+  10.img_mlp.2: Q5_1
+  10.img_mod.lin: Q5_1
+  loss: 0.0047505698166787624
+  sensitivity: 0.04721830672545835
+  time: 36.08592584199505
+layer11:
+  11.img_attn.proj: Q5_1
+  11.img_attn.qkv: Q5_1
+  11.img_mlp.0: Q5_1
+  11.img_mlp.2: Q5_1
+  11.img_mod.lin: Q5_1
+  loss: 0.005785745102912188
+  sensitivity: 0.04652360191278217
+  time: 36.39028428198071
+layer12:
+  12.img_attn.proj: Q5_1
+  12.img_attn.qkv: Q5_1
+  12.img_mlp.0: Q5_1
+  12.img_mlp.2: Q5_1
+  12.img_mod.lin: Q5_1
+  loss: 0.006817529909312725
+  sensitivity: 0.047746224125011
+  time: 35.922617302974686
+layer13:
+  13.img_attn.proj: Q5_1
+  13.img_attn.qkv: Q5_1
+  13.img_mlp.0: Q5_1
+  13.img_mlp.2: Q5_1
+  13.img_mod.lin: Q5_1
+  loss: 0.0088660828769207
+  sensitivity: 0.044673634989314606
+  time: 246.0473975460045
+layer14:
+  14.img_attn.proj: Q5_1
+  14.img_attn.qkv: Q5_1
+  14.img_mlp.0: Q5_1
+  14.img_mlp.2: Q5_1
+  14.img_mod.lin: Q5_1
+  loss: 0.01169549860060215
+  sensitivity: 0.04415433457855433
+  time: 42.560217640013434
+layer15:
+  15.img_attn.proj: Q5_1
+  15.img_attn.qkv: Q5_1
+  15.img_mlp.0: Q5_1
+  15.img_mlp.2: Q5_1
+  15.img_mod.lin: Q5_1
+  loss: 0.013063945807516575
+  sensitivity: 0.03988975534087229
+  time: 35.01636122900527
+layer16:
+  16.img_attn.proj: Q5_1
+  16.img_attn.qkv: Q5_1
+  16.img_mlp.0: Q5_1
+  16.img_mlp.2: Q5_1
+  16.img_mod.lin: Q5_1
+  loss: 0.016937255859375
+  sensitivity: 0.039408994644270445
+  time: 34.84415149601409
+layer17:
+  17.img_attn.proj: Q5_1
+  17.img_attn.qkv: Q5_1
+  17.img_mlp.0: Q5_1
+  17.img_mlp.2: Q5_1
+  17.img_mod.lin: Q5_1
+  loss: 0.02902754582464695
+  sensitivity: 0.034630319438513885
+  time: 35.381189635023475
+layer18:
+  18.img_attn.proj: Q5_1
+  18.img_attn.qkv: Q5_1
+  18.img_mlp.0: Q5_1
+  18.img_mlp.2: Q5_1
+  18.img_mod.lin: Q5_1
+  loss: 0.3544611930847168
+  sensitivity: 0.041675650518199624
+  time: 439.43292194994865
+
