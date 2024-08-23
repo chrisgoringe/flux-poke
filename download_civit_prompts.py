@@ -1,5 +1,5 @@
 
-import requests, datasets
+import requests, datasets, shutil
 from tqdm import trange, tqdm
 
 def prompts(period="Week"):
@@ -29,3 +29,6 @@ def main(add=True):
 
 if __name__=='__main__': 
     main()
+    shutil.rmtree('prompts_dataset.last', ignore_errors=True)
+    shutil.move('prompts_dataset','prompts_dataset.last')
+    shutil.move('new_prompts_dataset','prompts_dataset')
