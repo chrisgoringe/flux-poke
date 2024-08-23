@@ -53,7 +53,7 @@ def train_or_evaluate():
         any_to_train = prep_for_train(model, train_config=load_config(filepath(args.train_map)), layer_index=args.first_layer, verbose=args.verbose)
         assert any_to_train, "Nothing to train"
     
-    TheDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed)
+    TheDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed, validate=args.validate)
     t = TheTrainer(
         model         = model,
         args          = args.training_args,

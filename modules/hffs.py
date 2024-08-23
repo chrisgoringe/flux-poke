@@ -52,8 +52,14 @@ class HFFS:
     def rpath(self, filename):
         return "/".join(["datasets",self.repo_id, filename])
 
-    def get_entry_list(self) -> list[str]:
-        return self.fs.glob(self.rpath('[0-9]*/'))
+    def get_entry_list(self, validate=False) -> list[str]:
+        entries = self.fs.glob(self.rpath('[0-9]*/'))
+        if validate:
+            valid = [e for e in entries if len(self.fs.glob(f"{e}/*.safetensors"))==9]
+            if len(entries)!=len(valid):
+                print(f"Invalid directories ignored: {[e.split('/')[-1] for e in entries if not e in valid]}")
+            return valid
+        return entries
     
     def load_file(self, filename):
         def convert(filename):

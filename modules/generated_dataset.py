@@ -1,17 +1,15 @@
-import os, random
+import random
 from functools import partial
 from modules.hffs import HFFS
-from modules.utils import filepath
-from safetensors.torch import load_file
 
 class TheDataset:
     _sources = None
     shuffle = False
 
     @classmethod
-    def set_dataset_source(cls, dir, shuffle=False, seed=0, exclusions:list[int]=[]):
+    def set_dataset_source(cls, dir, shuffle=False, seed=0, exclusions:list[int]=[], validate=False):
         cls.hffs = HFFS(repo_id=dir)
-        cls._sources = cls._sources or cls.hffs.get_entry_list()
+        cls._sources = cls._sources or cls.hffs.get_entry_list(validate=validate)
         cls._sources = [x for x in cls._sources if int(x.split('/')[-1]) not in exclusions]
         cls.load_file = partial(cls.hffs.load_file)
         if shuffle:

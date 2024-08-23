@@ -1,4 +1,8 @@
---first_layers=0-17
+# a torch dtype:                     dfloat16, float16, float8_e4m3fn, float8_e4m3fnuz, float8_e5m2, float8_e5m2uz
+# a bitsandbytes Linear replacement: Linear8bitLt, Linear4bit (==LinearFP4), LinearNF4
+# a supported gguf type:             Q8_0, Q5_1, Q4_1
+
+--first_layers=double
 --verbose
 #--autocast
 @cast=Q8_0
@@ -14,6 +18,7 @@
 #--train_map = settings.yaml
 
 --hs_dir=ChrisGoringe/fi
+--validate
 --eval_frac = 1.0
 --shuffle
 --shuffle_seed=77
