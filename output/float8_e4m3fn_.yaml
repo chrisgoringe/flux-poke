@@ -1,0 +1,172 @@
+layer00:
+  0.img_attn.proj: torch.float8_e4m3fn
+  0.img_attn.qkv: torch.float8_e4m3fn
+  0.img_mlp.0: torch.float8_e4m3fn
+  0.img_mlp.2: torch.float8_e4m3fn
+  0.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0003643892705440521
+  sensitivity: 0.28058940247629627
+  time: 2428.2313208720298
+layer01:
+  1.img_attn.proj: torch.float8_e4m3fn
+  1.img_attn.qkv: torch.float8_e4m3fn
+  1.img_mlp.0: torch.float8_e4m3fn
+  1.img_mlp.2: torch.float8_e4m3fn
+  1.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.00889703817665577
+  sensitivity: 0.19578006175180376
+  time: 18.33560736599611
+layer02:
+  2.img_attn.proj: torch.float8_e4m3fn
+  2.img_attn.qkv: torch.float8_e4m3fn
+  2.img_mlp.0: torch.float8_e4m3fn
+  2.img_mlp.2: torch.float8_e4m3fn
+  2.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.016868529841303825
+  sensitivity: 0.156061894107591
+  time: 17.02247278194409
+layer03:
+  3.img_attn.proj: torch.float8_e4m3fn
+  3.img_attn.qkv: torch.float8_e4m3fn
+  3.img_mlp.0: torch.float8_e4m3fn
+  3.img_mlp.2: torch.float8_e4m3fn
+  3.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0026500532403588295
+  sensitivity: 0.05861783742224046
+  time: 16.582045221002772
+layer04:
+  4.img_attn.proj: torch.float8_e4m3fn
+  4.img_attn.qkv: torch.float8_e4m3fn
+  4.img_mlp.0: torch.float8_e4m3fn
+  4.img_mlp.2: torch.float8_e4m3fn
+  4.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.002715298207476735
+  sensitivity: 0.05478842689285124
+  time: 16.91484461101936
+layer05:
+  5.img_attn.proj: torch.float8_e4m3fn
+  5.img_attn.qkv: torch.float8_e4m3fn
+  5.img_mlp.0: torch.float8_e4m3fn
+  5.img_mlp.2: torch.float8_e4m3fn
+  5.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0015302347019314766
+  sensitivity: 0.040497453845769055
+  time: 17.586537793977186
+layer06:
+  6.img_attn.proj: torch.float8_e4m3fn
+  6.img_attn.qkv: torch.float8_e4m3fn
+  6.img_mlp.0: torch.float8_e4m3fn
+  6.img_mlp.2: torch.float8_e4m3fn
+  6.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0015349051682278514
+  sensitivity: 0.041674532648867224
+  time: 2355.544143337989
+layer07:
+  7.img_attn.proj: torch.float8_e4m3fn
+  7.img_attn.qkv: torch.float8_e4m3fn
+  7.img_mlp.0: torch.float8_e4m3fn
+  7.img_mlp.2: torch.float8_e4m3fn
+  7.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.002070852555334568
+  sensitivity: 0.044612520158371374
+  time: 18.240759767009877
+layer08:
+  8.img_attn.proj: torch.float8_e4m3fn
+  8.img_attn.qkv: torch.float8_e4m3fn
+  8.img_mlp.0: torch.float8_e4m3fn
+  8.img_mlp.2: torch.float8_e4m3fn
+  8.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.002161064650863409
+  sensitivity: 0.04116987335377849
+  time: 16.897788981033955
+layer09:
+  9.img_attn.proj: torch.float8_e4m3fn
+  9.img_attn.qkv: torch.float8_e4m3fn
+  9.img_mlp.0: torch.float8_e4m3fn
+  9.img_mlp.2: torch.float8_e4m3fn
+  9.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0024505569599568844
+  sensitivity: 0.03999385830533838
+  time: 16.62125071603805
+layer10:
+  10.img_attn.proj: torch.float8_e4m3fn
+  10.img_attn.qkv: torch.float8_e4m3fn
+  10.img_mlp.0: torch.float8_e4m3fn
+  10.img_mlp.2: torch.float8_e4m3fn
+  10.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.0036011976189911366
+  sensitivity: 0.04111128329951996
+  time: 16.737564880982973
+layer11:
+  11.img_attn.proj: torch.float8_e4m3fn
+  11.img_attn.qkv: torch.float8_e4m3fn
+  11.img_mlp.0: torch.float8_e4m3fn
+  11.img_mlp.2: torch.float8_e4m3fn
+  11.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.00328642874956131
+  sensitivity: 0.03506354267605468
+  time: 17.222482563985977
+layer12:
+  12.img_attn.proj: torch.float8_e4m3fn
+  12.img_attn.qkv: torch.float8_e4m3fn
+  12.img_mlp.0: torch.float8_e4m3fn
+  12.img_mlp.2: torch.float8_e4m3fn
+  12.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.003883323399350047
+  sensitivity: 0.03603522899202655
+  time: 17.22309058002429
+layer13:
+  13.img_attn.proj: torch.float8_e4m3fn
+  13.img_attn.qkv: torch.float8_e4m3fn
+  13.img_mlp.0: torch.float8_e4m3fn
+  13.img_mlp.2: torch.float8_e4m3fn
+  13.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.004757885355502367
+  sensitivity: 0.03272595920949212
+  time: 1624.222362749977
+layer14:
+  14.img_attn.proj: torch.float8_e4m3fn
+  14.img_attn.qkv: torch.float8_e4m3fn
+  14.img_mlp.0: torch.float8_e4m3fn
+  14.img_mlp.2: torch.float8_e4m3fn
+  14.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.012162969447672367
+  sensitivity: 0.04502811653979269
+  time: 18.16017385700252
+layer15:
+  15.img_attn.proj: torch.float8_e4m3fn
+  15.img_attn.qkv: torch.float8_e4m3fn
+  15.img_mlp.0: torch.float8_e4m3fn
+  15.img_mlp.2: torch.float8_e4m3fn
+  15.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.009580036625266075
+  sensitivity: 0.03415920638547439
+  time: 16.970149644999765
+layer16:
+  16.img_attn.proj: torch.float8_e4m3fn
+  16.img_attn.qkv: torch.float8_e4m3fn
+  16.img_mlp.0: torch.float8_e4m3fn
+  16.img_mlp.2: torch.float8_e4m3fn
+  16.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.00908233318477869
+  sensitivity: 0.028858419795013582
+  time: 16.82294390903553
+layer17:
+  17.img_attn.proj: torch.float8_e4m3fn
+  17.img_attn.qkv: torch.float8_e4m3fn
+  17.img_mlp.0: torch.float8_e4m3fn
+  17.img_mlp.2: torch.float8_e4m3fn
+  17.img_mod.lin: torch.float8_e4m3fn
+  loss: 0.01262534037232399
+  sensitivity: 0.022838779184688976
+  time: 16.782470060978085
+layer18:
+  18.img_attn.proj: torch.float8_e4m3fn
+  18.img_attn.qkv: torch.float8_e4m3fn
+  18.img_mlp.0: torch.float8_e4m3fn
+  18.img_mlp.2: torch.float8_e4m3fn
+  18.img_mod.lin: torch.float8_e4m3fn
+  loss: .inf
+  sensitivity: .inf
+  time: 821.8302975349943
+
