@@ -1,0 +1,267 @@
+layer19:
+  19.linear1: torch.float8_e4m3fn
+  19.linear2: torch.float8_e4m3fn
+  19.modulation.lin: torch.float8_e4m3fn
+  loss: 0.015999075025320053
+  sensitivity: 0.008463588846601337
+  time: 725.5
+layer20:
+  20.linear1: torch.float8_e4m3fn
+  20.linear2: torch.float8_e4m3fn
+  20.modulation.lin: torch.float8_e4m3fn
+  loss: 0.017996029928326607
+  sensitivity: 0.007017964297281785
+  time: 15.390999999945052
+layer21:
+  21.linear1: torch.float8_e4m3fn
+  21.linear2: torch.float8_e4m3fn
+  21.modulation.lin: torch.float8_e4m3fn
+  loss: 0.026727017015218735
+  sensitivity: 0.0064604369681355855
+  time: 14.718999999924563
+layer22:
+  22.linear1: torch.float8_e4m3fn
+  22.linear2: torch.float8_e4m3fn
+  22.modulation.lin: torch.float8_e4m3fn
+  loss: 0.027141951024532318
+  sensitivity: 0.004582766672433847
+  time: 14.781000000075437
+layer23:
+  23.linear1: torch.float8_e4m3fn
+  23.linear2: torch.float8_e4m3fn
+  23.modulation.lin: torch.float8_e4m3fn
+  loss: 0.03580823168158531
+  sensitivity: 0.0038160171448475776
+  time: 14.936999999918044
+layer24:
+  24.linear1: torch.float8_e4m3fn
+  24.linear2: torch.float8_e4m3fn
+  24.modulation.lin: torch.float8_e4m3fn
+  loss: 0.04062806814908981
+  sensitivity: 0.003100267206747289
+  time: 14.84299999999348
+layer25:
+  25.linear1: torch.float8_e4m3fn
+  25.linear2: torch.float8_e4m3fn
+  25.modulation.lin: torch.float8_e4m3fn
+  loss: 0.058789823204278946
+  sensitivity: 0.003184842538678469
+  time: 669.311999999918
+layer26:
+  26.linear1: torch.float8_e4m3fn
+  26.linear2: torch.float8_e4m3fn
+  26.modulation.lin: torch.float8_e4m3fn
+  loss: 0.1280670315027237
+  sensitivity: 0.004446111593639192
+  time: 14.85999999998603
+layer27:
+  27.linear1: torch.float8_e4m3fn
+  27.linear2: torch.float8_e4m3fn
+  27.modulation.lin: torch.float8_e4m3fn
+  loss: 0.07912492007017136
+  sensitivity: 0.0032075846597872035
+  time: 14.983999999938533
+layer28:
+  28.linear1: torch.float8_e4m3fn
+  28.linear2: torch.float8_e4m3fn
+  28.modulation.lin: torch.float8_e4m3fn
+  loss: 0.10265380144119263
+  sensitivity: 0.0034831911487832982
+  time: 15.234000000054948
+layer29:
+  29.linear1: torch.float8_e4m3fn
+  29.linear2: torch.float8_e4m3fn
+  29.modulation.lin: torch.float8_e4m3fn
+  loss: 0.17174598574638367
+  sensitivity: 0.004390847538811323
+  time: 15.40700000000652
+layer30:
+  30.linear1: torch.float8_e4m3fn
+  30.linear2: torch.float8_e4m3fn
+  30.modulation.lin: torch.float8_e4m3fn
+  loss: 0.13098758459091187
+  sensitivity: 0.0036982793166034883
+  time: 15.312000000034459
+layer31:
+  31.linear1: torch.float8_e4m3fn
+  31.linear2: torch.float8_e4m3fn
+  31.modulation.lin: torch.float8_e4m3fn
+  loss: 0.13677199184894562
+  sensitivity: 0.0035852998188184567
+  time: 642.5470000000205
+layer32:
+  32.linear1: torch.float8_e4m3fn
+  32.linear2: torch.float8_e4m3fn
+  32.modulation.lin: torch.float8_e4m3fn
+  loss: 0.19604648649692535
+  sensitivity: 0.004214441361939724
+  time: 14.968999999924563
+layer33:
+  33.linear1: torch.float8_e4m3fn
+  33.linear2: torch.float8_e4m3fn
+  33.modulation.lin: torch.float8_e4m3fn
+  loss: 0.17618165910243988
+  sensitivity: 0.003936813560340181
+  time: 15.0
+layer34:
+  34.linear1: torch.float8_e4m3fn
+  34.linear2: torch.float8_e4m3fn
+  34.modulation.lin: torch.float8_e4m3fn
+  loss: 0.17758060991764069
+  sensitivity: 0.004050607088374018
+  time: 15.297000000020489
+layer35:
+  35.linear1: torch.float8_e4m3fn
+  35.linear2: torch.float8_e4m3fn
+  35.modulation.lin: torch.float8_e4m3fn
+  loss: 0.2425064593553543
+  sensitivity: 0.0045742536035973495
+  time: 15.26500000001397
+layer36:
+  36.linear1: torch.float8_e4m3fn
+  36.linear2: torch.float8_e4m3fn
+  36.modulation.lin: torch.float8_e4m3fn
+  loss: 0.17819127440452576
+  sensitivity: 0.004022325292956493
+  time: 15.34299999999348
+layer37:
+  37.linear1: torch.float8_e4m3fn
+  37.linear2: torch.float8_e4m3fn
+  37.modulation.lin: torch.float8_e4m3fn
+  loss: 0.15954609215259552
+  sensitivity: 0.003629199139776215
+  time: 656.2029999999795
+layer38:
+  38.linear1: torch.float8_e4m3fn
+  38.linear2: torch.float8_e4m3fn
+  38.modulation.lin: torch.float8_e4m3fn
+  loss: 0.15869395434856415
+  sensitivity: 0.0035973106621019265
+  time: 16.09299999999348
+layer39:
+  39.linear1: torch.float8_e4m3fn
+  39.linear2: torch.float8_e4m3fn
+  39.modulation.lin: torch.float8_e4m3fn
+  loss: 0.16022881865501404
+  sensitivity: 0.0035311166492467375
+  time: 15.172000000020489
+layer40:
+  40.linear1: torch.float8_e4m3fn
+  40.linear2: torch.float8_e4m3fn
+  40.modulation.lin: torch.float8_e4m3fn
+  loss: 0.15825234353542328
+  sensitivity: 0.0035101351655220385
+  time: 15.172000000020489
+layer41:
+  41.linear1: torch.float8_e4m3fn
+  41.linear2: torch.float8_e4m3fn
+  41.modulation.lin: torch.float8_e4m3fn
+  loss: 0.19640888273715973
+  sensitivity: 0.0038592549645950053
+  time: 15.187000000034459
+layer42:
+  42.linear1: torch.float8_e4m3fn
+  42.linear2: torch.float8_e4m3fn
+  42.modulation.lin: torch.float8_e4m3fn
+  loss: 0.22769230604171753
+  sensitivity: 0.004079246450033149
+  time: 15.171999999904074
+layer43:
+  43.linear1: torch.float8_e4m3fn
+  43.linear2: torch.float8_e4m3fn
+  43.modulation.lin: torch.float8_e4m3fn
+  loss: 0.23435404896736145
+  sensitivity: 0.004000884071817562
+  time: 674.1720000000205
+layer44:
+  44.linear1: torch.float8_e4m3fn
+  44.linear2: torch.float8_e4m3fn
+  44.modulation.lin: torch.float8_e4m3fn
+  loss: 0.33589354157447815
+  sensitivity: 0.004619945427818696
+  time: 17.70299999997951
+layer45:
+  45.linear1: torch.float8_e4m3fn
+  45.linear2: torch.float8_e4m3fn
+  45.modulation.lin: torch.float8_e4m3fn
+  loss: 0.364692747592926
+  sensitivity: 0.004855537686921506
+  time: 15.5
+layer46:
+  46.linear1: torch.float8_e4m3fn
+  46.linear2: torch.float8_e4m3fn
+  46.modulation.lin: torch.float8_e4m3fn
+  loss: 0.43083614110946655
+  sensitivity: 0.0050526785737517385
+  time: 15.5
+layer47:
+  47.linear1: torch.float8_e4m3fn
+  47.linear2: torch.float8_e4m3fn
+  47.modulation.lin: torch.float8_e4m3fn
+  loss: 0.39952966570854187
+  sensitivity: 0.004619758010226915
+  time: 16.04700000002049
+layer48:
+  48.linear1: torch.float8_e4m3fn
+  48.linear2: torch.float8_e4m3fn
+  48.modulation.lin: torch.float8_e4m3fn
+  loss: 0.38328373432159424
+  sensitivity: 0.004387644693484229
+  time: 15.827999999979511
+layer49:
+  49.linear1: torch.float8_e4m3fn
+  49.linear2: torch.float8_e4m3fn
+  49.modulation.lin: torch.float8_e4m3fn
+  loss: 0.6203563809394836
+  sensitivity: 0.005674809626292927
+  time: 15.687000000034459
+layer50:
+  50.linear1: torch.float8_e4m3fn
+  50.linear2: torch.float8_e4m3fn
+  50.modulation.lin: torch.float8_e4m3fn
+  loss: 0.7450516223907471
+  sensitivity: 0.006069706918136041
+  time: 502.68799999996554
+layer51:
+  51.linear1: torch.float8_e4m3fn
+  51.linear2: torch.float8_e4m3fn
+  51.modulation.lin: torch.float8_e4m3fn
+  loss: 1.3734904527664185
+  sensitivity: 0.007636357171623467
+  time: 16.90700000000652
+layer52:
+  52.linear1: torch.float8_e4m3fn
+  52.linear2: torch.float8_e4m3fn
+  52.modulation.lin: torch.float8_e4m3fn
+  loss: 1.3716864585876465
+  sensitivity: 0.007231124986252041
+  time: 16.265999999945052
+layer53:
+  53.linear1: torch.float8_e4m3fn
+  53.linear2: torch.float8_e4m3fn
+  53.modulation.lin: torch.float8_e4m3fn
+  loss: 2.2104458808898926
+  sensitivity: 0.00852339256654703
+  time: 16.18799999996554
+layer54:
+  54.linear1: torch.float8_e4m3fn
+  54.linear2: torch.float8_e4m3fn
+  54.modulation.lin: torch.float8_e4m3fn
+  loss: 2.822190523147583
+  sensitivity: 0.008300570271153641
+  time: 16.5
+layer55:
+  55.linear1: torch.float8_e4m3fn
+  55.linear2: torch.float8_e4m3fn
+  55.modulation.lin: torch.float8_e4m3fn
+  loss: 0.8261668682098389
+  sensitivity: 0.0037672193735187472
+  time: 16.609000000054948
+layer56:
+  56.linear1: torch.float8_e4m3fn
+  56.linear2: torch.float8_e4m3fn
+  56.modulation.lin: torch.float8_e4m3fn
+  loss: 0.6852706670761108
+  sensitivity: 0.0035033042747124954
+  time: 16.59299999999348
+

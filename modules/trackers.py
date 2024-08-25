@@ -26,7 +26,7 @@ from server import PromptServer
 from aiohttp import web
 routes = PromptServer.instance.routes
 @routes.get('/upload_queue')
-async def upload_queue():
+async def upload_queue(r):
     return web.json_response({"upload_queue":UploadThread.instance().queue.qsize()})
 
 
