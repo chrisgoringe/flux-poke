@@ -47,7 +47,7 @@ def train_or_evaluate():
             have_touched_img = have_touched_img or 'img' in block
             have_touched_txt = have_touched_txt or 'txt' in block
 
-    element = 'X' if (not is_double(args.first_layer+args.thickness)) or (have_touched_img and have_touched_txt) else ('TXT' if have_touched_txt else 'IMG')
+    element = 'X' if ((have_touched_img and have_touched_txt) or not (have_touched_img or have_touched_txt)) else ('TXT' if have_touched_txt else 'IMG')
     print(f"Sensitivity element to be applied: {element}")
 
     if args.train:

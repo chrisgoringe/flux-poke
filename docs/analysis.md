@@ -1,6 +1,21 @@
 # Analysis
 
-## Prune and train
+## Casting
+
+See [sensitivity analysis](./Sensitivity.md) for details.
+
+- layers 0-2
+    - leave in bfloat16
+- layers 3-9
+    - Q8_0
+- layers 10-12
+    - Q5_1 for img, Q8_0 for txt
+- layers 13-17
+    - Q5_1
+- layer 18
+    - leave in bfloat16
+- layers 19-56 (all single)
+    - Q4_1
 
 ### Proposed regime
 
