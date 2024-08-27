@@ -1,6 +1,5 @@
 import torch
-import asyncio, time
-from .utils import layer_iteratable_from_string, log, shared
+from .utils import layer_iteratable_from_string, shared
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
@@ -9,7 +8,6 @@ from warnings import warn
 
 from .gguf_py.gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
-from .async_prepare import async_run_prepares
 
 class QuantizedTensor(object):
     def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
@@ -167,5 +165,4 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                                callbacks=callbacks + [record,],
                                initial_name=f"{global_layer_index}",
                                autocast=autocast)
-                    async_run_prepares(layer)
 
