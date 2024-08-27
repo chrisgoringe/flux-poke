@@ -70,11 +70,19 @@ class Shared(SingletonAddin):
         self._internals = None
         self.args       = None
         self._layerssd:dict[str,dict[str,torch.Tensor]]  = None
+        self.masks:dict[str,list[bool]] = {}
 
     @property
     def sd(self):
         if isinstance(self._sd,str): self._sd = load_file(self._sd)
         return self._sd
+    
+    def store_mask(self, mask, layer_index, subtype):
+        index = f"{layer_index:0>2}.{subtype}"
+        self.masks[index] = mask
+
+    def get_masks(self, layer_index):
+        return { k[:3]:v for k,v in self.masks.items() if k.startswith("{:0>2}".format(layer_index)) }
     
     def layer_sd(self, layer_index):
         if self._layerssd is None: self.split_sd()
