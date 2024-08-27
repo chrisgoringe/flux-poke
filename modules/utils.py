@@ -86,7 +86,7 @@ class Shared(SingletonAddin, FluxFacts):
         self.masks[index] = mask
 
     def get_masks(self, layer_index):
-        return { k[:3]:v for k,v in self.masks.items() if k.startswith("{:0>2}".format(layer_index)) }
+        return { k[3:]:v for k,v in self.masks.items() if k.startswith("{:0>2}".format(layer_index)) }
     
     def layer_sd(self, layer_index):
         if self._layerssd is None: self.split_sd()
