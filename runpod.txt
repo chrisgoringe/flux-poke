@@ -1,4 +1,3 @@
 git clone https://github.com/chrisgoringe/runpod-setup
 cd runpod-setup
-
-runpodctl remove pod $RUNPOD_POD_ID
+bash flux-auto-comfy.bash

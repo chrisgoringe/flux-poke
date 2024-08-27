@@ -1,6 +1,5 @@
 import torch
-import asyncio, time
-from .utils import layer_iteratable_from_string, log, shared
+from .utils import layer_iteratable_from_string, shared
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
@@ -9,13 +8,23 @@ from warnings import warn
 
 from .gguf_py.gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
-from .async_prepare import async_run_prepares
 
-class TensorPlus(object):
+class QuantizedTensor(object):
     def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
         self._tensor = torch.as_tensor(data, **kwargs)
         self.gtype = gtype
         self.oshape = oshape
+    
+    @property
+    def device(self):
+        return self._tensor.device
+
+    def to(self, *args, **kwargs):
+        self._tensor.to(*args, **kwargs)
+        return self
+
+    def __getattr__(self, __name: str):
+        return getattr(self._tensor, __name)
 
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
@@ -24,14 +33,15 @@ class TensorPlus(object):
         oshapes = tuple(a.oshape for a in args if hasattr(a, 'oshape'))
         args = [getattr(a, '_tensor', a) for a in args]
         ret = func(*args, **kwargs)
-        return TensorPlus(ret, gtype=gtypes[0], oshape=oshapes[0])
+        return QuantizedTensor(ret, gtype=gtypes[0], oshape=oshapes[0])
 
-def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> TensorPlus:
+def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTensor:
     if t is None: return None
     t = t.to(torch.float32)
-    return TensorPlus(quants.quantize(t.squeeze().numpy(), gtype), gtype=gtype, oshape=t.shape)
+    return QuantizedTensor(quants.quantize(t.squeeze().numpy(), gtype), gtype=gtype, oshape=t.shape)
 
-def dequantize_tensor(tensor:TensorPlus, dtype, device):
+def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
+    if tensor is None: return None
     out = dequantize(tensor._tensor, tensor.gtype, tensor.oshape, dtype=dtype)
     return out.to(dtype).to(device)
 
@@ -42,8 +52,8 @@ class DequantingLinear(torch.nn.Module):
         self.weight = quantise_tensor(sd['weight'], qtype)
         self.bias   = quantise_tensor(sd.get('bias',None), qtype) 
         self.qtype  = qtype
-        self.prepared  = None
-        self.preparing = False
+        #self.prepared  = None
+        #self.preparing = False
         self.dtype = dtype
         self.device = device
 
@@ -57,7 +67,7 @@ class DequantingLinear(torch.nn.Module):
         else:
             return item
 
-    def get_weight(self, tensor:TensorPlus, dtype, device):
+    def get_weight(self, tensor:QuantizedTensor, dtype, device):
         # consolidate and load patches to GPU in async
         patch_list = []
 
@@ -76,22 +86,22 @@ class DequantingLinear(torch.nn.Module):
         bias   = self.get_weight(self.bias,   dtype, device) if self.bias is not None else None
         return (weight, bias)
     
-    def prepare(self):
-        if self.dtype and self.device:
-            self.preparing = True
-            self.prepared = self.get_weight_and_bias(dtype=self.dtype, device=self.device)
-            self.preparing = False
-        else:
-            warn("Can't prepare without dtype and device hints")
+    #def prepare(self):
+    #    if self.dtype and self.device:
+    #        self.preparing = True
+    #        self.prepared = self.get_weight_and_bias(dtype=self.dtype, device=self.device)
+    #        self.preparing = False
+    #    else:
+    #        warn("Can't prepare without dtype and device hints")
 
     def forward(self, x:torch.Tensor):
-        while (self.preparing): asyncio.sleep(0)
+        #while (self.preparing): asyncio.sleep(0)
 
-        if self.prepared:
-            weight, bias = self.prepared
-            self.prepared = None
-        else:
-            weight, bias = self.get_weight_and_bias(dtype=x.dtype, device=x.device)
+        #if self.prepared:
+        #    weight, bias = self.prepared
+        #    self.prepared = None
+        #else:
+        weight, bias = self.get_weight_and_bias(dtype=x.dtype, device=x.device)
         x = torch.nn.functional.linear(x, weight, bias)
         del weight, bias
         return x
@@ -155,5 +165,4 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                                callbacks=callbacks + [record,],
                                initial_name=f"{global_layer_index}",
                                autocast=autocast)
-                    async_run_prepares(layer)
 

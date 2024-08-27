@@ -32,6 +32,7 @@ def load_config(config_filepath):
         with open(config_filepath, 'r') as f: return json.load(f)
 
 def layer_iteratable_from_string(s) -> Iterable[int]:
+    if isinstance(s, int): return [s,]
     if s.lower()=='all':    return range(shared.last_layer+1)
     if s.lower()=='double': return range(shared.first_double_layer, shared.last_double_layer+1)
     if s.lower()=='single': return range(shared.first_single_layer, shared.last_single_layer+1)
@@ -58,14 +59,17 @@ def prefix(layer_index):
     else:
         return f"single_blocks.{layer_index-shared.first_single_layer}."
     
-class Shared(SingletonAddin):
+class FluxFacts:
+    last_layer = 56
+    first_double_layer = 0
+    last_double_layer  = 18
+    first_single_layer = 19
+    last_single_layer  = 56    
+    bits_at_bf16       = 190422221824
+    
+class Shared(SingletonAddin, FluxFacts):
     def __init__(self):
-        self.last_layer = 56
-        self.first_double_layer = 0
-        self.last_double_layer = 18
-        self.first_single_layer = 19
-        self.last_single_layer = 56
-        self.layer_stats = [{} for _ in range(57)]
+        self.layer_stats = [{} for _ in range(self.last_layer+1)]
         self._sd:dict[str,torch.Tensor] = None
         self._internals = None
         self.args       = None

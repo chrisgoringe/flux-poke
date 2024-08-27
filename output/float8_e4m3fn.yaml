@@ -1,153 +1,172 @@
-layer19:
-  loss: 0.0018857934046536684
-  sensitivity: 0.0029057227679589446
-  time: 264.2029999999795
-layer20:
-  loss: 0.0033015126828104258
-  sensitivity: 0.0030059329296200227
-  time: 16.07799999997951
-layer21:
-  loss: 0.0037444066256284714
-  sensitivity: 0.0024181216814579856
-  time: 15.827999999979511
-layer22:
-  loss: 0.003311340929940343
-  sensitivity: 0.0016006971196604553
-  time: 16.03200000000652
-layer23:
-  loss: 0.0039502293802797794
-  sensitivity: 0.001267447669759074
-  time: 16.32799999997951
-layer24:
-  loss: 0.0045467885211110115
-  sensitivity: 0.0010371424683133582
-  time: 16.469000000040978
-layer25:
-  loss: 0.00730540044605732
-  sensitivity: 0.0011226875372220232
-  time: 227.09400000004098
-layer26:
-  loss: 0.010407419875264168
-  sensitivity: 0.001267456974113803
-  time: 16.094000000040978
-layer27:
-  loss: 0.008953620679676533
-  sensitivity: 0.001078998476352583
-  time: 16.125
-layer28:
-  loss: 0.008924898691475391
-  sensitivity: 0.0010270496461511922
-  time: 16.15700000000652
-layer29:
-  loss: 0.01290664542466402
-  sensitivity: 0.001203681954453539
-  time: 16.265999999945052
-layer30:
-  loss: 0.0131903775036335
-  sensitivity: 0.0011735814985196211
-  time: 16.234000000054948
-layer31:
-  loss: 0.011456908658146858
-  sensitivity: 0.0010376732436703
-  time: 263.4529999999795
-layer32:
-  loss: 0.014999113976955414
-  sensitivity: 0.001165717420382456
-  time: 19.030999999959022
-layer33:
-  loss: 0.013234445825219154
-  sensitivity: 0.0010789899026335179
-  time: 16.5
-layer34:
-  loss: 0.016025111079216003
-  sensitivity: 0.0012168102824711105
-  time: 16.5
-layer35:
-  loss: 0.020359830930829048
-  sensitivity: 0.001325396035140232
-  time: 16.593999999924563
-layer36:
-  loss: 0.020473357290029526
-  sensitivity: 0.0013634163751542674
-  time: 16.641000000061467
-layer37:
-  loss: 0.014884674921631813
-  sensitivity: 0.0011085043219572288
-  time: 279.71899999992456
-layer38:
-  loss: 0.012734247371554375
-  sensitivity: 0.001019023958499347
-  time: 16.68700000003446
-layer39:
-  loss: 0.015644818544387817
-  sensitivity: 0.0011033848444371335
-  time: 16.531000000075437
-layer40:
-  loss: 0.015573935583233833
-  sensitivity: 0.0011011537248477481
-  time: 16.57799999997951
-layer41:
-  loss: 0.014718961901962757
-  sensitivity: 0.0010564805341693444
-  time: 16.640999999945052
-layer42:
-  loss: 0.01627974398434162
-  sensitivity: 0.0010907608756499103
-  time: 16.89000000001397
-layer43:
-  loss: 0.01861962303519249
-  sensitivity: 0.0011277301176751827
-  time: 262.875
-layer44:
-  loss: 0.02200928144156933
-  sensitivity: 0.0011826029303736642
-  time: 17.625
-layer45:
-  loss: 0.0315556637942791
-  sensitivity: 0.0014282769452257382
-  time: 17.10999999998603
-layer46:
-  loss: 0.02937813103199005
-  sensitivity: 0.0013194036754215234
-  time: 17.281000000075437
-layer47:
-  loss: 0.02027345634996891
-  sensitivity: 0.0010406593950546615
-  time: 17.094000000040978
-layer48:
-  loss: 0.020371796563267708
-  sensitivity: 0.0010115466644413402
-  time: 17.5
-layer49:
-  loss: 0.021783879026770592
-  sensitivity: 0.0010634039721043288
-  time: 17.281000000075437
-layer50:
-  loss: 0.03004465065896511
-  sensitivity: 0.0012188720496000881
-  time: 259.9679999999935
-layer51:
-  loss: 0.04467540234327316
-  sensitivity: 0.0013772337187465823
-  time: 18.375
-layer52:
-  loss: 0.06313353776931763
-  sensitivity: 0.0015513454120796083
-  time: 17.98499999998603
-layer53:
-  loss: 0.0880797728896141
-  sensitivity: 0.0017014165044338225
-  time: 18.09299999999348
-layer54:
-  loss: 0.11334884911775589
-  sensitivity: 0.0016635019850288685
-  time: 17.92200000002049
-layer55:
-  loss: 0.07667697221040726
-  sensitivity: 0.00114767653232384
-  time: 18.218999999924563
-layer56:
-  loss: 0.16150479018688202
-  sensitivity: 0.001700746131603865
-  time: 18.28200000000652
+layer00:
+  0.txt_attn.proj: torch.float8_e4m3fn
+  0.txt_attn.qkv: torch.float8_e4m3fn
+  0.txt_mlp.0: torch.float8_e4m3fn
+  0.txt_mlp.2: torch.float8_e4m3fn
+  0.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.00028375693364068866
+  sensitivity: 0.14428271194373815
+  time: 2870.75
+layer01:
+  1.txt_attn.proj: torch.float8_e4m3fn
+  1.txt_attn.qkv: torch.float8_e4m3fn
+  1.txt_mlp.0: torch.float8_e4m3fn
+  1.txt_mlp.2: torch.float8_e4m3fn
+  1.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0014962863642722368
+  sensitivity: 0.17911877077913854
+  time: 19.906000000075437
+layer02:
+  2.txt_attn.proj: torch.float8_e4m3fn
+  2.txt_attn.qkv: torch.float8_e4m3fn
+  2.txt_mlp.0: torch.float8_e4m3fn
+  2.txt_mlp.2: torch.float8_e4m3fn
+  2.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0035771450493484735
+  sensitivity: 0.24404543881125834
+  time: 19.125
+layer03:
+  3.txt_attn.proj: torch.float8_e4m3fn
+  3.txt_attn.qkv: torch.float8_e4m3fn
+  3.txt_mlp.0: torch.float8_e4m3fn
+  3.txt_mlp.2: torch.float8_e4m3fn
+  3.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0018050683429464698
+  sensitivity: 0.16453458958135853
+  time: 20.0
+layer04:
+  4.txt_attn.proj: torch.float8_e4m3fn
+  4.txt_attn.qkv: torch.float8_e4m3fn
+  4.txt_mlp.0: torch.float8_e4m3fn
+  4.txt_mlp.2: torch.float8_e4m3fn
+  4.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0015010300558060408
+  sensitivity: 0.14510619638051203
+  time: 20.140999999945052
+layer05:
+  5.txt_attn.proj: torch.float8_e4m3fn
+  5.txt_attn.qkv: torch.float8_e4m3fn
+  5.txt_mlp.0: torch.float8_e4m3fn
+  5.txt_mlp.2: torch.float8_e4m3fn
+  5.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0010674690129235387
+  sensitivity: 0.1084694956127442
+  time: 19.56299999996554
+layer06:
+  6.txt_attn.proj: torch.float8_e4m3fn
+  6.txt_attn.qkv: torch.float8_e4m3fn
+  6.txt_mlp.0: torch.float8_e4m3fn
+  6.txt_mlp.2: torch.float8_e4m3fn
+  6.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.001051638857461512
+  sensitivity: 0.10569617066872952
+  time: 2911.969000000041
+layer07:
+  7.txt_attn.proj: torch.float8_e4m3fn
+  7.txt_attn.qkv: torch.float8_e4m3fn
+  7.txt_mlp.0: torch.float8_e4m3fn
+  7.txt_mlp.2: torch.float8_e4m3fn
+  7.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0013375368434935808
+  sensitivity: 0.11379574657511353
+  time: 21.531000000075437
+layer08:
+  8.txt_attn.proj: torch.float8_e4m3fn
+  8.txt_attn.qkv: torch.float8_e4m3fn
+  8.txt_mlp.0: torch.float8_e4m3fn
+  8.txt_mlp.2: torch.float8_e4m3fn
+  8.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0012369254836812615
+  sensitivity: 0.10455238634040923
+  time: 20.766000000061467
+layer09:
+  9.txt_attn.proj: torch.float8_e4m3fn
+  9.txt_attn.qkv: torch.float8_e4m3fn
+  9.txt_mlp.0: torch.float8_e4m3fn
+  9.txt_mlp.2: torch.float8_e4m3fn
+  9.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0014431205345317721
+  sensitivity: 0.10536630004500255
+  time: 20.5
+layer10:
+  10.txt_attn.proj: torch.float8_e4m3fn
+  10.txt_attn.qkv: torch.float8_e4m3fn
+  10.txt_mlp.0: torch.float8_e4m3fn
+  10.txt_mlp.2: torch.float8_e4m3fn
+  10.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.00167128536850214
+  sensitivity: 0.082999452443382
+  time: 20.780999999959022
+layer11:
+  11.txt_attn.proj: torch.float8_e4m3fn
+  11.txt_attn.qkv: torch.float8_e4m3fn
+  11.txt_mlp.0: torch.float8_e4m3fn
+  11.txt_mlp.2: torch.float8_e4m3fn
+  11.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0014970885822549462
+  sensitivity: 0.07402803242948904
+  time: 21.344000000040978
+layer12:
+  12.txt_attn.proj: torch.float8_e4m3fn
+  12.txt_attn.qkv: torch.float8_e4m3fn
+  12.txt_mlp.0: torch.float8_e4m3fn
+  12.txt_mlp.2: torch.float8_e4m3fn
+  12.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0018328179139643908
+  sensitivity: 0.06428934335529848
+  time: 21.51500000001397
+layer13:
+  13.txt_attn.proj: torch.float8_e4m3fn
+  13.txt_attn.qkv: torch.float8_e4m3fn
+  13.txt_mlp.0: torch.float8_e4m3fn
+  13.txt_mlp.2: torch.float8_e4m3fn
+  13.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0018866395112127066
+  sensitivity: 0.05951597760555829
+  time: 1760.7029999999795
+layer14:
+  14.txt_attn.proj: torch.float8_e4m3fn
+  14.txt_attn.qkv: torch.float8_e4m3fn
+  14.txt_mlp.0: torch.float8_e4m3fn
+  14.txt_mlp.2: torch.float8_e4m3fn
+  14.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.002972183283418417
+  sensitivity: 0.04756604032887899
+  time: 22.75
+layer15:
+  15.txt_attn.proj: torch.float8_e4m3fn
+  15.txt_attn.qkv: torch.float8_e4m3fn
+  15.txt_mlp.0: torch.float8_e4m3fn
+  15.txt_mlp.2: torch.float8_e4m3fn
+  15.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.00264522316865623
+  sensitivity: 0.04173456197048837
+  time: 22.17099999997299
+layer16:
+  16.txt_attn.proj: torch.float8_e4m3fn
+  16.txt_attn.qkv: torch.float8_e4m3fn
+  16.txt_mlp.0: torch.float8_e4m3fn
+  16.txt_mlp.2: torch.float8_e4m3fn
+  16.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.0030851829797029495
+  sensitivity: 0.039596373692872576
+  time: 22.21799999999348
+layer17:
+  17.txt_attn.proj: torch.float8_e4m3fn
+  17.txt_attn.qkv: torch.float8_e4m3fn
+  17.txt_mlp.0: torch.float8_e4m3fn
+  17.txt_mlp.2: torch.float8_e4m3fn
+  17.txt_mod.lin: torch.float8_e4m3fn
+  loss: 0.005839254707098007
+  sensitivity: 0.046249558996489866
+  time: 22.21799999999348
+layer18:
+  18.txt_attn.proj: torch.float8_e4m3fn
+  18.txt_attn.qkv: torch.float8_e4m3fn
+  18.txt_mlp.0: torch.float8_e4m3fn
+  18.txt_mlp.2: torch.float8_e4m3fn
+  18.txt_mod.lin: torch.float8_e4m3fn
+  loss: .inf
+  sensitivity: .inf
+  time: 275.98400000005495
 

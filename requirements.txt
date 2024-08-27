@@ -2,3 +2,4 @@ datasets
 huggingface_hub
 gguf
 transformers[torch]
+bitsandbytes
