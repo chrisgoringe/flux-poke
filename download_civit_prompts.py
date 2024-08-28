@@ -18,13 +18,13 @@ def prompts(period="Week"):
 
 def main(add=True):
     dataset = datasets.Dataset.load_from_disk('prompts_dataset')
-    print(len(dataset))
+    print(f"Old dataset contained {len(dataset)} prompts")
     if add:
         for prompt in prompts():             dataset = dataset.add_item({"prompt":prompt})
         for prompt in prompts(period="Day"): dataset = dataset.add_item({"prompt":prompt})
-        print(len(dataset))
+        print(f"After adding current prompts, there are {len(dataset)}")
         dataset = datasets.Dataset.from_dict( {'prompt':dataset.unique('prompt')} )
-        print(len(dataset))
+        print(f"Removing duplicates leaves {len(dataset)}")
         dataset.save_to_disk('new_prompts_dataset')
 
 if __name__=='__main__': 

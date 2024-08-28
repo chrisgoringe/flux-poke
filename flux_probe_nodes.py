@@ -7,6 +7,7 @@ import os
 import folder_paths
 from functools import partial
 from comfy.model_management import cleanup_models
+from comfy.ldm.flux.model import Flux
 
 filepath = partial(os.path.join,os.path.split(__file__)[0])
  
@@ -18,26 +19,36 @@ class InsertProbes:
     def INPUT_TYPES(s): return { "required": { 
         "model": ("MODEL", ), 
         "track_hidden_states" : (["yes","no"],{}),
+        "just_in_out" : (["no","yes"],{}),
         "track_internals" : (["yes","no"],{}),
     } }  
 
-    def func(self, model, track_hidden_states, track_internals):
+    def func(self, model, track_hidden_states, just_in_out, track_internals):
         m = model.clone()
-        diffusion_model = m.model.diffusion_model
-        n_double = len(diffusion_model.double_blocks)
+        flux:Flux = m.model.diffusion_model
+        n_double = len(flux.double_blocks)
 
         if track_hidden_states=='yes':
-            def replace_list(list_name, first_index):
-                new_list = [ HiddenStateTracker(dsb, i+first_index) for i, dsb in enumerate(getattr(diffusion_model,list_name)) ]
-                setattr(diffusion_model, list_name, torch.nn.ModuleList(new_list))
+            if just_in_out=="yes":
+                HiddenStateTracker.set_mode(all_in_one=True)
+                #db_list = [ HiddenStateTracker(diffusion_model.double_blocks[0], 0,store_input=True, store_output=False), ] + [db for db in diffusion_model.double_blocks[1:]]
+                flux.double_blocks[0] = HiddenStateTracker(flux.double_blocks[0], 0,store_input=True, store_output=False)
+                #torch.nn.ModuleList(db_list)
+                flux.single_blocks[-1] = HiddenStateTracker(flux.single_blocks[-1], 56, store_input=False, store_output=True)
 
-            replace_list('double_blocks',0)
-            replace_list('single_blocks', n_double)
+            else:
+                HiddenStateTracker.set_mode(all_in_one=False)
+                def replace_list(list_name, first_index):
+                    new_list = [ HiddenStateTracker(dsb, i+first_index) for i, dsb in enumerate(getattr(flux,list_name)) ]
+                    setattr(flux, list_name, torch.nn.ModuleList(new_list))
+
+                replace_list('double_blocks',0)
+                replace_list('single_blocks', n_double)
             print (f"Tracking {len(HiddenStateTracker.hidden_states)} hidden states")  
 
         if track_internals=='yes':
             def inject_internals_tracker(list_name, first_index):
-                for i, block in enumerate(getattr(diffusion_model, list_name)):
+                for i, block in enumerate(getattr(flux, list_name)):
                     InternalsTracker.inject_internals_tracker(block.wrapped_module if isinstance(block, HiddenStateTracker) else block, i+first_index)
 
             inject_internals_tracker('double_blocks', 0)

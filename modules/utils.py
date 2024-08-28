@@ -122,7 +122,17 @@ class Shared(SingletonAddin, FluxFacts):
 def is_double(layer_number): return (layer_number <= shared.last_double_layer)
 
 class Batcher:
-    BATCHES = (( 0, 6), ( 7,13), (14,18), (19,25), (26,31), (32,37), (38,43), (44,50), (51,57))
+    _BATCHED   = (( 0, 6), ( 7,13), (14,18), (19,25), (26,31), (32,37), (38,43), (44,50), (51,57))
+    _FULL      = (( 0,57), )
+    BATCHES    = _BATCHED
+    all_in_one = False
+
+    @classmethod
+    def set_mode(cls, all_in_one):
+        cls.all_in_one = all_in_one
+        if all_in_one: cls.BATCHES = cls._FULL
+        else:          cls.BATCHES = cls._BATCHED
+
     @classmethod
     def filename(cls, base_name, layer_index):
         for a,b in cls.BATCHES:
@@ -130,7 +140,11 @@ class Batcher:
                 return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name,a,b)
             
     @classmethod
-    def label(cls, base_name, batch): return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name, *batch)
+    def label(cls, base_name, batch, number=1): 
+        if cls.all_in_one:
+            return "{:0>7}/all_{:0>2}.safetensors".format(base_name, number)
+        else:
+            return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name, *batch)
 
 
     

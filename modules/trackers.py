@@ -27,11 +27,26 @@ from aiohttp import web
 routes = PromptServer.instance.routes
 @routes.get('/upload_queue')
 async def upload_queue(r):
-    return web.json_response({"upload_queue":UploadThread.instance().queue.qsize()})
+    return web.json_response({"upload_queue":HiddenStateTracker.queue.qsize()})
+
+@routes.get('/download_internals')
+async def download_internals(r):
+    try:
+        return web.json_response(InternalsTracker.download_internals())
+    except:
+        return web.json_response({"result":f"{sys.exc_info()[1]}"})
+
+@routes.get('/upload_internals')
+async def upload_internals(r):
+    try:
+        return web.json_response(InternalsTracker.upload_internals())
+    except:
+        return web.json_response({"result":f"{sys.exc_info()[1]}"})
+
 
 
 class UploadThread(SingletonAddin):
-    hffs = HFFS("ChrisGoringe/fi")
+    hffs = HFFS("ChrisGoringe/fi2")
     def __init__(self):
         self.queue  = queue.SimpleQueue()
         threading.Thread(target=self.run, daemon=True).start()
@@ -48,6 +63,33 @@ class UploadThread(SingletonAddin):
             except:
                 print(sys.exc_info())
 
+MERGE_SIZE = 20
+class MergingUploadThread(SingletonAddin):
+
+    def __init__(self):
+        self.queue  = queue.SimpleQueue()
+        threading.Thread(target=self.run, daemon=True).start()
+
+    def run(self):
+        merge_list = []
+        while True:
+            try:
+                merge_list.append( self.queue.get() )
+                if len(merge_list) == MERGE_SIZE:
+                    merged_label = merge_list[0][0]
+                    merged_datum = {}
+                    for i, (label, datum) in enumerate(merge_list):
+                        for k in datum:
+                            merged_datum[f"{i:0>2}_{k}"] = datum[k]
+                    print(f"Save {merged_label}...")
+                    while not UploadThread.hffs.save_file(merged_label, merged_datum): 
+                        print("Hit hffs rate limits...")
+                        time.sleep(15) 
+                    print(f"qsize returns {self.queue.qsize()}")
+                    merge_list = []
+            except:
+                print(sys.exc_info())
+
 class HiddenStateTracker(torch.nn.Module):
     '''
     Wraps a SingleStreamBlock or DoubleStreamBlock. 
@@ -58,7 +100,14 @@ class HiddenStateTracker(torch.nn.Module):
     hidden_states: dict[int, DiskCache] = {}  # index i is the hidden states *before* layer i
     active = False
     queue = UploadThread.instance().queue
-    def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, is_master=None, store_input=None):
+
+    @classmethod
+    def set_mode(cls, all_in_one):
+        Batcher.set_mode(all_in_one)
+        if all_in_one: cls.queue = MergingUploadThread.instance().queue
+        else:          cls.queue = UploadThread.instance().queue
+
+    def __init__(self, block_to_wrap:Union[DoubleStreamBlock, SingleStreamBlock], layer:int, is_master=None, store_input=None, store_output=True):
         '''
         Wraps `block_to_wrap` and, when active, stores the hidden states.
         `layer` is used as an index
@@ -68,12 +117,13 @@ class HiddenStateTracker(torch.nn.Module):
         '''
         super().__init__()
         self.store_input    = store_input if store_input is not None else (layer==0)
+        self.store_output   = store_output
         self.wrapped_module = block_to_wrap
         self.layer          = layer
         self.is_master      = is_master if is_master is not None else (layer==0)
         self.is_double      = isinstance(block_to_wrap, DoubleStreamBlock)
-        if layer   not in self.hidden_states and self.store_input: self.hidden_states[layer]   = DiskCache()
-        if layer+1 not in self.hidden_states:                      self.hidden_states[layer+1] = DiskCache()
+        if layer   not in self.hidden_states and self.store_input:  self.hidden_states[layer]   = DiskCache()
+        if layer+1 not in self.hidden_states and self.store_output: self.hidden_states[layer+1] = DiskCache()
 
     def forward(self, *args, **kwargs): # img: torch.Tensor, txt: torch.Tensor, vec: torch.Tensor, pe: torch.Tensor):
         
@@ -89,7 +139,7 @@ class HiddenStateTracker(torch.nn.Module):
 
         out = self.wrapped_module(*args, **kwargs)
 
-        if HiddenStateTracker.active:
+        if HiddenStateTracker.active and self.store_output:
             if self.is_double: 
                 self.hidden_states[self.layer+1].append( { "img":out[0].cpu(),      "txt":out[1].cpu(),        "vec":kwargs['vec'].cpu(), "pe":kwargs['pe'].cpu() } )
             else:                
@@ -111,8 +161,9 @@ class HiddenStateTracker(torch.nn.Module):
             for batch  in Batcher.BATCHES:
                 datum = {}
                 for layer_index in range(batch[0], batch[1]+1):
-                    for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+f"-{k}"] = cls.hidden_states[layer_index][index][k]
-                cls.queue.put((Batcher.label(r,batch), datum))
+                    if layer_index in cls.hidden_states:
+                        for k in cls.hidden_states[layer_index][index]: datum["{:0>2}".format(layer_index)+f"-{k}"] = cls.hidden_states[layer_index][index][k]
+                cls.queue.put((Batcher.label(r,batch,MERGE_SIZE), datum))
             
         cls.reset_all()
 
@@ -140,7 +191,22 @@ class InternalsTracker(torch.nn.Module):
             for k in cls.all_datasets: cls.all_datasets[k] += old.pop(k,0)
             for k in old: cls.all_datasets[k] = old[k]
         save_file(cls.all_datasets, filename=filepath)
+
         cls.reset_all()
+
+    @classmethod
+    def download_internals(cls):
+        filepath = os.path.join(os.path.split(__file__)[0], 'internals.safetensors')
+        remote   = UploadThread.hffs.rpath(os.path.basename(filepath))
+        UploadThread.hffs.fs.get_file( rpath=remote, lpath=filepath )
+        return { remote:filepath }
+
+    @classmethod
+    def upload_internals(cls):
+        filepath = os.path.join(os.path.split(__file__)[0], 'internals.safetensors')
+        remote   = UploadThread.hffs.rpath(os.path.basename(filepath))
+        UploadThread.hffs.fs.put_file( lpath=filepath, rpath=remote)
+        return { filepath:remote }
 
     @classmethod
     def inject_internals_tracker(cls,block:Union[DoubleStreamBlock, SingleStreamBlock, HiddenStateTracker], index:int):
