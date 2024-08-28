@@ -28,11 +28,13 @@ class TheDataset:
         print(f"Split {split} contains {len(self.sources)} examples")
         self.first_layer = first_layer
         self.thickness   = thickness
+        self.last_source_was = None
     
     def __len__(self): 
         return len(self.sources)
 
     def __getitem__(self, i):
+        self.last_source_was = self.sources[i]
         input  = self.load_file(filename="/".join((self.sources[i], str(self.first_layer))))
         output = self.load_file(filename="/".join((self.sources[i], str(self.first_layer+self.thickness))))
         l1, l2 = "{:0>2}-".format(self.first_layer) , "{:0>2}-".format(self.first_layer+self.thickness)
