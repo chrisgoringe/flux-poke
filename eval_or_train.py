@@ -82,6 +82,9 @@ def train_or_evaluate():
         shared.layer_stats[args.first_layer]['train_sensitivity']   = sensitivity(TheCallback.losses()[-1])
         for i,layer in enumerate(model):
             savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
+            sd = layer.state_dict()
+            for label, mask in shared.get_masks(args.first_layer+i).items():
+                if not all(mask): sd[f"mask.{label}"] = torch.tensor([i for i,x in enumerate(mask) if not x], torch.uint16)
             save_file(layer.state_dict(), savefile)
             log(f"Saved in {savefile}")
     shared.layer_stats[args.first_layer]['time'] = time.monotonic() - start_time

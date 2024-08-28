@@ -11,6 +11,8 @@ def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[])
         do_txt = constraint is None or 'txt' in constraint
         img_mask, img_threshold = get_mask(shared.internals["{:0>2}-img".format(global_layer_number)], remove_count=count if do_img else None) 
         txt_mask, txt_threshold = get_mask(shared.internals["{:0>2}-txt".format(global_layer_number)], remove_count=count if do_txt else None)
+        shared.store_mask(img_mask, global_layer_number, "img")
+        shared.store_mask(txt_mask, global_layer_number, "txt")
         slice_double_block(layer, img_mask=img_mask, txt_mask=txt_mask)
         if do_img: 
             for callback in callbacks: callback('double_blocks','img_mlp', count, img_threshold)
@@ -18,6 +20,7 @@ def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[])
             for callback in callbacks: callback('double_blocks','txt_mlp', count, txt_threshold)
     else:
         mask, x_threshold = get_mask(shared.internals["{:0>2}-x".format(global_layer_number)], remove_count=count) 
+        shared.store_mask(mask, global_layer_number, "x")
         slice_single_block(layer, mask=mask)
         for callback in callbacks: 
             callback('single_blocks','linear1', count, x_threshold)
