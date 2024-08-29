@@ -29,7 +29,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     loss_fn = torch.nn.MSELoss()
 
     with torch.autocast("cuda", enabled=autocast):
-        for layer in tqdm(model): 
+        for layer in model: 
             if isinstance(layer, DoubleStreamBlock): 
                 img, txt = layer( img, txt, vec, pe ) 
             else:
