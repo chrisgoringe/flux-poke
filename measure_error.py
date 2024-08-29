@@ -1,3 +1,4 @@
+from modules.arguments import args
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
 from modules.utils import Batcher, shared, is_double
@@ -12,9 +13,9 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer_sd = shared.layer_sd(layer_number)
     if remove_from_sd: shared.drop_layer(layer_number)
     if is_double(layer_number):
-        layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, qkv_bias=True)
+        layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
     else:
-        layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4)
+        layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
     layer.load_state_dict(layer_sd)
     return layer
 
@@ -36,8 +37,9 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     return(loss)
 
 def setup():
-    torch.set_default_dtype(torch.bfloat16)
-    shared._sd = "../flux1-dev.safetensors"
+    HFFS_Cache.set_cache_directory(args.cache_dir)
+    shared.set_shared_filepaths(args=args)
+
     HFFS_Cache.set_cache_directory("cache")
     Batcher.set_mode(all_in_one=True)
     MergedBatchDataset.set_dataset_source(dir="ChrisGoringe/fi2")
