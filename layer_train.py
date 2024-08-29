@@ -5,15 +5,13 @@ from safetensors.torch import save_file
 import transformers
 from modules.arguments import args, filepath
 from modules.generated_dataset import TheDataset
-from modules.utils import log, shared, layer_iteratable_from_string, load_config, is_double
+from modules.utils import log, shared, layer_iteratable_from_string, load_config
 from modules.hffs import HFFS_Cache
 from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
 from modules.pruning import prune_layer_stack, apply_patches
 from modules.layer import load_single_layer
-from modules.sensitivity import Sensitivity
 import time
-from functools import partial
 
 class TheCallback(transformers.TrainerCallback):
     log:list[dict] = None
@@ -40,20 +38,8 @@ def train_or_evaluate():
                          stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, 
                          verbose=args.verbose, autocast=args.autocast)
 
-    have_touched_img = False
-    have_touched_txt = False
-    for l in shared.layer_stats:
-        for block in l:
-            have_touched_img = have_touched_img or 'img' in block
-            have_touched_txt = have_touched_txt or 'txt' in block
-
-    element = 'X' if ((have_touched_img and have_touched_txt) or not (have_touched_img or have_touched_txt)) else ('TXT' if have_touched_txt else 'IMG')
-    print(f"Sensitivity element to be applied: {element}")
-
-    if args.train:
-        assert args.train_map, "No train map specified"
-        any_to_train = prep_for_train(model, train_config=load_config(filepath(args.train_map)), layer_index=args.first_layer, verbose=args.verbose)
-        assert any_to_train, "Nothing to train"
+    any_to_train = prep_for_train(model, train_config=load_config(filepath(args.train_map)), layer_index=args.first_layer, verbose=args.verbose)
+    assert any_to_train, "Nothing to train"
     
     TheDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed, validate=args.validate)
     t = TheTrainer(
@@ -67,26 +53,18 @@ def train_or_evaluate():
 
     start_time = time.monotonic()
 
-    sensitivity = partial(Sensitivity.impact_of_mseloss, args.first_layer+args.thickness, getattr(Sensitivity, element))
-    if args.evaluate:
-        t.evaluate()
-        shared.layer_stats[args.first_layer]['loss'] = TheCallback.eval_losses()[0]
-        shared.layer_stats[args.first_layer]['sensitivity'] = sensitivity(TheCallback.eval_losses()[0])
-    else:
-        t.train()
-        shared.layer_stats[args.first_layer]['initial_loss'] = TheCallback.eval_losses()[0]
-        shared.layer_stats[args.first_layer]['final_loss']   = TheCallback.eval_losses()[-1]
-        shared.layer_stats[args.first_layer]['train_loss']   = TheCallback.losses()[-1]
-        shared.layer_stats[args.first_layer]['initial_sensitivity'] = sensitivity(TheCallback.eval_losses()[0])
-        shared.layer_stats[args.first_layer]['final_sensitivity']   = sensitivity(TheCallback.eval_losses()[-1])
-        shared.layer_stats[args.first_layer]['train_sensitivity']   = sensitivity(TheCallback.losses()[-1])
-        for i,layer in enumerate(model):
-            savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
-            sd = layer.state_dict()
-            for label, mask in shared.get_masks(args.first_layer+i).items():
-                if not all(mask): sd[f"mask.{label}"] = torch.tensor([i for i,x in enumerate(mask) if not x], torch.uint16)
-            save_file(layer.state_dict(), savefile)
-            log(f"Saved in {savefile}")
+    t.train()
+
+    shared.layer_stats[args.first_layer]['initial_loss'] = TheCallback.eval_losses()[0]
+    shared.layer_stats[args.first_layer]['final_loss']   = TheCallback.eval_losses()[-1]
+    shared.layer_stats[args.first_layer]['train_loss']   = TheCallback.losses()[-1]
+    for i,layer in enumerate(model):
+        savefile = filepath(args.save_dir,"{:0>2}.safetensors".format(args.first_layer+i))
+        sd = layer.state_dict()
+        for label, mask in shared.get_masks(args.first_layer+i).items():
+            if not all(mask): sd[f"mask.{label}"] = torch.tensor([i for i,x in enumerate(mask) if not x], torch.uint16)
+        save_file(layer.state_dict(), savefile)
+        log(f"Saved in {savefile}")
     shared.layer_stats[args.first_layer]['time'] = time.monotonic() - start_time
 
     log(str(shared.layer_stats[args.first_layer]))
