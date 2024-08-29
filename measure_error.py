@@ -31,8 +31,8 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     with torch.autocast("cuda", enabled=autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
-                #if isinstance(layer.txt_mlp[0], CastLinear):
-                #    print(f"Layer {i} has {layer.txt_mlp[0].description}")
+                if isinstance(layer.txt_mlp[0], CastLinear):
+                    print(f"Layer {i} has {layer.txt_mlp[0].description}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
@@ -77,7 +77,9 @@ def restore_layer(model:torch.nn.Sequential, sd, n):
 def evaluate(model, dataset):
     model.cuda()
     with torch.no_grad():
-        return [ compute_loss(model, entry) for entry in tqdm(dataset) ]
+        r = [ compute_loss(model, entry) for entry in tqdm(dataset) ]
+    model.cpu()
+    return r
     
 def main():
     setup()
