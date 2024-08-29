@@ -69,7 +69,7 @@ def clone_layer_sd(model:torch.nn.Sequential, n):
 def restore_layer(model:torch.nn.Sequential, sd, n):
     the_layer = new_layer(n)
     the_layer.load_state_dict( sd )
-    model = torch.nn.Sequential( [m if i!=n else the_layer for i, m in enumerate(model)] )
+    model = torch.nn.Sequential( *[m if i!=n else the_layer for i, m in enumerate(model)] )
     return model
 
 def evaluate(model, dataset):
