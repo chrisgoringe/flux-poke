@@ -31,8 +31,8 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     with torch.autocast("cuda", enabled=autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
-                if isinstance(layer.txt_mlp[0], CastLinear):
-                    print(f"Layer {i} has {layer.txt_mlp[0].description}")
+                #if isinstance(layer.txt_mlp[0], CastLinear):
+                #    print(f"Layer {i} has {layer.txt_mlp[0].description}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
@@ -86,20 +86,23 @@ def main():
     ds = create_dataset()
     model = load_model()
 
-    for blocks in ['txt', 'img']:
-        for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
-            for layer in range(19):
-                saved_layer_sd = clone_layer_sd(model, layer)
-                modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
-                mses = evaluate(model, ds)
-                mean = sum(mses)/len(mses)
-                with open("results.txt", 'a') as output:
-                    print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
-                model = restore_layer(model, saved_layer_sd, layer)
+    BLOCKS = ['txt', 'img']
+    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
+    LAYERS = range(19)
 
-
-
-
+    for block in BLOCKS:
+        for cast in CASTS:
+            for layer in LAYERS:
+                if (block=='txt' and ((cast=='Q8_0' and layer<=18) or (cast=='Q5_1' and layer<=7))):
+                    pass
+                else:
+                    saved_layer_sd = clone_layer_sd(model, layer)
+                    modify_model(model, { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] })
+                    mses = evaluate(model, ds)
+                    mean = sum(mses)/len(mses)
+                    with open("results.txt", 'a') as output:
+                        print(f"{layer:>2},{block},{cast},{mean:>10.5}", file=output, flush=True)
+                    model = restore_layer(model, saved_layer_sd, layer)
 
 if __name__=='__main__': 
     main()
