@@ -52,7 +52,6 @@ def load_model():
     print("Load model...")
     model = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     model.requires_grad_(False)
-    model.cuda()
     return model
 
 def modify_model(model, cast_config):
@@ -61,6 +60,7 @@ def modify_model(model, cast_config):
                         verbose=args.verbose, autocast=args.autocast)
 
 def evaluate(model, dataset):
+    model.cuda()
     with torch.no_grad():
         return [ compute_loss(model, entry) for entry in tqdm(dataset) ]
     
