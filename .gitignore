@@ -167,3 +167,4 @@ modules/gguf_py/tests
 prompts_dataset.last
 output/summary.csv
 internals copy.safetensors
+!runpod/*
