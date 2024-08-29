@@ -19,7 +19,7 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     return layer
 
 def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autocast=False):
-    img, txt, vec, pe, x_out = inputs['img'], inputs['txt'], inputs['vec'], inputs['pe'], inputs['x_out']
+    img, txt, vec, pe, x_out = inputs['img'].cuda(), inputs['txt'].cuda(), inputs['vec'].cuda(), inputs['pe'].cuda(), inputs['x_out'].cuda()
     loss_fn = torch.nn.MSELoss()
 
     with torch.autocast("cuda", enabled=autocast):
@@ -34,8 +34,8 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
 
 def setup():
     torch.set_default_dtype(torch.bfloat16)
-    shared._sd = "/Users/chrisgoringe/cache/flux1-dev.safetensors"
-    HFFS_Cache.set_cache_directory("/Users/chrisgoringe/cache")
+    shared._sd = "../flux1-dev.safetensors"
+    HFFS_Cache.set_cache_directory("cache")
     Batcher.set_mode(all_in_one=True)
     MergedBatchDataset.set_dataset_source(dir="ChrisGoringe/fi2")
     
@@ -45,6 +45,7 @@ def create_dataset():
 def load_model():
     model = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     model.requires_grad_(False)
+    model.cuda()
     return model
 
 def modify_model(model):
