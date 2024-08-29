@@ -10,13 +10,16 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 import os
 
+def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
+    if is_double(n):
+        return DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
+    else:
+        return SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
+
 def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     layer_sd = shared.layer_sd(layer_number)
     if remove_from_sd: shared.drop_layer(layer_number)
-    if is_double(layer_number):
-        layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
-    else:
-        layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
+    layer = new_layer(layer_number)
     layer.load_state_dict(layer_sd)
     return layer
 
@@ -59,21 +62,15 @@ def modify_model(model, cast_config):
                         stack_starts_at_layer=0, default_cast=args.default_cast, 
                         verbose=args.verbose, autocast=args.autocast)
     
-def copy_layer(model, n):
-    if is_double(n):
-        save_the_layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
-    else:
-        save_the_layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
-    save_the_layer.load_state_dict( model[n] )
-    return save_the_layer
+def copy_layer(model:torch.nn.Sequential, n):
+    the_layer = new_layer(n)
+    the_layer.load_state_dict( model[n].state_dict() )
+    return the_layer
 
-def restore_layer(model, layer, n):
-    if is_double(n):
-        save_the_layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
-    else:
-        save_the_layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
-    save_the_layer.load_state_dict( layer[n] )
-    model[n] = save_the_layer
+def restore_layer(model:torch.nn.Sequential, layer:torch.nn.Module, n):
+    the_layer = new_layer(n)
+    the_layer.load_state_dict( layer.state_dict() )
+    model[n] = the_layer
 
 def evaluate(model, dataset):
     model.cuda()
