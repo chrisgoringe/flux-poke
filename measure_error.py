@@ -1,14 +1,14 @@
 import add_paths
-from modules.arguments import args
+from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
-from modules.utils import Batcher, shared, is_double
+from modules.utils import Batcher, shared, is_double, load_config
+from modules.casting import cast_layer_stack
 import torch
-import sys, os
 from tqdm import tqdm, trange
-sys.path.insert(0,os.path.join(os.path.dirname(__file__),'..','flux','src'))
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
+import math
 
 def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     layer_sd = shared.layer_sd(layer_number)
@@ -41,21 +41,24 @@ def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
     shared.set_shared_filepaths(args=args)
 
-    HFFS_Cache.set_cache_directory("cache")
+    HFFS_Cache.set_cache_directory(args.cache_dir)
     Batcher.set_mode(all_in_one=True)
-    MergedBatchDataset.set_dataset_source(dir="ChrisGoringe/fi2")
+    MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
     
 def create_dataset():
     return MergedBatchDataset()
 
 def load_model():
+    print("Load model...")
     model = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     model.requires_grad_(False)
     model.cuda()
     return model
 
-def modify_model(model):
-    pass
+def modify_model(model, cast_config):
+    cast_layer_stack(model, cast_config=cast_config, 
+                        stack_starts_at_layer=0, default_cast=args.default_cast, 
+                        verbose=args.verbose, autocast=args.autocast)
 
 def evaluate(model, dataset):
     with torch.no_grad():
@@ -64,9 +67,14 @@ def evaluate(model, dataset):
 def main():
     setup()
     ds = create_dataset()
+    cast_config = load_config(filepath(args.cast_map))
     model = load_model()
-    modify_model(model)
+    modify_model(model, cast_config)
     mses = evaluate(model, ds)
-    pass
+    mean = sum(mses)/len(mses)
+    print("Average loss {:>10.5}".format(mean))
+    shared.layer_stats[args.first_layer]['loss'] = mean
 
-if __name__=='__main__': main()
+if __name__=='__main__': 
+    main()
+    shared.save_stats(filepath(args.save_dir,args.stats_file))

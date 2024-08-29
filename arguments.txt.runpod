@@ -1,23 +1,7 @@
---first_layers=all
+
 --verbose
---evaluate
-
-#--default_cast = no
---stats_file   = img4000_3_13_train.yaml
-
---prune_map = settings.yaml
---cast_map  = settings.yaml
---train_map = settings.yaml
-
---hs_dir=ChrisGoringe/fi
---eval_frac = 0.2
---shuffle
---shuffle_seed=77
---cache_dir = .hfc
-
---max_steps=1000
---eval_steps=200
---lr_scheduler_kwargs:num_cycles=0.3
-
+--stats_file = out.yaml
+--cast_map   = settings.yaml
+--hs_dir     = ChrisGoringe/fi2
+--cache_dir  = .hfc
 --model=/workspace/ComfyUI/models/unet/flux1-dev.safetensors
---saved_model=saved_model.safetensors
