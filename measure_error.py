@@ -49,7 +49,7 @@ def setup():
     MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
     
 def create_dataset():
-    return MergedBatchDataset()
+    return MergedBatchDataset(split='eval', eval_frac='0.1')
 
 def load_model():
     print("Load model...")
@@ -62,15 +62,15 @@ def modify_model(model, cast_config):
                         stack_starts_at_layer=0, default_cast=args.default_cast, 
                         verbose=args.verbose, autocast=args.autocast)
     
-def copy_layer(model:torch.nn.Sequential, n):
-    the_layer = new_layer(n)
-    the_layer.load_state_dict( model[n].state_dict() )
-    return the_layer
+def clone_layer_sd(model:torch.nn.Sequential, n):
+    sd:dict[str, torch.Tensor] = model[n].state_dict()
+    return { k:sd[k].clone() for k in sd }
 
-def restore_layer(model:torch.nn.Sequential, layer:torch.nn.Module, n):
+def restore_layer(model:torch.nn.Sequential, sd, n):
     the_layer = new_layer(n)
-    the_layer.load_state_dict( layer.state_dict() )
-    model[n] = the_layer
+    the_layer.load_state_dict( sd )
+    model = torch.nn.Sequential( [m if i!=n else the_layer for i, m in enumerate(model)] )
+    return model
 
 def evaluate(model, dataset):
     model.cuda()
@@ -82,29 +82,17 @@ def main():
     ds = create_dataset()
     model = load_model()
 
-    for layer in range(19):
-        saved_layer = copy_layer(model, layer)
-        for blocks in ['txt', 'img']:
-            for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
-
-                restore_layer(model, saved_layer, layer)
+    for blocks in ['txt', 'img']:
+        for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
+            for layer in range(19):
+                saved_layer_sd = clone_layer_sd(model, layer)
+                model = restore_layer(model, saved_layer_sd, layer)
                 modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
                 mses = evaluate(model, ds)
                 mean = sum(mses)/len(mses)
                 with open("results.txt", 'a') as output:
                     print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
 
-    for layer in range(19, 57):
-        saved_layer = copy_layer(model, layer)
-        for blocks in ['']:
-            for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
-
-                restore_layer(model, saved_layer, layer)
-                modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
-                mses = evaluate(model, ds)
-                mean = sum(mses)/len(mses)
-                with open("results.txt", 'a') as output:
-                    print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
 
 
 
