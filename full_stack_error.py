@@ -3,12 +3,13 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
 from modules.utils import Batcher, shared, is_double, load_config
-from modules.casting import cast_layer_stack, CastLinear
+from modules.casting import cast_layer_stack
+from modules.pruning import prune_layer_stack
 import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
-import os
+import time, os
 
 def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
@@ -23,7 +24,7 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer.load_state_dict(layer_sd)
     return layer
 
-def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autocast=False):
+def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autocast:bool) -> float:
     img, txt, vec, pe, x_out = inputs['img'].cuda(), inputs['txt'].cuda(), inputs['vec'].cuda(), inputs['pe'].cuda(), inputs['x_out'].cuda()
     x = None
     loss_fn = torch.nn.MSELoss()
@@ -31,16 +32,12 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     with torch.autocast("cuda", enabled=autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
-                #if isinstance(layer.txt_mlp[0], CastLinear):
-                #    print(f"Layer {i} has {layer.txt_mlp[0].description}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
                 x = layer( x, vec, pe )
 
-    loss = float(loss_fn(x, x_out))
-    #print(f"Loss: {loss}")
-    return(loss)
+    return(float(loss_fn(x, x_out)))
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
@@ -53,42 +50,50 @@ def setup():
 def create_dataset():
     return MergedBatchDataset(split='eval', eval_frac=0.5)
 
-def load_model():
+def load_layer_stack():
     print("Load model...")
-    model = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
-    model.requires_grad_(False)
-    return model
+    layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
+    return layer_stack
 
-def modify_model(model, cast_config):
-    cast_layer_stack(model, cast_config=cast_config, 
-                        stack_starts_at_layer=0, default_cast=args.default_cast, 
-                        verbose=args.verbose, autocast=args.autocast)
+def modify_layer_stack(layer_stack, cast_config, prune_config):
+    if cast_config:
+        cast_layer_stack(layer_stack, cast_config=cast_config, 
+                            stack_starts_at_layer=0, default_cast=args.default_cast, 
+                            verbose=args.verbose, autocast=args.autocast)
+    if prune_config:
+        prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def clone_layer_sd(model:torch.nn.Sequential, n):
-    sd:dict[str, torch.Tensor] = model[n].state_dict()
+def clone_layer_sd(layer_stack:torch.nn.Sequential, n):
+    sd:dict[str, torch.Tensor] = layer_stack[n].state_dict()
     return { k:sd[k].clone() for k in sd }
 
-def restore_layer(model:torch.nn.Sequential, sd, n):
+def restore_layer(layer_stack:torch.nn.Sequential, sd, n):
     the_layer = new_layer(n)
     the_layer.load_state_dict( sd )
-    model = torch.nn.Sequential( *[m if i!=n else the_layer for i, m in enumerate(model)] )
-    return model
+    layer_stack = torch.nn.Sequential( *[m if i!=n else the_layer for i, m in enumerate(layer_stack)] )
+    return layer_stack
 
-def evaluate(model, dataset):
-    model.cuda()
+def evaluate(layer_stack, dataset, autocast):
+    layer_stack.cuda()
     with torch.no_grad():
-        r = [ compute_loss(model, entry) for entry in tqdm(dataset) ]
-    model.cpu()
+        r = [ compute_loss(layer_stack, entry, autocast) for entry in tqdm(dataset) ]
+    layer_stack.cpu()
     return r
     
 def main():
     setup()
     ds = create_dataset()
-    model = load_model()
+    layer_stack = load_layer_stack()
 
     BLOCKS = ['txt', 'img']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
     LAYERS = range(19)
+
+    outfile = os.path.join(args.save_dir, args.stats_file)
+
+    if not os.path.exists(outfile):
+        with open(outfile, 'a') as output:
+            print ("layer, block, cast, prune, loss, time", file=output, flush=True)
 
     for block in BLOCKS:
         for cast in CASTS:
@@ -96,13 +101,17 @@ def main():
                 if (block=='txt' or (cast=='Q8_0' and layer<=13)):
                     pass
                 else:
-                    saved_layer_sd = clone_layer_sd(model, layer)
-                    modify_model(model, { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] })
-                    mses = evaluate(model, ds)
+                    saved_layer_sd = clone_layer_sd(layer_stack, layer)
+                    modify_layer_stack( layer_stack, 
+                                        cast_config  = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] },
+                                        prune_config = None )
+                    start_time = time.monotonic()
+                    mses = evaluate(layer_stack, ds, args.autocast)
+                    time_taken = time.monotonic() - start_time
                     mean = sum(mses)/len(mses)
-                    with open("results.txt", 'a') as output:
-                        print(f"{layer:>2},{block},{cast},{mean:>10.5}", file=output, flush=True)
-                    model = restore_layer(model, saved_layer_sd, layer)
+                    with open(outfile, 'a') as output:
+                        print(f"{layer:>2},{block},{cast},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
+                    layer_stack = restore_layer(layer_stack, saved_layer_sd, layer)
 
 if __name__=='__main__': 
     main()

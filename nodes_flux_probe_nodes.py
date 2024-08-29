@@ -121,7 +121,7 @@ class LoadPrunedFluxModel(UNETLoader):
 
     def _func(self, unet_name, weight_dtype, file, first_layer, last_layer, img_threshold=None, txt_threshold=None, img_cut=None, txt_cut=None):
         model = self.load_unet(unet_name, weight_dtype)[0]
-        all_data = load_file(filepath(file))
+        all_data = load_file(filepath("data",file))
         img_masked, txt_masked = 0, 0
         for i in range(first_layer, last_layer+1):
             block = model.model.diffusion_model.double_blocks[i]

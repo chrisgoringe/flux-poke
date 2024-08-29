@@ -9,7 +9,7 @@ from modules.utils import log, shared, layer_iteratable_from_string, load_config
 from modules.hffs import HFFS_Cache
 from modules.trainer import TheTrainer, prep_for_train
 from modules.casting import cast_layer_stack
-from modules.pruning import prune_model, apply_patches
+from modules.pruning import prune_layer_stack, apply_patches
 from modules.layer import load_single_layer
 from modules.sensitivity import Sensitivity
 import time
@@ -33,7 +33,7 @@ def train_or_evaluate():
     model.requires_grad_(False)
 
     if args.prune_map:
-        prune_model(model, prune_config=load_config(filepath(args.prune_map)), model_first_layer=args.first_layer, verbose=args.verbose)
+        prune_layer_stack(model, prune_config=load_config(filepath(args.prune_map)), model_first_layer=args.first_layer, verbose=args.verbose)
 
     if args.cast_map:
         cast_layer_stack(model, cast_config=load_config(filepath(args.cast_map)), 

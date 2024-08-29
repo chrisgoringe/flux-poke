@@ -1,8 +1,8 @@
 from .add_paths import paths_added
-from .flux_probe_nodes import InsertProbes, SaveProbeData,  \
+from .nodes_flux_probe_nodes import InsertProbes, SaveProbeData,  \
     LoadPrunedFluxModel, ReplaceLayers, LoadPrunedFluxModelThreshold
-from .utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize, CommonSizes, QPause, RandomInt
-from .mixed_casting_node import UnetLoaderMixed
+from .nodes_utils_nodes import Prompts, Counter, FluxSimpleScheduler, RandomSize, CommonSizes, QPause, RandomInt
+from .nodes_mixed_casting_node import UnetLoaderMixed
 
 
 

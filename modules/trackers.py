@@ -197,14 +197,14 @@ class InternalsTracker(torch.nn.Module):
 
     @classmethod
     def download_internals(cls):
-        filepath = os.path.join(os.path.split(__file__)[0], 'internals.safetensors')
+        filepath = os.path.join(os.path.split(__file__)[0], 'data', 'internals.safetensors')
         remote   = UploadThread.hffs.rpath(os.path.basename(filepath))
         UploadThread.hffs.fs.get_file( rpath=remote, lpath=filepath )
         return { remote:filepath }
 
     @classmethod
     def upload_internals(cls):
-        filepath = os.path.join(os.path.split(__file__)[0], 'internals.safetensors')
+        filepath = os.path.join(os.path.split(__file__)[0], 'data', 'internals.safetensors')
         remote   = UploadThread.hffs.rpath(os.path.basename(filepath))
         UploadThread.hffs.fs.put_file( lpath=filepath, rpath=remote)
         return { filepath:remote }

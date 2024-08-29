@@ -71,18 +71,19 @@ class Arguments(HintingArguments, SingletonAddin):
     def __init__(self):
         super().__init__()
   
-        first = self.add_mutually_exclusive_group(required=True)
+        first = self.add_mutually_exclusive_group()
         self.first_layer:int    = first.add_argument('--first_layer', help="The first layer in the sub-model.")
         self.first_layers:str   = first.add_argument('--first_layers', help="The range of first layers in the submodel. The whole process runs for each in the range.")
 
         self.thickness:int              = self.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
-        self.model:str                  = self.add_argument('--model', type=str, required=True, help="flux dev model (absolute path)")
+        self.model:str                  = self.add_argument('--model', type=str, help="flux dev model (absolute path)")
         self.load_patches:list[str]     = self.add_argument('--load_patches', action="append", type=str, help="directory to load existing patches from (can have multiple)")
         self.allow_overpatching:bool    = self.add_argument('--allow_overpatching', action="store_true", help="allow one patch to overwrite a previous one (default is an assertion fail)")
         
         self.save_dir:str       = self.add_argument('--save_dir', default="output", help="Relative path of directory to store results in (includes patches if training)")
         self.saved_model:str    = self.add_argument('--saved_model', help="saved model when doing convert (absolute path)")
         self.stats_file:str     = self.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
+        self.results_file:str   = self.add_argument('--results_file', default="results.csv", help="Path for stats to be saved in relative to save_dir")
 
         self.verbose:bool       = self.add_argument('--verbose', action="store_true")
         self.run_asyncs:bool    = self.add_argument('--run_asyncs', action="store_true", help="Experimental; try to cast asynchronously")
@@ -91,7 +92,7 @@ class Arguments(HintingArguments, SingletonAddin):
         self.cast_map:str       = self.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
         self.prune_map:str      = self.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")
         self.train_map:str      = self.add_argument('--train_map', default=None, help="Relative path to yaml/json file describing how the layers should be trained")
-        self.internals:str      = self.add_argument('--internals', default="internals.safetensors", help="Relative path of internals file for prune_map")
+        self.internals:str      = self.add_argument('--internals', default="data/internals.safetensors", help="Relative path of internals file for prune_map")
         self.default_cast:str   = self.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
         self.hs_dir:str         = self.add_argument('--hs_dir', default="hidden_states", help="Hugging face repo_id for data")
@@ -105,7 +106,7 @@ class Arguments(HintingArguments, SingletonAddin):
         self.train_frac:float   = fraction.add_argument('--train_frac', type=float, default=0.8, help="fraction of dataset to train on")
         self.eval_frac:float    = fraction.add_argument('--eval_frac', type=float, default=0.2, help="fraction of dataset to evalaute on")
 
-        act = self.add_mutually_exclusive_group(required=True)
+        act = self.add_mutually_exclusive_group()
         self.evaluate:bool      = act.add_argument('--evaluate', action='store_true', help='no training, just calculate the loss caused by pruning and/or casting')
         self.train:bool         = act.add_argument('--train', action='store_true', help='training')
         self.convert:bool       = act.add_argument('--convert', action='store_true', help='convert to a standalone model')        

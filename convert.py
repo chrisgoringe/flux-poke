@@ -4,7 +4,7 @@ from safetensors.torch import load_file, save_file
 from modules.utils import filepath, load_config, shared, prefix
 from modules.casting import cast_layer_stack
 from modules.layer import load_single_layer
-from modules.pruning import apply_patches, prune_model
+from modules.pruning import apply_patches, prune_layer_stack
 import torch
 
 def convert():
@@ -31,7 +31,7 @@ def convert():
         pruned = []
         def record(parent,block, number, threshold): pruned.append(f"{parent}{block}")
         prune_config = load_config(filepath(args.prune_config))
-        prune_model(all_layers, prune_config, model_first_layer=0, verbose=args.verbose, callbacks=[record,])
+        prune_layer_stack(all_layers, prune_config, model_first_layer=0, verbose=args.verbose, callbacks=[record,])
 
     # cast layers
     if args.cast_map:

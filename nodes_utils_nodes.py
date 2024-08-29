@@ -150,7 +150,7 @@ class FluxSimpleScheduler:
                 }}
     
     def __init__(self):
-        self.model_sampling = load_file(filepath("flux_sigmas.safetensors"))['sigmas']
+        self.model_sampling = load_file(filepath("data","flux_sigmas.safetensors"))['sigmas']
 
     def simple_scheduler(self, total_steps, steps):
         sigs = [float(self.model_sampling[-(1 + int(x * len(self.model_sampling) / total_steps))]) for x in range(total_steps)] + [0.0,]

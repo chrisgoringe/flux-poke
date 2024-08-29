@@ -1,7 +1,6 @@
-from .arguments import args
 from .utils import shared, is_double, layer_iteratable_from_string, prefix
 from modules.modifiers import slice_double_block, get_mask, slice_single_block
-import os
+import os, torch
 from safetensors.torch import load_file
 
 def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[]):   
@@ -26,7 +25,7 @@ def prune_layer(layer, global_layer_number:int, count, constraint, callbacks=[])
             callback('single_blocks','linear1', count, x_threshold)
             callback('single_blocks','linear2', count, x_threshold)
 
-def prune_model(model, prune_config, model_first_layer, verbose, callbacks=[]):
+def prune_layer_stack(model:list[torch.nn.Module], prune_config, model_first_layer, verbose, callbacks=[]):
     for mod in prune_config.get('prunes',None) or []:
         remove = mod.get('remove',0)
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint = None
