@@ -93,7 +93,7 @@ def main():
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
-                if (block=='txt' and ((cast=='Q8_0' and layer<=18) or (cast=='Q5_1' and layer<=7))):
+                if (block=='txt' or (cast=='Q8_0' and layer<=13)):
                     pass
                 else:
                     saved_layer_sd = clone_layer_sd(model, layer)
