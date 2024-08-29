@@ -8,7 +8,7 @@ import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
-import math
+import os
 
 def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     layer_sd = shared.layer_sd(layer_number)
@@ -58,6 +58,22 @@ def modify_model(model, cast_config):
     cast_layer_stack(model, cast_config=cast_config, 
                         stack_starts_at_layer=0, default_cast=args.default_cast, 
                         verbose=args.verbose, autocast=args.autocast)
+    
+def copy_layer(model, n):
+    if is_double(n):
+        save_the_layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
+    else:
+        save_the_layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
+    save_the_layer.load_state_dict( model[n] )
+    return save_the_layer
+
+def restore_layer(model, layer, n):
+    if is_double(n):
+        save_the_layer = DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
+    else:
+        save_the_layer = SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
+    save_the_layer.load_state_dict( layer[n] )
+    model[n] = save_the_layer
 
 def evaluate(model, dataset):
     model.cuda()
@@ -67,13 +83,34 @@ def evaluate(model, dataset):
 def main():
     setup()
     ds = create_dataset()
-    cast_config = load_config(filepath(args.cast_map))
     model = load_model()
-    modify_model(model, cast_config)
-    mses = evaluate(model, ds)
-    mean = sum(mses)/len(mses)
-    print("Average loss {:>10.5}".format(mean))
-    shared.layer_stats[args.first_layer]['loss'] = mean
+
+    for layer in range(19):
+        saved_layer = copy_layer(model, layer)
+        for blocks in ['txt', 'img']:
+            for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
+
+                restore_layer(model, saved_layer, layer)
+                modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
+                mses = evaluate(model, ds)
+                mean = sum(mses)/len(mses)
+                with open("results.txt", 'a') as output:
+                    print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
+
+    for layer in range(19, 57):
+        saved_layer = copy_layer(model, layer)
+        for blocks in ['']:
+            for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
+
+                restore_layer(model, saved_layer, layer)
+                modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
+                mses = evaluate(model, ds)
+                mean = sum(mses)/len(mses)
+                with open("results.txt", 'a') as output:
+                    print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
+
+
+
 
 if __name__=='__main__': 
     main()
