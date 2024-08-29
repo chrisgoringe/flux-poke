@@ -5,7 +5,7 @@ import torch
 import sys, os
 from tqdm import tqdm, trange
 sys.path.insert(0,os.path.join(os.path.dirname(__file__),'..','flux','src'))
-from flux.modules.layers import DoubleStreamBlock, SingleStreamBlock
+from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 
 def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
