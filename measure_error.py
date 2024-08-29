@@ -49,7 +49,7 @@ def setup():
     MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
     
 def create_dataset():
-    return MergedBatchDataset(split='eval', eval_frac='0.1')
+    return MergedBatchDataset(split='eval', eval_frac=0.1)
 
 def load_model():
     print("Load model...")
