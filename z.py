@@ -20,6 +20,7 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
 
 def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autocast=False):
     img, txt, vec, pe, x_out = inputs['img'].cuda(), inputs['txt'].cuda(), inputs['vec'].cuda(), inputs['pe'].cuda(), inputs['x_out'].cuda()
+    x = None
     loss_fn = torch.nn.MSELoss()
 
     with torch.autocast("cuda", enabled=autocast):
