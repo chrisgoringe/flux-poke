@@ -143,9 +143,12 @@ class Batcher:
 
     @classmethod
     def filename(cls, base_name, layer_index):
-        for a,b in cls.BATCHES:
-            if layer_index>=a and layer_index<=b:
-                return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name,a,b)
+        if cls.all_in_one:
+            return "{:0>7}/all_20.safetensors".format(base_name)
+        else:
+            for a,b in cls.BATCHES:
+                if layer_index>=a and layer_index<=b:
+                    return "{:0>7}/{:0>2}-{:0>2}.safetensors".format(base_name,a,b)
             
     @classmethod
     def label(cls, base_name, batch, number=1): 

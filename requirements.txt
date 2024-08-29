@@ -1,5 +1,9 @@
+torch
+torchvision
+torchaudio
 datasets
 huggingface_hub
 gguf
 transformers[torch]
-bitsandbytes
+tqdm
+einops

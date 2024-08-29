@@ -66,7 +66,9 @@ class HFFS:
     def load_file(self, filename):
         def convert(filename):
             f = filename.split("/")
-            return Batcher.filename("/".join(f[:-1]), int(f[-1]))
+            try: n = int(f[-1])
+            except: n = None
+            return Batcher.filename("/".join(f[:-1]), n)
         filename = convert(filename)
         #print(f"Loading {filename}")
         if self.cache.is_in_cache(filename): 

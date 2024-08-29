@@ -6,6 +6,7 @@ import os, random, threading, queue, sys, time
 from typing import Union
 from .hffs import HFFS
 from .utils import SingletonAddin, Batcher
+from .generated_dataset import MERGE_SIZE
 
 class DiskCache:
     def __init__(self):
@@ -63,7 +64,7 @@ class UploadThread(SingletonAddin):
             except:
                 print(sys.exc_info())
 
-MERGE_SIZE = 20
+
 class MergingUploadThread(SingletonAddin):
 
     def __init__(self):
