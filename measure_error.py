@@ -1,3 +1,4 @@
+import add_paths
 from modules.arguments import args
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
