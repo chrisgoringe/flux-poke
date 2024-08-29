@@ -3,7 +3,7 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
 from modules.utils import Batcher, shared, is_double, load_config
-from modules.casting import cast_layer_stack, QuantizedTensor
+from modules.casting import cast_layer_stack, CastLinear
 import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
@@ -31,8 +31,8 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     with torch.autocast("cuda", enabled=autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
-                if isinstance(layer.txt_mlp[0].weight, QuantizedTensor):
-                    print(f"Layer {i} has {layer.txt_mlp[0].weight.gtype.name}")
+                if isinstance(layer.txt_mlp[0], CastLinear):
+                    print(f"Layer {i} has {layer.txt_mlp[0].description}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
