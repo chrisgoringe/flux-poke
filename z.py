@@ -31,7 +31,9 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
                 if x is None: x = torch.cat((txt, img), dim=1)
                 x = layer( x, vec, pe )
 
-    return(float(loss_fn(x, x_out)))
+    loss = float(loss_fn(x, x_out))
+    print(f"Loss: {loss}")
+    return(loss)
 
 def setup():
     torch.set_default_dtype(torch.bfloat16)
