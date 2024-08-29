@@ -31,8 +31,8 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     with torch.autocast("cuda", enabled=autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
-                if isinstance(layer.txt_mlp[0], CastLinear):
-                    print(f"Layer {i} has {layer.txt_mlp[0].description}")
+                #if isinstance(layer.txt_mlp[0], CastLinear):
+                #    print(f"Layer {i} has {layer.txt_mlp[0].description}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
@@ -51,7 +51,7 @@ def setup():
     MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
     
 def create_dataset():
-    return MergedBatchDataset(split='eval', eval_frac=0.1)
+    return MergedBatchDataset(split='eval', eval_frac=0.5)
 
 def load_model():
     print("Load model...")
