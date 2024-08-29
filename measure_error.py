@@ -3,7 +3,7 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset
 from modules.utils import Batcher, shared, is_double, load_config
-from modules.casting import cast_layer_stack
+from modules.casting import cast_layer_stack, QuantizedTensor
 import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
@@ -29,15 +29,17 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     loss_fn = torch.nn.MSELoss()
 
     with torch.autocast("cuda", enabled=autocast):
-        for layer in model: 
+        for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
+                if isinstance(layer.txt_mlp[0].weight, QuantizedTensor):
+                    print(f"Layer {i} has {layer.txt_mlp[0].weight.gtype.name}")
                 img, txt = layer( img, txt, vec, pe ) 
             else:
                 if x is None: x = torch.cat((txt, img), dim=1)
                 x = layer( x, vec, pe )
 
     loss = float(loss_fn(x, x_out))
-    print(f"Loss: {loss}")
+    #print(f"Loss: {loss}")
     return(loss)
 
 def setup():
@@ -86,12 +88,12 @@ def main():
         for cast in ['Q8_0', 'Q5_1', 'Q4_1']:
             for layer in range(19):
                 saved_layer_sd = clone_layer_sd(model, layer)
-                model = restore_layer(model, saved_layer_sd, layer)
                 modify_model(model, { 'casts': [{'layers': layer, 'blocks': blocks, 'castto': cast}] })
                 mses = evaluate(model, ds)
                 mean = sum(mses)/len(mses)
                 with open("results.txt", 'a') as output:
                     print(f"{layer:>2},{blocks},{cast},{mean:>10.5}", file=output, flush=True)
+                model = restore_layer(model, saved_layer_sd, layer)
 
 
 
