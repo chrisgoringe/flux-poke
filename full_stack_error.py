@@ -93,23 +93,29 @@ def main():
         with open(outfile, 'a') as output:
             print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
 
+    jobs = []
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
                 if (False):
                     pass
                 else:
-                    saved_layer_sd = clone_layer_sd(layer_stack, layer)
-                    modify_layer_stack( layer_stack, 
-                                        cast_config  = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] },
-                                        prune_config = None )
-                    start_time = time.monotonic()
-                    mses = evaluate(layer_stack, the_data, args.autocast)
-                    time_taken = (time.monotonic() - start_time)/len(the_data)
-                    mean = sum(mses)/len(mses)
-                    with open(outfile, 'a') as output:
-                        print(f"{layer:>2},{block},{cast},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
-                    layer_stack = restore_layer(layer_stack, saved_layer_sd, layer)
+                    jobs.append((block,cast,layer))
+
+    print(f"{len(jobs)} jobs")
+
+    for block, cast, layer in jobs:
+        saved_layer_sd = clone_layer_sd(layer_stack, layer)
+        modify_layer_stack( layer_stack, 
+                            cast_config  = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] },
+                            prune_config = None )
+        start_time = time.monotonic()
+        mses = evaluate(layer_stack, the_data, args.autocast)
+        time_taken = (time.monotonic() - start_time)/len(the_data)
+        mean = sum(mses)/len(mses)
+        with open(outfile, 'a') as output:
+            print(f"{layer:>2},{block},{cast},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
+        layer_stack = restore_layer(layer_stack, saved_layer_sd, layer)
 
 if __name__=='__main__': 
     main()
