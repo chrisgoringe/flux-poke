@@ -9,6 +9,9 @@ from warnings import warn
 from .gguf_py.gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
 from functools import partial
+from gguf.gguf_reader import ReaderTensor
+from gguf import GGUFReader
+import numpy as np
 
 class QuantizedTensor(object):
     def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
@@ -16,6 +19,7 @@ class QuantizedTensor(object):
         self.tensor_type = gtype
         self.tensor_shape = oshape
         self.patches = []
+        self._dequanted = None
 
     def wrap(self, fn, *args, **kwargs):
         x = fn(*args, **kwargs)
@@ -24,6 +28,18 @@ class QuantizedTensor(object):
     def __getattr__(self, __name: str):
         a = getattr(self._tensor, __name)
         return partial(self.wrap, a) if hasattr(a,'__call__') else a
+    
+    def dequanted(self, dtype, device):
+        if self._dequanted is None:
+            self._dequanted = dequantize_tensor(self, dtype, device)
+        return self._dequanted
+    
+    def purge(self):
+        self._dequanted = None
+    
+    @classmethod
+    def load_from_reader_tensor(cls, reader_tensor:ReaderTensor):
+        return QuantizedTensor( data=reader_tensor.data, tensor_type=reader_tensor.tensor_type, tensor_shape=torch.Size(np.flip(list(reader_tensor.shape))))
 
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
@@ -46,17 +62,15 @@ def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
 
 class DequantingLinear(torch.nn.Module):
 # Based on https://github.com/city96/ComfyUI-GGUF (c) City96 || Apache-2.0 (apache.org/licenses/LICENSE-2.0)
-    def __init__(self, sd:dict[str,torch.Tensor], qtype:GGMLQuantizationType, dtype=None, device=None):
+    def __init__(self, sd:dict[str,torch.Tensor]=None, qtype:GGMLQuantizationType=None, reader_tensor_weight:ReaderTensor=None, reader_tensor_bias:ReaderTensor=None):
         super().__init__()
-        self.weight = quantise_tensor(sd['weight'], qtype)
-        self.bias   = quantise_tensor(sd.get('bias',None), qtype) 
-        self.qtype  = qtype
-        #self.prepared  = None
-        #self.preparing = False
-        self.dtype = dtype
-        self.device = device
-        #self.register_parameter('_weight', self.weight._tensor)
-        #self.register_parameter('_bias', self.bias._tensor)
+        if reader_tensor_weight is not None:
+            assert sd is None
+            self.weight = QuantizedTensor.load_from_reader_tensor(reader_tensor_weight)
+            self.bias   = QuantizedTensor.load_from_reader_tensor(reader_tensor_bias) if reader_tensor_bias is not None else None
+        else:
+            self.weight = quantise_tensor(sd['weight'], qtype)
+            self.bias   = quantise_tensor(sd.get('bias',None), qtype) 
 
     def _apply(self, fn):
         if self.weight is not None:
@@ -87,7 +101,7 @@ class DequantingLinear(torch.nn.Module):
             patch_list += self.move_patch_to_cuda(patches, device)
 
         # dequantize tensor while patches load
-        weight = dequantize_tensor(tensor, dtype, device)
+        weight = tensor.dequanted(dtype, device)
 
         # apply patches
         if patch_list: weight = function(patch_list, weight, "dequant.name.unknown")
@@ -98,24 +112,16 @@ class DequantingLinear(torch.nn.Module):
         bias   = self.get_weight(self.bias,   dtype, device) if self.bias is not None else None
         return (weight, bias)
     
-    #def prepare(self):
-    #    if self.dtype and self.device:
-    #        self.preparing = True
-    #        self.prepared = self.get_weight_and_bias(dtype=self.dtype, device=self.device)
-    #        self.preparing = False
-    #    else:
-    #        warn("Can't prepare without dtype and device hints")
+    def prepare(self, dtype, device):
+        self.weight.dequanted(dtype, device)
+        if self.bias is not None: self.bias.dequanted(dtype, device)
 
     def forward(self, x:torch.Tensor):
-        #while (self.preparing): asyncio.sleep(0)
-
-        #if self.prepared:
-        #    weight, bias = self.prepared
-        #    self.prepared = None
-        #else:
         weight, bias = self.get_weight_and_bias(dtype=x.dtype, device=x.device)
         x = torch.nn.functional.linear(x, weight, bias)
         del weight, bias
+        self.weight.purge()
+        if self.bias is not None: self.bias.purge()
         return x
     
 class CastLinear(torch.nn.Module):

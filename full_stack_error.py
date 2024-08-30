@@ -46,7 +46,7 @@ def setup():
     MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
     
 def create_dataset():
-    return MergedBatchDataset(split='eval', eval_frac=0.5)
+    return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
 
 def load_layer_stack():
     print("Load model...")
@@ -83,15 +83,15 @@ def main():
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
 
-    BLOCKS = ['txt', 'img']
+    BLOCKS = ['linear']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = range(19)
+    LAYERS = range(19, 57)
 
     outfile = os.path.join(args.save_dir, args.results_file)
 
     if not os.path.exists(outfile):
         with open(outfile, 'a') as output:
-            print ("layer, block, cast, prune, loss, time", file=output, flush=True)
+            print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
 
     for block in BLOCKS:
         for cast in CASTS:
