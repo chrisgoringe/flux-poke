@@ -83,16 +83,15 @@ def main():
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
 
-    BLOCKS = ['linear']
-    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = range(19, 57)
-
     outfile = os.path.join(args.save_dir, args.results_file)
 
     if not os.path.exists(outfile):
         with open(outfile, 'a') as output:
             print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
 
+    BLOCKS = ['linear']
+    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
+    LAYERS = range(19, 57)
     jobs = []
     for block in BLOCKS:
         for cast in CASTS:
@@ -100,15 +99,16 @@ def main():
                 if (False):
                     pass
                 else:
-                    jobs.append((block,cast,layer))
+                    config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
+                    jobs.append(config)
 
     print(f"{len(jobs)} jobs")
 
-    for block, cast, layer in jobs:
+    for config in jobs:
         saved_layer_sd = clone_layer_sd(layer_stack, layer)
         modify_layer_stack( layer_stack, 
-                            cast_config  = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] },
-                            prune_config = None )
+                            cast_config  = config if 'casts' in config else None,
+                            prune_config = config if 'prunes' in config else None )
         start_time = time.monotonic()
         mses = evaluate(layer_stack, the_data, args.autocast)
         time_taken = (time.monotonic() - start_time)/len(the_data)
