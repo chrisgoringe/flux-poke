@@ -96,15 +96,16 @@ def main():
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
-                if (False):
+                if (cast=="Q8_0"):
                     pass
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
-                    jobs.append(config)
+                    label = f"{layer},{block},{cast}"
+                    jobs.append((label, config))
 
     print(f"{len(jobs)} jobs")
 
-    for config in jobs:
+    for label, config in jobs:
         saved_layer_sd = clone_layer_sd(layer_stack, layer)
         modify_layer_stack( layer_stack, 
                             cast_config  = config if 'casts' in config else None,
@@ -114,7 +115,7 @@ def main():
         time_taken = (time.monotonic() - start_time)/len(the_data)
         mean = sum(mses)/len(mses)
         with open(outfile, 'a') as output:
-            print(f"{layer:>2},{block},{cast},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
+            print(f"{label},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
         layer_stack = restore_layer(layer_stack, saved_layer_sd, layer)
 
 if __name__=='__main__': 
