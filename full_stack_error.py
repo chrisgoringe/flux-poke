@@ -96,7 +96,7 @@ def main():
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
-                if (block=='txt' or cast=='Q8_0'):
+                if (False):
                     pass
                 else:
                     saved_layer_sd = clone_layer_sd(layer_stack, layer)

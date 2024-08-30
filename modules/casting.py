@@ -133,7 +133,7 @@ class CastLinear(torch.nn.Module):
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
         elif isinstance(to, GGMLQuantizationType):
-            self.linear = DequantingLinear(linear.state_dict(), qtype=to, dtype=torch.bfloat16, device="cuda")
+            self.linear = DequantingLinear(linear.state_dict(), qtype=to, device="cuda")
             self.description = to.name
         else:
             self.linear = linear.to(to)
