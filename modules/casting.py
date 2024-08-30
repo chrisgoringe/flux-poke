@@ -8,29 +8,28 @@ from warnings import warn
 
 from .gguf_py.gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
+from functools import partial
 
 class QuantizedTensor(object):
     def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
-        self._tensor = torch.as_tensor(data, **kwargs)
-        self.gtype = gtype
-        self.oshape = oshape
+        self._tensor = data if isinstance(data, torch.Tensor) or data is None else torch.as_tensor(data)  
+        self.tensor_type = gtype
+        self.tensor_shape = oshape
+        self.patches = []
+
+    def wrap(self, fn, *args, **kwargs):
+        x = fn(*args, **kwargs)
+        return QuantizedTensor(x, self.tensor_type, self.tensor_shape) if isinstance(x, torch.Tensor) else x
     
-    @property
-    def device(self):
-        return self._tensor.device
-
-    def to(self, *args, **kwargs):
-        self._tensor.to(*args, **kwargs)
-        return self
-
     def __getattr__(self, __name: str):
-        return getattr(self._tensor, __name)
+        a = getattr(self._tensor, __name)
+        return partial(self.wrap, a) if hasattr(a,'__call__') else a
 
     @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
         kwargs = {} if kwargs is None else kwargs
-        gtypes = tuple(a.gtype for a in args if hasattr(a, 'gtype'))
-        oshapes = tuple(a.oshape for a in args if hasattr(a, 'oshape'))
+        gtypes = tuple(a.tensor_type for a in args if hasattr(a, 'tensor_type'))
+        oshapes = tuple(a.tensor_shape for a in args if hasattr(a, 'tensor_shape'))
         args = [getattr(a, '_tensor', a) for a in args]
         ret = func(*args, **kwargs)
         return QuantizedTensor(ret, gtype=gtypes[0], oshape=oshapes[0])
@@ -42,7 +41,7 @@ def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTens
 
 def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
     if tensor is None: return None
-    out = dequantize(tensor._tensor, tensor.gtype, tensor.oshape, dtype=dtype)
+    out = dequantize(tensor._tensor, tensor.tensor_type, tensor.tensor_shape, dtype=dtype)
     return out.to(dtype).to(device)
 
 class DequantingLinear(torch.nn.Module):
@@ -56,6 +55,19 @@ class DequantingLinear(torch.nn.Module):
         #self.preparing = False
         self.dtype = dtype
         self.device = device
+        #self.register_parameter('_weight', self.weight._tensor)
+        #self.register_parameter('_bias', self.bias._tensor)
+
+    def _apply(self, fn):
+        if self.weight is not None:
+            try:
+                self.weight = fn(self.weight)
+            except TypeError:
+                pass # why?
+        if self.bias is not None:
+            self.bias = fn(self.bias)
+        super()._apply(fn)
+        return self
 
     def move_patch_to_cuda(self, item, device):
         if isinstance(item, torch.Tensor):

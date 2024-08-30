@@ -61,8 +61,8 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     if prune_config:
         prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def clone_layer_sd(layer_stack:torch.nn.Sequential, n) -> dict[str,torch.Tensor]:
-    sd:dict[str, torch.Tensor] = layer_stack[n].state_dict()
+def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,torch.Tensor]:
+    sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
     return { k:sd[k].clone() for k in sd }
 
 def restore_layer(layer_stack:torch.nn.Sequential, sd, n) -> torch.nn.Sequential:
@@ -80,8 +80,8 @@ def evaluate(layer_stack, dataset, autocast:bool):
     
 def main():
     setup()
-    the_data    = create_dataset()
-    layer_stack = load_layer_stack()
+    the_data      = create_dataset()
+    layer_stack   = load_layer_stack(dtype=default_dtype)
 
     BLOCKS = ['txt', 'img']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
@@ -96,7 +96,7 @@ def main():
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
-                if (block=='txt' or (cast=='Q8_0' and layer<=13)):
+                if (block=='txt' or cast=='Q8_0'):
                     pass
                 else:
                     saved_layer_sd = clone_layer_sd(layer_stack, layer)
