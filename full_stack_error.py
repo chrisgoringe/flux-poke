@@ -77,18 +77,8 @@ def evaluate(layer_stack, dataset, autocast:bool):
         r = [ compute_loss(layer_stack, entry, autocast) for entry in tqdm(dataset) ]
     layer_stack.cpu()
     return r
-    
-def main():
-    setup()
-    the_data      = create_dataset()
-    layer_stack   = load_layer_stack()
-
-    outfile = os.path.join(args.save_dir, args.results_file)
-
-    if not os.path.exists(outfile):
-        with open(outfile, 'a') as output:
-            print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
-
+'''
+def get_jobs_list():
     BLOCKS = ['linear']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
     LAYERS = range(19, 57)
@@ -102,6 +92,32 @@ def main():
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
                     jobs.append((label, config))
+    return jobs'''
+
+def get_jobs_list():
+    jobs = []
+    for first_layer in [4,]:
+        for second_layer in [5,9,14]:
+            for first_block in ['img', 'txt']:
+                for second_block in ['img', 'txt']:
+                    config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': 'Q4_1'},
+                                        {'layers': second_layer, 'blocks': second_block, 'castto': 'Q4_1'}]   }
+                    jobs.append((f"{first_layer}-{first_block} and {second_layer}-{second_block},,Q4_1", config))
+
+    return jobs
+    
+def main():
+    setup()
+    the_data      = create_dataset()
+    layer_stack   = load_layer_stack()
+
+    outfile = os.path.join(args.save_dir, args.results_file)
+
+    if not os.path.exists(outfile):
+        with open(outfile, 'a') as output:
+            print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
+
+    jobs = get_jobs_list()
 
     print(f"{len(jobs)} jobs")
 
