@@ -91,7 +91,7 @@ def get_jobs_list():
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
-                    jobs.append((label, config))
+                    jobs.append((label, config, [layer,]))
     return jobs'''
 
 def get_jobs_list():
@@ -102,7 +102,7 @@ def get_jobs_list():
                 for second_block in ['img', 'txt']:
                     config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': 'Q4_1'},
                                         {'layers': second_layer, 'blocks': second_block, 'castto': 'Q4_1'}]   }
-                    jobs.append((f"{first_layer}-{first_block} and {second_layer}-{second_block},,Q4_1", config))
+                    jobs.append((f"{first_layer}-{first_block} and {second_layer}-{second_block},,Q4_1", config, [first_layer, second_layer]))
 
     return jobs
     
@@ -121,8 +121,8 @@ def main():
 
     print(f"{len(jobs)} jobs")
 
-    for label, config in jobs:
-        saved_layer_sd = clone_layer_sd(layer_stack, layer)
+    for label, config, layers in jobs:
+        saved_layer_sds = [clone_layer_sd(layer_stack, layer) for layer in layers]
         modify_layer_stack( layer_stack, 
                             cast_config  = config if 'casts' in config else None,
                             prune_config = config if 'prunes' in config else None )
@@ -132,7 +132,8 @@ def main():
         mean = sum(mses)/len(mses)
         with open(outfile, 'a') as output:
             print(f"{label},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
-        layer_stack = restore_layer(layer_stack, saved_layer_sd, layer)
+        for layer, saved_layer_sd in zip(layers, saved_layer_sds):
+            layer_stack = restore_layer(layer_stack, sd=saved_layer_sd, layer_number=layer)
 
 if __name__=='__main__': 
     main()
