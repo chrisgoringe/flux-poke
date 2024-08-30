@@ -2,7 +2,7 @@
 --evaluate
 --verbose
 --stats_file   = out.yaml
---results_file = results.csv
+--results_file = runpod/results.csv
 --cast_map   = settings.yaml
 --hs_dir     = ChrisGoringe/fi2
 --eval_frac  = 0.5
