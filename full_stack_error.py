@@ -65,10 +65,10 @@ def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,to
     sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
     return { k:sd[k].clone() for k in sd }
 
-def restore_layer(layer_stack:torch.nn.Sequential, sd, n) -> torch.nn.Sequential:
-    the_layer = new_layer(n)
+def restore_layer(layer_stack:torch.nn.Sequential, sd, layer_number) -> torch.nn.Sequential:
+    the_layer = new_layer(layer_number)
     the_layer.load_state_dict( sd )
-    layer_stack = torch.nn.Sequential( *[m if i!=n else the_layer for i, m in enumerate(layer_stack)] )
+    layer_stack = torch.nn.Sequential( *[m if i!=layer_number else the_layer for i, m in enumerate(layer_stack)] )
     return layer_stack
 
 def evaluate(layer_stack, dataset, autocast:bool):
@@ -81,7 +81,7 @@ def evaluate(layer_stack, dataset, autocast:bool):
 def main():
     setup()
     the_data      = create_dataset()
-    layer_stack   = load_layer_stack(dtype=default_dtype)
+    layer_stack   = load_layer_stack()
 
     BLOCKS = ['txt', 'img']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
