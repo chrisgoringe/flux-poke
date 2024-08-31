@@ -96,6 +96,7 @@ class MergedBatchDataset:
         if source != self.last_source:
             self.last_source = source
             self.last_source_data = self.load_file(filename="/".join((source, "all_{:0>2}.safetensors".format(MERGE_SIZE))))
+        self.last_entry = entry
         
         label = lambda key : f"{entry:0>2}_{key}"
         datum = { dkey:self.last_source_data[label(key)] for key, dkey in self.KEY_MAP }

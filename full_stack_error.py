@@ -117,8 +117,13 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     if prune_config:
         prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def evaluate(layer_stack, dataset):
+def evaluate(layer_stack, dataset:MergedBatchDataset):
     with torch.no_grad():
+        losses = []
+        for entry in tqdm(dataset):
+            loss = compute_loss(layer_stack, entry)
+            if loss>1e-4:
+                print(f"{dataset.last_source} / {dataset.last_entry}")
         return [ compute_loss(layer_stack, entry) for entry in tqdm(dataset) ]
 
 
@@ -162,7 +167,7 @@ def main():
     setup()
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
-    
+
     jobs          = get_jobs_list_null()
 
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
