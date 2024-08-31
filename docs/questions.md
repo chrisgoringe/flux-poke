@@ -1,3 +1,5 @@
+impact of nothing? there seems to be 6.432?
+
 
 does impact add? if not is there a pattern? try two layers and compare img+img to img+txt
 (independent errors add the square)

@@ -9,7 +9,57 @@ import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
-import time, os
+import time, os, logging
+from functools import partial
+
+
+
+def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,torch.Tensor]:
+    sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
+    return { k:sd[k].clone() for k in sd }
+
+def restore_layer(layer_stack:torch.nn.Sequential, sd, layer_number) -> torch.nn.Sequential:
+    the_layer = new_layer(layer_number)
+    the_layer.load_state_dict( sd )
+    layer_stack = torch.nn.Sequential( *[m if i!=layer_number else the_layer for i, m in enumerate(layer_stack)] )
+    return layer_stack
+
+class Result:
+    def __init__(self, label):
+        self.label:str          = label
+        self.time:float         = None
+        self.losses:list[float] = None
+        self.loss:float         = None
+
+class Job:
+    def __init__(self, label:str, config:dict, preserve_layers:list[int]=[], prerun:callable=None, postrun:callable=None):
+        self.config = config
+        self.preserve_layers = preserve_layers
+        self.prerun = prerun
+        self.postrun = postrun
+        self.result = Result(label)
+
+    def execute(self, layer_stack:torch.nn.Sequential, the_data) -> Result:
+        if self.prerun: self.prerun()
+
+        saved_layer_sds = {layer_index:clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers}
+        modify_layer_stack( layer_stack, 
+                            cast_config  = self.config if 'casts'  in self.config else None,
+                            prune_config = self.config if 'prunes' in self.config else None )
+        
+        layer_stack.cuda()
+        start_time = time.monotonic()
+        losses = evaluate(layer_stack, the_data, autocast=args.autocast)
+        self.result.time   = time.monotonic() - start_time
+        self.result.losses = losses
+        self.result.loss   = sum(losses) / len(losses)
+        layer_stack.cpu()
+
+        for layer_index, saved_layer_sd in saved_layer_sds.values():
+            layer_stack = restore_layer(layer_stack, sd=saved_layer_sd, layer_number=layer_index)
+
+        if self.postrun: self.postrun()
+        return self.result
 
 def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
@@ -49,7 +99,7 @@ def create_dataset():
     return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
 
 def load_layer_stack():
-    print("Load model...")
+    logging.info("Loading model")
     layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     return layer_stack
 
@@ -61,22 +111,10 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     if prune_config:
         prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,torch.Tensor]:
-    sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
-    return { k:sd[k].clone() for k in sd }
-
-def restore_layer(layer_stack:torch.nn.Sequential, sd, layer_number) -> torch.nn.Sequential:
-    the_layer = new_layer(layer_number)
-    the_layer.load_state_dict( sd )
-    layer_stack = torch.nn.Sequential( *[m if i!=layer_number else the_layer for i, m in enumerate(layer_stack)] )
-    return layer_stack
-
 def evaluate(layer_stack, dataset, autocast:bool):
-    layer_stack.cuda()
     with torch.no_grad():
-        r = [ compute_loss(layer_stack, entry, autocast) for entry in tqdm(dataset) ]
-    layer_stack.cpu()
-    return r
+        return [ compute_loss(layer_stack, entry, autocast) for entry in tqdm(dataset) ]
+
 '''
 def get_jobs_list():
     BLOCKS = ['linear']
@@ -94,8 +132,19 @@ def get_jobs_list():
                     jobs.append((label, config, [layer,]))
     return jobs'''
 
-def get_jobs_list():
+
+def get_jobs_list() -> list[Job]:
     jobs = []
+
+    def set_autocast(x:bool): args.autocast = x
+
+    jobs.append( Job("autocast", {}, [], prerun=lambda : partial(set_autocast, True)) )
+    jobs.append( Job("noautocast", {}, [], prerun=lambda : partial(set_autocast, False)) )
+
+    return jobs
+
+'''
+def get_jobs_list() -> list[Job]:
     for first_layer in [4,]:
         for second_layer in [5,9,14]:
             for first_block in ['img', 'txt']:
@@ -104,36 +153,21 @@ def get_jobs_list():
                                         {'layers': second_layer, 'blocks': second_block, 'castto': 'Q4_1'}]   }
                     jobs.append((f"{first_layer}-{first_block} and {second_layer}-{second_block},,Q4_1", config, [first_layer, second_layer]))
 
-    return jobs
+    return jobs'''
     
 def main():
     setup()
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
+    jobs          = get_jobs_list()
 
-    outfile = os.path.join(args.save_dir, args.results_file)
+    logging.info(f"{len(jobs)} jobs")
 
-    if not os.path.exists(outfile):
-        with open(outfile, 'a') as output:
-            print ("layer, block, cast, prune, loss, average full stack time", file=output, flush=True)
-
-    jobs = get_jobs_list()
-
-    print(f"{len(jobs)} jobs")
-
-    for label, config, layers in jobs:
-        saved_layer_sds = [clone_layer_sd(layer_stack, layer) for layer in layers]
-        modify_layer_stack( layer_stack, 
-                            cast_config  = config if 'casts' in config else None,
-                            prune_config = config if 'prunes' in config else None )
-        start_time = time.monotonic()
-        mses = evaluate(layer_stack, the_data, args.autocast)
-        time_taken = (time.monotonic() - start_time)/len(the_data)
-        mean = sum(mses)/len(mses)
-        with open(outfile, 'a') as output:
-            print(f"{label},0,{mean:>10.5},{time_taken:>10.5}", file=output, flush=True)
-        for layer, saved_layer_sd in zip(layers, saved_layer_sds):
-            layer_stack = restore_layer(layer_stack, sd=saved_layer_sd, layer_number=layer)
+    with open( os.path.join(args.save_dir, args.results_file), 'a' ) as output_filehandle:
+        for job in jobs:
+            result = job.execute(layer_stack, the_data)
+            logging.info(f"{result}")
+            print(f"{result.label},{result.loss:>10.5},{result.time:>10.5}", file=output_filehandle, flush=True)
 
 if __name__=='__main__': 
     main()
