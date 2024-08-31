@@ -138,7 +138,7 @@ def get_jobs_list() -> list[Job]:
 
     def set_autocast(x:bool): args.autocast = x
 
-    jobs.append( Job("autocast",   config={}, preserve_layers=[], prerun=partial(set_autocast, True )) )
+    #jobs.append( Job("autocast",   config={}, preserve_layers=[], prerun=partial(set_autocast, True )) )
     jobs.append( Job("noautocast", config={}, preserve_layers=[], prerun=partial(set_autocast, False)) )
 
     return jobs
