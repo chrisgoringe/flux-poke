@@ -1,4 +1,3 @@
---autocast
 --verbose = 2
 --stats_file   = out.yaml
 --results_file = runpod/results.csv

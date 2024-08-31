@@ -121,8 +121,8 @@ def evaluate(layer_stack, dataset):
     with torch.no_grad():
         return [ compute_loss(layer_stack, entry) for entry in tqdm(dataset) ]
 
-'''
-def get_jobs_list():
+
+def get_jobs_list_singles():
     BLOCKS = ['linear']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
     LAYERS = range(19, 57)
@@ -130,7 +130,7 @@ def get_jobs_list():
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
-                if (cast=="Q8_0"):
+                if (False):
                     pass
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
@@ -138,22 +138,13 @@ def get_jobs_list():
                     jobs.append((label, config, [layer,]))
     return jobs
 
-
-def get_jobs_list() -> list[Job]:
-    jobs = []
-
-    def set_autocast(x:bool): args.autocast = x
-
-    #jobs.append( Job("autocast",   config={}, preserve_layers=[], prerun=partial(set_autocast, True )) )
-    jobs.append( Job("noautocast", config={}, preserve_layers=[], prerun=partial(set_autocast, False)) )
-
-    return jobs'''
-
-
-def get_jobs_list() -> list[Job]:
+def get_jobs_list_null() -> list[Job]:
     jobs = []
     jobs.append( Job("null", {}, []))
     return jobs
+
+def get_jobs_list_adding() -> list[Job]:
+    jobs = []
     cast = 'Q4_1'
     for first_layer in [4,]:
         for second_layer in [5,9,14]:
@@ -171,7 +162,8 @@ def main():
     setup()
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
-    jobs          = get_jobs_list()
+    
+    jobs          = get_jobs_list_null()
 
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
 
