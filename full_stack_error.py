@@ -86,7 +86,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
                 x = layer( x, vec, pe )
 
     loss = float(loss_fn(x, x_out))
-    print(loss)
+    print(f"Autocast {autocast}, loss {loss}")
     return(loss)
 
 def setup():
