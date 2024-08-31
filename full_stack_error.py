@@ -117,26 +117,23 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     if prune_config:
         prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def evaluate(layer_stack, dataset:MergedBatchDataset):
+def evaluate(layer_stack, dataset:MergedBatchDataset, find_non_zero=False):
     with torch.no_grad():
         losses = []
-        #nonzero = []
         for entry in tqdm(dataset):
             loss = compute_loss(layer_stack, entry)
-            losses.append(loss)
-            #if loss>1e-4: nonzero.append(f"{dataset.last_source} / {dataset.last_entry}")
+            if not find_non_zero:
+                losses.append(loss)
+            else:
+                if loss>1e-4: losses.append(f"{dataset.last_source} / {dataset.last_entry}")
 
-        #print("/n/n")
-        #for nz in nonzero: print(nz)
-
-        return [ compute_loss(layer_stack, entry) for entry in tqdm(dataset) ]
+        return losses
 
 
-def get_jobs_list_singles():
-    BLOCKS = ['linear']
+def get_jobs_list_singles(jobs=[]):
+    BLOCKS = ['linear1', 'linear2', 'modulation', 'linear', 'all']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = range(19, 57)
-    jobs = []
+    LAYERS = [19,] #range(19, 57)
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
@@ -145,19 +142,17 @@ def get_jobs_list_singles():
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
-                    jobs.append((label, config, [layer,]))
+                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
     return jobs
 
-def get_jobs_list_null() -> list[Job]:
-    jobs = []
+def get_jobs_list_null(jobs=[]) -> list[Job]:
     jobs.append( Job("null", {}, []))
     return jobs
 
-def get_jobs_list_adding() -> list[Job]:
-    jobs = []
+def get_jobs_list_adding(jobs=[]) -> list[Job]:
     cast = 'Q4_1'
     for first_layer in [4,]:
-        for second_layer in [5,9,14]:
+        for second_layer in [5,14]:
             for first_block in ['img', 'txt']:
                 for second_block in ['img', 'txt']:
                     config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': cast},
@@ -173,9 +168,11 @@ def main():
     the_data      = create_dataset()
     layer_stack   = load_layer_stack()
 
-    jobs          = get_jobs_list_null()
+    jobs = []
+    jobs = get_jobs_list_adding(jobs)
+    jobs = get_jobs_list_singles(jobs)
 
-    if args.verbose >= 1: print(f"{len(jobs)} jobs")
+    if args.verbose >= 1: print(f"{len(jobs)} job" + ("s" if len(job)!=1 else ""))
 
     outfile = os.path.join(args.save_dir, args.results_file)
     if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)

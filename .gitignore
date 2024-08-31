@@ -168,3 +168,4 @@ prompts_dataset.last
 output/summary.csv
 internals copy.safetensors
 !runpod/*
+docs/~*
