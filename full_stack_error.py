@@ -112,6 +112,7 @@ def load_layer_stack():
 
 def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_config):
     if cast_config:
+        print(cast_config)
         cast_layer_stack(layer_stack, cast_config=cast_config, 
                             stack_starts_at_layer=0, default_cast=args.default_cast, 
                             verbose=args.verbose, autocast=args.autocast)
@@ -168,7 +169,7 @@ def main():
     setup()
 
     jobs = []
-    get_jobs_list_null(jobs)
+    #get_jobs_list_null(jobs)
     get_jobs_list_adding(jobs)
     get_jobs_list_singles(jobs)
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
