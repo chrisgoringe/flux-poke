@@ -85,7 +85,7 @@ class Arguments(HintingArguments, SingletonAddin):
         self.stats_file:str     = self.add_argument('--stats_file', default="stats.yaml", help="Path for stats to be saved in relative to save_dir")
         self.results_file:str   = self.add_argument('--results_file', default="results.csv", help="Path for stats to be saved in relative to save_dir")
 
-        self.verbose:bool       = self.add_argument('--verbose', action="store_true")
+        self.verbose:int        = self.add_argument('--verbose', default=0, help="level of verbosity")
         self.run_asyncs:bool    = self.add_argument('--run_asyncs', action="store_true", help="Experimental; try to cast asynchronously")
         self.autocast:bool      = self.add_argument('--autocast', action="store_true", help="Use autocast")
         

@@ -29,6 +29,12 @@ class Result:
         self.losses:list[float] = None
         self.loss:float         = None
 
+    @property
+    def to_string(self):
+        s = f"{self.label}: loss {self.loss:>10.4f}, took {self.time:>10.4f}s"
+        if args.verbose >= 2:
+            s += " Losses:\n" + ", ".join([f"{l:>10.4f}" for l in self.losses])
+
 class Job:
     def __init__(self, label:str, config:dict, preserve_layers:list[int]=[], prerun:callable=None, postrun:callable=None):
         self.config = config
@@ -86,7 +92,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor]) -> fl
                 x = layer( x, vec, pe )
 
     loss = float(loss_fn(x, x_out))
-    print(f"Autocast {args.autocast}, loss {loss}")
+    if args.verbose >= 2: print(f"{loss}")
     return(loss)
 
 def setup():
@@ -130,7 +136,7 @@ def get_jobs_list():
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
                     jobs.append((label, config, [layer,]))
-    return jobs'''
+    return jobs
 
 
 def get_jobs_list() -> list[Job]:
@@ -141,19 +147,23 @@ def get_jobs_list() -> list[Job]:
     #jobs.append( Job("autocast",   config={}, preserve_layers=[], prerun=partial(set_autocast, True )) )
     jobs.append( Job("noautocast", config={}, preserve_layers=[], prerun=partial(set_autocast, False)) )
 
-    return jobs
+    return jobs'''
 
-'''
+
 def get_jobs_list() -> list[Job]:
+    jobs = []
+    cast = 'Q4_1'
     for first_layer in [4,]:
         for second_layer in [5,9,14]:
             for first_block in ['img', 'txt']:
                 for second_block in ['img', 'txt']:
-                    config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': 'Q4_1'},
-                                        {'layers': second_layer, 'blocks': second_block, 'castto': 'Q4_1'}]   }
-                    jobs.append((f"{first_layer}-{first_block} and {second_layer}-{second_block},,Q4_1", config, [first_layer, second_layer]))
+                    config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': cast},
+                                        {'layers': second_layer, 'blocks': second_block, 'castto': cast}]   }
+                    jobs.append( Job(label=f"{first_layer}-{first_block} and {second_layer}-{second_block} to {cast}", 
+                                     config=config, 
+                                     preserve_layers=[first_layer, second_layer]))
 
-    return jobs'''
+    return jobs
     
 def main():
     setup()
@@ -161,7 +171,7 @@ def main():
     layer_stack   = load_layer_stack()
     jobs          = get_jobs_list()
 
-    print(f"{len(jobs)} jobs")
+    if args.verbose >= 1: print(f"{len(jobs)} jobs")
 
     outfile = os.path.join(args.save_dir, args.results_file)
     if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)
@@ -169,7 +179,7 @@ def main():
     with open( outfile, 'a+' ) as output_filehandle:
         for job in jobs:
             result = job.execute(layer_stack, the_data)
-            print(f"{result}")
+            if args.verbose >= 1: print(f"{result.to_string}")
             print(f"{result.label},{result.loss:>10.5},{result.time:>10.5}", file=output_filehandle, flush=True)
 
 if __name__=='__main__': 
