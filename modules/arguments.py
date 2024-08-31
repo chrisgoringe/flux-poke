@@ -88,6 +88,7 @@ class Arguments(HintingArguments, SingletonAddin):
         self.verbose:int        = self.add_argument('--verbose', default=0, type=int, help="level of verbosity")
         self.run_asyncs:bool    = self.add_argument('--run_asyncs', action="store_true", help="Experimental; try to cast asynchronously")
         self.autocast:bool      = self.add_argument('--autocast', action="store_true", help="Use autocast")
+        self.skip:int           = self.add_argument('--skip', type=int)
         
         self.cast_map:str       = self.add_argument('--cast_map', default=None, help="Relative path to yaml/json file describing how the layers should be cast")
         self.prune_map:str      = self.add_argument('--prune_map', default=None, help="Relative path to yaml/json file describing how the layers should be pruned")

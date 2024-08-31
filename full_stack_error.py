@@ -189,6 +189,10 @@ def main():
     #get_jobs_list_adding(jobs)
     get_jobs_list_singles(jobs)
     #get_jobs_list_double(jobs)
+
+    if args.skip: 
+        print(f"Skipping {args.skip}")
+        jobs = jobs[args.skip:]
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
 
     the_data    = create_dataset()
