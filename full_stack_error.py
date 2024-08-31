@@ -12,8 +12,6 @@ from typing import Union
 import time, os
 from functools import partial
 
-
-
 def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,torch.Tensor]:
     sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
     return { k:sd[k].clone() for k in sd }
@@ -87,7 +85,9 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
                 if x is None: x = torch.cat((txt, img), dim=1)
                 x = layer( x, vec, pe )
 
-    return(float(loss_fn(x, x_out)))
+    loss = float(loss_fn(x, x_out))
+    print(loss)
+    return(loss)
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
