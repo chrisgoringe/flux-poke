@@ -49,7 +49,7 @@ class Job:
         
         layer_stack.cuda()
         start_time = time.monotonic()
-        losses = evaluate(layer_stack, the_data, autocast=args.autocast)
+        losses = evaluate(layer_stack, the_data)
         self.result.time   = time.monotonic() - start_time
         self.result.losses = losses
         self.result.loss   = sum(losses) / len(losses)
@@ -111,9 +111,9 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     if prune_config:
         prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
     
-def evaluate(layer_stack, dataset, autocast:bool):
+def evaluate(layer_stack, dataset):
     with torch.no_grad():
-        return [ compute_loss(layer_stack, entry, autocast) for entry in tqdm(dataset) ]
+        return [ compute_loss(layer_stack, entry, args.autocast) for entry in tqdm(dataset) ]
 
 '''
 def get_jobs_list():
@@ -163,7 +163,10 @@ def main():
 
     logging.info(f"{len(jobs)} jobs")
 
-    with open( os.path.join(args.save_dir, args.results_file), 'a' ) as output_filehandle:
+    outfile = os.path.join(args.save_dir, args.results_file)
+    if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)
+
+    with open( outfile, 'a+' ) as output_filehandle:
         for job in jobs:
             result = job.execute(layer_stack, the_data)
             logging.info(f"{result}")
