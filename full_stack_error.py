@@ -44,7 +44,7 @@ class Job:
         self.postrun = postrun
         self.result = Result(label)
 
-    def execute(self, layer_stack:torch.nn.Sequential, the_data) -> Result:
+    def execute(self, layer_stack:torch.nn.Sequential, the_data) -> tuple[Result, torch.nn.Sequential]:
         if self.prerun: self.prerun()
 
         saved_layer_sds = [ clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers ]
@@ -64,7 +64,7 @@ class Job:
             layer_stack = restore_layer(layer_stack, sd=saved_layer_sds[i], layer_number=layer_index)
 
         if self.postrun: self.postrun()
-        return self.result
+        return self.result, layer_stack
 
 def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
@@ -168,7 +168,7 @@ def get_jobs_list_adding(jobs=[]) -> list[Job]:
 def main():
     setup()
 
-    jobs = []
+    jobs:list[Job] = []
     #get_jobs_list_null(jobs)
     get_jobs_list_adding(jobs)
     get_jobs_list_singles(jobs)
@@ -182,7 +182,7 @@ def main():
 
     with open( outfile, 'a+' ) as output_filehandle:
         for job in jobs:
-            result = job.execute(layer_stack, the_data)
+            result, layer_stack = job.execute(layer_stack, the_data)
             if args.verbose >= 1: print(f"{result.to_string}")
             print(f"{result.label},{result.loss:>10.5},{result.time:>10.5}", file=output_filehandle, flush=True)
 
