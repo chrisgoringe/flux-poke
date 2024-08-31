@@ -147,6 +147,21 @@ def get_jobs_list_singles(jobs=[]):
                     jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
     return jobs
 
+def get_jobs_list_double(jobs=[]):
+    BLOCKS = ['img_attn', 'img_mlp', 'img_mod', 'img', 'txt_attn', 'txt_mlp', 'txt_mod', 'txt', 'all']
+    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
+    LAYERS = [10,] #range(19, 57)
+    for block in BLOCKS:
+        for cast in CASTS:
+            for layer in LAYERS:
+                if (False):
+                    pass
+                else:
+                    config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
+                    label = f"{layer},{block},{cast}"
+                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
+    return jobs    
+
 def get_jobs_list_null(jobs=[]) -> list[Job]:
     jobs.append( Job("null", {}, []))
     return jobs
@@ -169,9 +184,10 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    #get_jobs_list_null(jobs)
-    get_jobs_list_adding(jobs)
-    get_jobs_list_singles(jobs)
+    get_jobs_list_null(jobs)
+    #get_jobs_list_adding(jobs)
+    #get_jobs_list_singles(jobs)
+    get_jobs_list_double(jobs)
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
 
     the_data    = create_dataset()
