@@ -151,8 +151,9 @@ def get_jobs_list_double(jobs=[]):
     BLOCKS = ['img_attn', 'img_mlp', 'img_mod', 'img', 'txt_attn', 'txt_mlp', 'txt_mod', 'txt', 'all']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
     LAYERS = [10,] #range(19, 57)
-    for block in BLOCKS:
-        for cast in CASTS:
+    
+    for cast in CASTS:
+        for block in BLOCKS:
             for layer in LAYERS:
                 if (False):
                     pass
