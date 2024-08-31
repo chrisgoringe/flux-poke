@@ -72,12 +72,12 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer.load_state_dict(layer_sd)
     return layer
 
-def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autocast:bool) -> float:
+def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor]) -> float:
     img, txt, vec, pe, x_out = inputs['img'].cuda(), inputs['txt'].cuda(), inputs['vec'].cuda(), inputs['pe'].cuda(), inputs['x_out'].cuda()
     x = None
     loss_fn = torch.nn.MSELoss()
 
-    with torch.autocast("cuda", enabled=autocast):
+    with torch.autocast("cuda", enabled=args.autocast):
         for i, layer in enumerate(model): 
             if isinstance(layer, DoubleStreamBlock): 
                 img, txt = layer( img, txt, vec, pe ) 
@@ -86,7 +86,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
                 x = layer( x, vec, pe )
 
     loss = float(loss_fn(x, x_out))
-    print(f"Autocast {autocast}, loss {loss}")
+    print(f"Autocast {args.autocast}, loss {loss}")
     return(loss)
 
 def setup():
@@ -113,7 +113,7 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
     
 def evaluate(layer_stack, dataset):
     with torch.no_grad():
-        return [ compute_loss(layer_stack, entry, args.autocast) for entry in tqdm(dataset) ]
+        return [ compute_loss(layer_stack, entry) for entry in tqdm(dataset) ]
 
 '''
 def get_jobs_list():
@@ -138,8 +138,8 @@ def get_jobs_list() -> list[Job]:
 
     def set_autocast(x:bool): args.autocast = x
 
-    jobs.append( Job("autocast", {}, [], prerun=lambda : partial(set_autocast, True)) )
-    jobs.append( Job("noautocast", {}, [], prerun=lambda : partial(set_autocast, False)) )
+    jobs.append( Job("autocast",   config={}, preserve_layers=[], prerun=partial(set_autocast, True )) )
+    jobs.append( Job("noautocast", config={}, preserve_layers=[], prerun=partial(set_autocast, False)) )
 
     return jobs
 

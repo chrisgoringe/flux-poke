@@ -139,7 +139,10 @@ class CastLinear(torch.nn.Module):
             self.linear = linear.to(to)
 
     def forward(self, x:torch.Tensor):
-        with torch.autocast(device_type="cuda", enabled=self.autocast):
+        if self.autocast:
+            with torch.autocast(device_type="cuda"):
+                return self.linear(x)
+        else:
             return self.linear(x)
 
 def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block_constraint:str = None, callbacks:list[callable] = [], initial_name="", autocast=False):
