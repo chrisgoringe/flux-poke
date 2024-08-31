@@ -59,7 +59,7 @@ class Job:
         self.result.loss   = sum(losses) / len(losses)
         layer_stack.cpu()
 
-        for layer_index, saved_layer_sd in saved_layer_sds.values():
+        for layer_index, saved_layer_sd in saved_layer_sds.items():
             layer_stack = restore_layer(layer_stack, sd=saved_layer_sd, layer_number=layer_index)
 
         if self.postrun: self.postrun()

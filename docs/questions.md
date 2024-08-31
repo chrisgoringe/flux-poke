@@ -1,4 +1,4 @@
-impact of nothing? there seems to be 6.432?
+autocast and txt in layer 18? gives infs
 
 
 does impact add? if not is there a pattern? try two layers and compare img+img to img+txt
@@ -9,8 +9,7 @@ also time cost per bit saved
 
 do whole stack to get time cost
 
-seperate sub-bits (ff, attn, norm etc.) on whole stack
-
+seperate sub-bits (ff, attn, norm etc.)
 bias / weight  separately (start with whole stack)
 
 
