@@ -147,10 +147,10 @@ def get_jobs_list_singles(jobs=[]):
                     jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
     return jobs
 
-def get_jobs_list_double(jobs=[]):
-    BLOCKS = ['img_attn', 'img_mlp', 'img_mod', 'img', 'txt_attn', 'txt_mlp', 'txt_mod', 'txt', 'all']
+def get_jobs_list_doubles(jobs=[]):
+    BLOCKS = [ 'all', ]
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = [10,] #range(19, 57)
+    LAYERS = range(0,19)
     
     for cast in CASTS:
         for block in BLOCKS:
@@ -188,7 +188,7 @@ def main():
     get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
     get_jobs_list_singles(jobs)
-    #get_jobs_list_double(jobs)
+    get_jobs_list_doubles(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")
