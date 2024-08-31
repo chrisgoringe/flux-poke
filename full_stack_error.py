@@ -34,6 +34,7 @@ class Result:
         s = f"{self.label}: loss {self.loss:>10.4f}, took {self.time:>10.4f}s"
         if args.verbose >= 2:
             s += " Losses:\n" + ", ".join([f"{l:>10.4f}" for l in self.losses])
+        return s
 
 class Job:
     def __init__(self, label:str, config:dict, preserve_layers:list[int]=[], prerun:callable=None, postrun:callable=None):
