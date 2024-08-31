@@ -152,6 +152,8 @@ def get_jobs_list() -> list[Job]:
 
 def get_jobs_list() -> list[Job]:
     jobs = []
+    jobs.append( Job("null", {}, []))
+    return jobs
     cast = 'Q4_1'
     for first_layer in [4,]:
         for second_layer in [5,9,14]:
