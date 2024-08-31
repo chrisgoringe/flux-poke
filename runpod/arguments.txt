@@ -1,4 +1,4 @@
---verbose = 2
+--verbose = 1
 --stats_file   = out.yaml
 --results_file = runpod/results.csv
 --hs_dir     = ChrisGoringe/fi2
