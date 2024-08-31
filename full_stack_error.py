@@ -46,7 +46,7 @@ class Job:
     def execute(self, layer_stack:torch.nn.Sequential, the_data) -> Result:
         if self.prerun: self.prerun()
 
-        saved_layer_sds = {layer_index:clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers}
+        saved_layer_sds = [ clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers ]
         modify_layer_stack( layer_stack, 
                             cast_config  = self.config if 'casts'  in self.config else None,
                             prune_config = self.config if 'prunes' in self.config else None )
@@ -59,8 +59,8 @@ class Job:
         self.result.loss   = sum(losses) / len(losses)
         layer_stack.cpu()
 
-        for layer_index, saved_layer_sd in saved_layer_sds.items():
-            layer_stack = restore_layer(layer_stack, sd=saved_layer_sd, layer_number=layer_index)
+        for i, layer_index in enumerate(self.preserve_layers):
+            layer_stack = restore_layer(layer_stack, sd=saved_layer_sds[i], layer_number=layer_index)
 
         if self.postrun: self.postrun()
         return self.result
