@@ -120,10 +120,15 @@ def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_confi
 def evaluate(layer_stack, dataset:MergedBatchDataset):
     with torch.no_grad():
         losses = []
+        #nonzero = []
         for entry in tqdm(dataset):
             loss = compute_loss(layer_stack, entry)
-            if loss>1e-4:
-                print(f"{dataset.last_source} / {dataset.last_entry}")
+            losses.append(loss)
+            #if loss>1e-4: nonzero.append(f"{dataset.last_source} / {dataset.last_entry}")
+
+        #print("/n/n")
+        #for nz in nonzero: print(nz)
+
         return [ compute_loss(layer_stack, entry) for entry in tqdm(dataset) ]
 
 
