@@ -93,7 +93,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor]) -> fl
 
     loss = float(loss_fn(x, x_out))
     if args.verbose >= 2: print(f"{loss}")
-    return(loss)
+    return loss
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
