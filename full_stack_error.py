@@ -133,9 +133,9 @@ def evaluate(layer_stack, dataset:MergedBatchDataset, find_non_zero=False):
 
 
 def get_jobs_list_singles(jobs=[]):
-    BLOCKS = ['linear1', 'linear2', 'modulation', 'linear', 'all']
+    BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
     CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = [19,] #range(19, 57)
+    LAYERS = range(19, 57)
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
@@ -187,8 +187,8 @@ def main():
     jobs:list[Job] = []
     get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    #get_jobs_list_singles(jobs)
-    get_jobs_list_double(jobs)
+    get_jobs_list_singles(jobs)
+    #get_jobs_list_double(jobs)
     if args.verbose >= 1: print(f"{len(jobs)} jobs")
 
     the_data    = create_dataset()
@@ -198,9 +198,9 @@ def main():
     if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)
 
     with open( outfile, 'a+' ) as output_filehandle:
-        for job in jobs:
+        for i, job in enumerate(jobs):
             result, layer_stack = job.execute(layer_stack, the_data)
-            if args.verbose >= 1: print(f"{result.to_string}")
+            print(f"Job {i} - {result.to_string}")
             print(f"{result.label},{result.loss:>10.5},{result.time:>10.5}", file=output_filehandle, flush=True)
 
 if __name__=='__main__': 
