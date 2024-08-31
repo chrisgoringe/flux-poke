@@ -169,7 +169,7 @@ def main():
     jobs = []
     jobs = get_jobs_list_adding(jobs)
     jobs = get_jobs_list_singles(jobs)
-    if args.verbose >= 1: print(f"{len(jobs)} job" + ("s" if len(job)!=1 else ""))
+    if args.verbose >= 1: print(f"{len(jobs)} job" + ("s" if len(jobs)!=1 else ""))
 
     the_data    = create_dataset()
     layer_stack = load_layer_stack()
