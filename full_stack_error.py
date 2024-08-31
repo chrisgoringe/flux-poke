@@ -165,14 +165,14 @@ def get_jobs_list_adding(jobs=[]) -> list[Job]:
     
 def main():
     setup()
-    the_data      = create_dataset()
-    layer_stack   = load_layer_stack()
 
     jobs = []
     jobs = get_jobs_list_adding(jobs)
     jobs = get_jobs_list_singles(jobs)
-
     if args.verbose >= 1: print(f"{len(jobs)} job" + ("s" if len(job)!=1 else ""))
+
+    the_data    = create_dataset()
+    layer_stack = load_layer_stack()
 
     outfile = os.path.join(args.save_dir, args.results_file)
     if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)
