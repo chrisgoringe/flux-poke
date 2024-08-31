@@ -9,7 +9,7 @@ import torch
 from tqdm import tqdm, trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
-import time, os, logging
+import time, os
 from functools import partial
 
 
@@ -99,7 +99,7 @@ def create_dataset():
     return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
 
 def load_layer_stack():
-    logging.info("Loading model")
+    print("Loading model")
     layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     return layer_stack
 
@@ -161,7 +161,7 @@ def main():
     layer_stack   = load_layer_stack()
     jobs          = get_jobs_list()
 
-    logging.info(f"{len(jobs)} jobs")
+    print(f"{len(jobs)} jobs")
 
     outfile = os.path.join(args.save_dir, args.results_file)
     if not os.path.exists(os.path.dirname(outfile)): os.makedirs(os.path.dirname(outfile), exist_ok=True)
@@ -169,7 +169,7 @@ def main():
     with open( outfile, 'a+' ) as output_filehandle:
         for job in jobs:
             result = job.execute(layer_stack, the_data)
-            logging.info(f"{result}")
+            print(f"{result}")
             print(f"{result.label},{result.loss:>10.5},{result.time:>10.5}", file=output_filehandle, flush=True)
 
 if __name__=='__main__': 
