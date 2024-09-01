@@ -1,8 +1,8 @@
 --verbose = 1
---skip = 23
+#--skip = 23
 --stats_file   = out.yaml
 --results_file = runpod/results.csv
---hs_dir     = ChrisGoringe/fi2
+--hs_dir     = ChrisGoringe/fi
 --eval_frac  = 0.5
 --cache_dir  = .hfc
 --model=/workspace/ComfyUI/models/unet/flux1-dev.safetensors

@@ -3,7 +3,7 @@ import add_paths
 import torch
 import transformers
 from modules.arguments import args, filepath
-from modules.generated_dataset import TheDataset
+from modules.generated_dataset import RemoteDataset
 from modules.utils import log, shared, layer_iteratable_from_string, load_config
 from modules.hffs import HFFS_Cache
 from modules.trainer import TheTrainer
@@ -37,12 +37,12 @@ def train_or_evaluate():
                          stack_starts_at_layer=args.first_layer, default_cast=args.default_cast, 
                          verbose=args.verbose, autocast=args.autocast)
     
-    TheDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed, validate=args.validate)
+    RemoteDataset.set_dataset_source(dir=args.hs_dir, shuffle=args.shuffle, seed=args.shuffle_seed, validate=args.validate)
     t = TheTrainer(
         model         = model,
         args          = args.training_args,
-        train_dataset = TheDataset(first_layer=args.first_layer, split="train", train_frac=args.train_frac, thickness=args.thickness),
-        eval_dataset  = TheDataset(first_layer=args.first_layer, split="eval",  eval_frac =args.eval_frac,  thickness=args.thickness),
+        train_dataset = RemoteDataset(first_layer=args.first_layer, split="train", train_frac=args.train_frac, thickness=args.thickness),
+        eval_dataset  = RemoteDataset(first_layer=args.first_layer, split="eval",  eval_frac =args.eval_frac,  thickness=args.thickness),
         data_collator = transformers.DefaultDataCollator(),
         callbacks     = [TheCallback,],
     )

@@ -1,70 +1,17 @@
 import add_paths
 from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
-from modules.generated_dataset import MergedBatchDataset
-from modules.utils import Batcher, shared, is_double, load_config
-from modules.casting import cast_layer_stack
-from modules.pruning import prune_layer_stack
+from modules.generated_dataset import MergedBatchDataset, RemoteDataset
+from modules.utils import Batcher, shared, is_double
+
+from modules.jobs import Job, Result
 import torch
-from tqdm import tqdm, trange
+from tqdm import trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
-import time, os
-from functools import partial
+import os
 
-def clone_layer_sd(layer_stack:torch.nn.Sequential, layer_number) -> dict[str,torch.Tensor]:
-    sd:dict[str, torch.Tensor] = layer_stack[layer_number].state_dict()
-    return { k:sd[k].clone() for k in sd }
 
-def restore_layer(layer_stack:torch.nn.Sequential, sd, layer_number) -> torch.nn.Sequential:
-    the_layer = new_layer(layer_number)
-    the_layer.load_state_dict( sd )
-    layer_stack = torch.nn.Sequential( *[m if i!=layer_number else the_layer for i, m in enumerate(layer_stack)] )
-    return layer_stack
-
-class Result:
-    def __init__(self, label):
-        self.label:str          = label
-        self.time:float         = None
-        self.losses:list[float] = None
-        self.loss:float         = None
-
-    @property
-    def to_string(self):
-        s = f"{self.label}: loss {self.loss:>10.4f}, took {self.time:>10.4f}s"
-        if args.verbose >= 2:
-            s += " Losses:\n" + ", ".join([f"{l:>10.4f}" for l in self.losses])
-        return s
-
-class Job:
-    def __init__(self, label:str, config:dict, preserve_layers:list[int]=[], prerun:callable=None, postrun:callable=None):
-        self.config = config
-        self.preserve_layers = preserve_layers
-        self.prerun = prerun
-        self.postrun = postrun
-        self.result = Result(label)
-
-    def execute(self, layer_stack:torch.nn.Sequential, the_data) -> tuple[Result, torch.nn.Sequential]:
-        if self.prerun: self.prerun()
-
-        saved_layer_sds = [ clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers ]
-        modify_layer_stack( layer_stack, 
-                            cast_config  = self.config if 'casts'  in self.config else None,
-                            prune_config = self.config if 'prunes' in self.config else None )
-        
-        layer_stack.cuda()
-        start_time = time.monotonic()
-        losses = evaluate(layer_stack, the_data)
-        self.result.time   = time.monotonic() - start_time
-        self.result.losses = losses
-        self.result.loss   = sum(losses) / len(losses)
-        layer_stack.cpu()
-
-        for i, layer_index in enumerate(self.preserve_layers):
-            layer_stack = restore_layer(layer_stack, sd=saved_layer_sds[i], layer_number=layer_index)
-
-        if self.postrun: self.postrun()
-        return self.result, layer_stack
 
 def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
@@ -79,58 +26,26 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer.load_state_dict(layer_sd)
     return layer
 
-def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor]) -> float:
-    img, txt, vec, pe, x_out = inputs['img'].cuda(), inputs['txt'].cuda(), inputs['vec'].cuda(), inputs['pe'].cuda(), inputs['x_out'].cuda()
-    x = None
-    loss_fn = torch.nn.MSELoss()
-
-    with torch.autocast("cuda", enabled=args.autocast):
-        for i, layer in enumerate(model): 
-            if isinstance(layer, DoubleStreamBlock): 
-                img, txt = layer( img, txt, vec, pe ) 
-            else:
-                if x is None: x = torch.cat((txt, img), dim=1)
-                x = layer( x, vec, pe )
-
-    loss = float(loss_fn(x, x_out))
-    if args.verbose >= 2: print(f"{loss}")
-    return loss
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
     shared.set_shared_filepaths(args=args)
     Batcher.set_mode(all_in_one=True)
     MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
+    RemoteDataset.set_dataset_source(dir=args.hs_dir)
+    Job.layer_generator = new_layer
+    Job.args = args
     
 def create_dataset():
-    return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
+    if args.hs_dir.endswith('fi2'):
+        return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
+    else:
+        return RemoteDataset(split='eval', eval_frac=args.eval_frac)
 
 def load_layer_stack():
     print("Loading model")
     layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
     return layer_stack
-
-def modify_layer_stack(layer_stack:torch.nn.Sequential, cast_config, prune_config):
-    if cast_config:
-        print(cast_config)
-        cast_layer_stack(layer_stack, cast_config=cast_config, 
-                            stack_starts_at_layer=0, default_cast=args.default_cast, 
-                            verbose=args.verbose, autocast=args.autocast)
-    if prune_config:
-        prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=args.verbose)
-    
-def evaluate(layer_stack, dataset:MergedBatchDataset, find_non_zero=False):
-    with torch.no_grad():
-        losses = []
-        for entry in tqdm(dataset):
-            loss = compute_loss(layer_stack, entry)
-            if not find_non_zero:
-                losses.append(loss)
-            else:
-                if loss>1e-4: losses.append(f"{dataset.last_source} / {dataset.last_entry}")
-
-        return losses
-
 
 def get_jobs_list_singles(jobs=[]):
     BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
@@ -144,7 +59,7 @@ def get_jobs_list_singles(jobs=[]):
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
-                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
+                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
     return jobs
 
 def get_jobs_list_doubles(jobs=[]):
@@ -160,11 +75,18 @@ def get_jobs_list_doubles(jobs=[]):
                 else:
                     config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
                     label = f"{layer},{block},{cast}"
-                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
+                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,],))
     return jobs    
 
 def get_jobs_list_null(jobs=[]) -> list[Job]:
-    jobs.append( Job("null", {}, []))
+    nzs = []
+    def note_nonzero(loss:float, source:tuple[str,int]): 
+        print(f"loss {loss}")
+        if loss>1e-4: nzs.append(source)
+    def report_nonzero():
+        print ("\n".join(f"{x[0]} {x[1]}" for x in nzs))
+
+    jobs.append( Job("null", config={}, preserve_layers=[], callbacks=[note_nonzero,], postrun=report_nonzero))
     return jobs
 
 def get_jobs_list_adding(jobs=[]) -> list[Job]:
@@ -177,9 +99,12 @@ def get_jobs_list_adding(jobs=[]) -> list[Job]:
                                         {'layers': second_layer, 'blocks': second_block, 'castto': cast}]   }
                     jobs.append( Job(label=f"{first_layer}-{first_block} and {second_layer}-{second_block} to {cast}", 
                                      config=config, 
-                                     preserve_layers=[first_layer, second_layer]))
+                                     preserve_layers=[first_layer, second_layer], )
+                                )
 
     return jobs
+
+
     
 def main():
     setup()
@@ -187,8 +112,8 @@ def main():
     jobs:list[Job] = []
     get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    get_jobs_list_singles(jobs)
-    get_jobs_list_doubles(jobs)
+    #get_jobs_list_singles(jobs)
+    #get_jobs_list_doubles(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")

@@ -5,3 +5,9 @@ bash sensitivity.bash
 cd /workspace/ComfyUI/custom_nodes/flux-poke
 
 python full_stack_error.py &
+
+
+cd /workspace/ComfyUI/custom_nodes/flux-poke/output
+mkdir runpod
+cd runpod
+tail -f results.csv
