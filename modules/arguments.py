@@ -97,6 +97,7 @@ class Arguments(HintingArguments, SingletonAddin):
         self.default_cast:str   = self.add_argument('--default_cast', default="bfloat16", help="Cast to use for 'default' in the cast_map")
 
         self.hs_dir:str         = self.add_argument('--hs_dir', default="hidden_states", help="Hugging face repo_id for data")
+        self.hs_type:int        = self.add_argument('--hs_type', type=int, default=1, help="type 1 is all the layers (fi), type 2 is in/out only batched (fi2)")
         self.validate:bool      = self.add_argument('--validate', action="store_true", help="Validate the directories in the dataset have 9 files in")
         self.cache_dir:str      = self.add_argument('--cache_dir', default=None, help="Cache directory for files retrieved from repo")
         self.shuffle:bool       = self.add_argument('--shuffle', action='store_true', help="shuffle the dataset")

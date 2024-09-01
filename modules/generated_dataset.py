@@ -36,12 +36,13 @@ class RemoteDataset(_Dataset):
             random.shuffle(cls._mapping)
         print("Complete dataset contains {:>5} examples".format(len(cls._mapping)))
 
-    def __init__(self, first_layer:int, split:str, thickness:int=1, train_frac=0.8, eval_frac=0.2):
+    def __init__(self, first_layer:int, split:str, thickness:int=1, train_frac=0.8, eval_frac=0.2, squeeze=True):
         super().__init__(split, train_frac, eval_frac)
         
         self.first_layer = first_layer
         self.thickness   = thickness
         self.last_source_was = None
+        self.squeeze = squeeze
 
     def __getitem__(self, i):
         self.last_source_was = self.mapping[i]
@@ -51,8 +52,8 @@ class RemoteDataset(_Dataset):
 
         data = {}
         for k in ['img', 'txt', 'x', 'vec', 'pe']:
-            if (x:=input.get( l1+k, None)) is not None:  data[k]        = x.squeeze(0)
-            if (y:=output.get(l2+k, None)) is not None:  data[k+"_out"] = y.squeeze(0)
+            if (x:=input.get( l1+k, None)) is not None:  data[k]        = x.squeeze(0) if self.squeeze else x
+            if (y:=output.get(l2+k, None)) is not None:  data[k+"_out"] = y.squeeze(0) if self.squeeze else y
 
         return data
     

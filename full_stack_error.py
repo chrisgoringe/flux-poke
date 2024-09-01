@@ -11,8 +11,6 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 import os
 
-
-
 def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
         return DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
@@ -26,13 +24,15 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer.load_state_dict(layer_sd)
     return layer
 
-def is_type_two():
-    return (args.hs_dir.endswith('fi2'))
+def load_layer_stack():
+    print("Loading model")
+    layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
+    return layer_stack
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
     shared.set_shared_filepaths(args=args)
-    if is_type_two():
+    if args.hs_type==2:
         MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
         Batcher.set_mode(all_in_one=True)
     else:
@@ -42,15 +42,12 @@ def setup():
     Job.args = args
     
 def create_dataset():
-    if is_type_two():
+    if args.hs_type==2:
         return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
     else:
-        return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57)
+        return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57, squeeze=False)
 
-def load_layer_stack():
-    print("Loading model")
-    layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
-    return layer_stack
+
 
 def get_jobs_list_singles(jobs=[]):
     BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
