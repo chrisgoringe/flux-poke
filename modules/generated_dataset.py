@@ -23,7 +23,7 @@ class _Dataset:
         return ""
     
 
-class RemoteDataset(_Dataset):s
+class RemoteDataset(_Dataset):
     shuffle = False
     @classmethod
     def set_dataset_source(cls, dir, shuffle=False, seed=0, exclusions:list[int]=[], validate=False):
