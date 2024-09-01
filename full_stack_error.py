@@ -40,7 +40,7 @@ def create_dataset():
     if args.hs_dir.endswith('fi2'):
         return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
     else:
-        return RemoteDataset(split='eval', eval_frac=args.eval_frac)
+        return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57)
 
 def load_layer_stack():
     print("Loading model")
@@ -80,11 +80,11 @@ def get_jobs_list_doubles(jobs=[]):
 
 def get_jobs_list_null(jobs=[]) -> list[Job]:
     nzs = []
-    def note_nonzero(loss:float, source:tuple[str,int]): 
-        print(f"loss {loss}")
-        if loss>1e-4: nzs.append(source)
+    def note_nonzero(loss:float, source): 
+        print(f"{source} loss {loss}")
+        if loss>1e-4: nzs.append(f"{source}")
     def report_nonzero():
-        print ("\n".join(f"{x[0]} {x[1]}" for x in nzs))
+        print ("\n".join(nzs))
 
     jobs.append( Job("null", config={}, preserve_layers=[], callbacks=[note_nonzero,], postrun=report_nonzero))
     return jobs

@@ -4,7 +4,7 @@ from collections.abc import Callable
 from modules.casting import cast_layer_stack
 from modules.pruning import prune_layer_stack
 from comfy.ldm.flux.layers import DoubleStreamBlock
-from modules.generated_dataset import MergedBatchDataset
+from modules.generated_dataset import _Dataset
 from tqdm import tqdm
 
 class Result:
@@ -78,12 +78,12 @@ class Job:
         if patch_config:
             raise NotImplementedError()
         
-    def evaluate(self, layer_stack, dataset:MergedBatchDataset):
+    def evaluate(self, layer_stack, dataset:_Dataset):
         with torch.no_grad():
             losses = []
             for entry in tqdm(dataset):
                 loss = compute_loss(layer_stack, entry, self.autocast)
-                for callback in self.callbacks: callback(loss, (dataset.last_source, dataset.last_entry))
+                for callback in self.callbacks: callback(loss, dataset.last_was())
                 losses.append(loss)
             return losses
 

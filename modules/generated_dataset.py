@@ -19,8 +19,11 @@ class _Dataset:
     def __len__(self): 
         return len(self.mapping)
     
+    def last_was(self):
+        return ""
+    
 
-class RemoteDataset(_Dataset):
+class RemoteDataset(_Dataset):s
     shuffle = False
     @classmethod
     def set_dataset_source(cls, dir, shuffle=False, seed=0, exclusions:list[int]=[], validate=False):
@@ -52,6 +55,9 @@ class RemoteDataset(_Dataset):
             if (y:=output.get(l2+k, None)) is not None:  data[k+"_out"] = y.squeeze(0)
 
         return data
+    
+    def last_was(self):
+        return self.last_source_was
 
 MERGE_SIZE = 20
 class MergedBatchDataset(_Dataset):
@@ -97,3 +103,6 @@ class MergedBatchDataset(_Dataset):
         label = lambda key : f"{entry:0>2}_{key}"
         datum = { dkey:self.last_source_data[label(key)] for key, dkey in self.KEY_MAP }
         return datum
+
+    def last_was(self):
+        return (self.last_source, self.last_entry)
