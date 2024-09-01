@@ -26,18 +26,23 @@ def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStre
     layer.load_state_dict(layer_sd)
     return layer
 
+def is_type_two():
+    return (args.hs_dir.endswith('fi2'))
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)
     shared.set_shared_filepaths(args=args)
-    Batcher.set_mode(all_in_one=True)
-    MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
-    RemoteDataset.set_dataset_source(dir=args.hs_dir)
+    if is_type_two():
+        MergedBatchDataset.set_dataset_source(dir=args.hs_dir)
+        Batcher.set_mode(all_in_one=True)
+    else:
+        RemoteDataset.set_dataset_source(dir=args.hs_dir)
+        Batcher.set_mode(all_in_one=False)
     Job.layer_generator = new_layer
     Job.args = args
     
 def create_dataset():
-    if args.hs_dir.endswith('fi2'):
+    if is_type_two():
         return MergedBatchDataset(split='eval', eval_frac=args.eval_frac)
     else:
         return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57)
