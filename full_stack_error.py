@@ -53,7 +53,7 @@ def create_dataset():
 def get_jobs_list_singles(jobs=[]):
     BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
     CASTS = [Linear8bitLt, LinearFP4, LinearNF4]
-    LAYERS = range(19)
+    LAYERS = range(19,20)
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
@@ -68,7 +68,7 @@ def get_jobs_list_singles(jobs=[]):
 def get_jobs_list_doubles(jobs=[]):
     BLOCKS = [ 'all', ]
     CASTS = [Linear8bitLt, LinearFP4, LinearNF4]
-    LAYERS = range(10)
+    LAYERS = range(10,11)
     
     for cast in CASTS:
         for block in BLOCKS:
