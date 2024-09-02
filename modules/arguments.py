@@ -77,6 +77,7 @@ class Arguments(HintingArguments, SingletonAddin):
 
         self.thickness:int              = self.add_argument('--thickness', type=int, default=1, help="The thickness to be trained (default 1)")
         self.model:str                  = self.add_argument('--model', type=str, help="flux dev model (absolute path)")
+        self.gguf_dir:str               = self.add_argument('--gguf_dir', type=str, help="location of gguf files for patching")
         self.load_patches:list[str]     = self.add_argument('--load_patches', action="append", type=str, help="directory to load existing patches from (can have multiple)")
         self.allow_overpatching:bool    = self.add_argument('--allow_overpatching', action="store_true", help="allow one patch to overwrite a previous one (default is an assertion fail)")
         
@@ -108,10 +109,10 @@ class Arguments(HintingArguments, SingletonAddin):
         self.train_frac:float   = fraction.add_argument('--train_frac', type=float, default=0.8, help="fraction of dataset to train on")
         self.eval_frac:float    = fraction.add_argument('--eval_frac', type=float, default=0.2, help="fraction of dataset to evalaute on")
 
-        act = self.add_mutually_exclusive_group()
-        self.evaluate:bool      = act.add_argument('--evaluate', action='store_true', help='no training, just calculate the loss caused by pruning and/or casting')
-        self.train:bool         = act.add_argument('--train', action='store_true', help='training')
-        self.convert:bool       = act.add_argument('--convert', action='store_true', help='convert to a standalone model')        
+        #act = self.add_mutually_exclusive_group()
+        #self.evaluate:bool      = act.add_argument('--evaluate', action='store_true', help='no training, just calculate the loss caused by pruning and/or casting')
+        #self.train:bool         = act.add_argument('--train', action='store_true', help='training')
+        #self.convert:bool       = act.add_argument('--convert', action='store_true', help='convert to a standalone model')        
         
         self.training_args:transformers.TrainingArguments = None
 

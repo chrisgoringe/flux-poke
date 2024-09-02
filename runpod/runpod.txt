@@ -4,7 +4,10 @@ cd runpod-setup
 bash sensitivity.bash
 cd /workspace/ComfyUI/custom_nodes/flux-poke
 
-python full_stack_error.py &
+python full_stack_error.py
+
+
+
 
 
 cd /workspace/ComfyUI/custom_nodes/flux-poke/output

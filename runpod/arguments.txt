@@ -6,4 +6,5 @@
 --hs_type    = 2
 --eval_frac  = 0.5
 --cache_dir  = .hfc
---model=/workspace/ComfyUI/models/unet/flux1-dev.safetensors
+--model      = /workspace/ComfyUI/models/unet/flux1-dev.safetensors
+--gguf_dir   = /workspace/ComfyUI/

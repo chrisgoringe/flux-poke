@@ -3,6 +3,7 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, is_double
+from gguf import GGMLQuantizationType
 
 from modules.jobs import Job
 import torch
@@ -47,10 +48,14 @@ def create_dataset():
     else:
         return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57, squeeze=False)
 
-
+QUANT_FILES = {
+    GGMLQuantizationType.Q2_K:'flux1-dev-Q2_K.gguf',
+}
+def gguf_file(quant:GGMLQuantizationType):
+    return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
 
 def get_jobs_list_patch_singles(jobs=[]):
-    FILES = ['/workspace/ComfyUI/flux1-dev-Q2_K.gguf',]
+    FILES = [gguf_file(GGMLQuantizationType.Q2_K),]
     LAYERS = range(19,20)
 
     for file in FILES:

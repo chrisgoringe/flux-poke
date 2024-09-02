@@ -6,49 +6,71 @@ from typing import Union
 import bitsandbytes.nn as bnb
 from warnings import warn
 
-from .gguf_py.gguf import GGMLQuantizationType, quants
+from gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
-from functools import partial
+
 from gguf.gguf_reader import ReaderTensor
-from gguf import GGUFReader
+from gguf.quants import quantize
 import numpy as np
 
-class QuantizedTensor(object):
-    def __init__(self, data, tensor_type:GGMLQuantizationType, tensor_shape:torch.Size, **kwargs):
-        self._tensor = data if isinstance(data, torch.Tensor) or data is None else torch.as_tensor(data)  
-        self.tensor_type = tensor_type
-        self.tensor_shape = tensor_shape
-        self.patches = []
-        self._dequanted = None
+from functools import partial
 
-    def wrap(self, fn, *args, **kwargs):
-        x = fn(*args, **kwargs)
-        return QuantizedTensor(x, self.tensor_type, self.tensor_shape) if isinstance(x, torch.Tensor) else x
+class QuantizedTensor():
+    def __init__(self, data=None, tensor_type=None, tensor_shape=None, patches=[], data_is_unquantized_tensor=False, **kwargs):
+        self.tensor_type:GGMLQuantizationType = tensor_type
+        self.tensor_shape:torch.Size          = tensor_shape
+        self.patches:list                     = patches.copy()
+        self._tensor:torch.Tensor             = None
+        self._set_data(data, data_is_unquantized_tensor)
+
+    def dequantized(self, dtype, device=None) -> torch.Tensor:
+        return dequantize_tensor(self._tensor, dtype, device)
+
+    @property
+    def tensor_description(self):
+        try:
+            return torch.tensor([int(self.tensor_type),] + [int(x) for x in self.tensor_shape], device="cpu")
+        except:
+            raise Exception()
     
-    def __getattr__(self, __name: str):
-        a = getattr(self._tensor, __name)
-        return partial(self.wrap, a) if hasattr(a,'__call__') else a
-    
-    def dequanted(self, dtype, device):
-        if self._dequanted is None:
-            self._dequanted = dequantize_tensor(self, dtype, device)
-        return self._dequanted
-    
-    def purge(self):
-        self._dequanted = None
+    @classmethod
+    def load_from_description(cls, description, tnsr):
+        return QuantizedTensor( data=tnsr, tensor_type=int(description[0]), tensor_shape=torch.Size(description[1:]))
     
     @classmethod
     def load_from_reader_tensor(cls, reader_tensor:ReaderTensor):
         return QuantizedTensor( data=reader_tensor.data, tensor_type=reader_tensor.tensor_type, tensor_shape=torch.Size(np.flip(list(reader_tensor.shape))))
 
     @classmethod
+    def from_unquantized_tensor(cls, tnsr:torch.Tensor, tensor_type:GGMLQuantizationType):
+        return QuantizedTensor( tnsr, tensor_shape=tnsr.shape, tensor_type=tensor_type, data_is_unquantized_tensor=True )
+    
+    def _set_data(self, data, data_is_unquantized_tensor=False):
+        if data_is_unquantized_tensor:
+            assert isinstance(data, torch.Tensor)
+            try:              data = quantize(data.numpy(), qtype=self.tensor_type)
+            except TypeError: data = quantize(data.to(torch.float).numpy(), qtype=self.tensor_type)
+        self._tensor = data if isinstance(data, torch.Tensor) or data is None else torch.as_tensor(data)  
+
+    @classmethod
     def __torch_function__(cls, func, types, args=(), kwargs=None):
-        kwargs = {} if kwargs is None else kwargs
-        gtypes = tuple(a.tensor_type for a in args if hasattr(a, 'tensor_type'))
-        oshapes = tuple(a.tensor_shape for a in args if hasattr(a, 'tensor_shape'))
+        kwargs = kwargs or {}
+        for a in args:
+            if isinstance(a, QuantizedTensor):
+                return_qt = QuantizedTensor(None, a.tensor_type, a.tensor_shape, a.patches)
+                break
+
         args = [getattr(a, '_tensor', a) for a in args]
-        ret = func(*args, **kwargs)
-        return QuantizedTensor(ret, tensor_type=gtypes[0], tensor_shape=oshapes[0])
+        return_qt._set_data( func(*args, **kwargs) )
+        return return_qt
+    
+    def wrap(self, fn, *args, **kwargs):
+        x = fn(*args, **kwargs)
+        return QuantizedTensor(x, self.tensor_type, self.tensor_shape, self.patches) if isinstance(x, torch.Tensor) else x
+    
+    def __getattr__(self, __name: str):
+        a = getattr(self._tensor, __name)
+        return partial(self.wrap, a) if hasattr(a,'__call__') else a
 
 def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTensor:
     if t is None: return None
@@ -61,16 +83,21 @@ def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
     return out.to(dtype).to(device)
 
 class DequantingLinear(torch.nn.Module):
-# Based on https://github.com/city96/ComfyUI-GGUF (c) City96 || Apache-2.0 (apache.org/licenses/LICENSE-2.0)
     def __init__(self, sd:dict[str,torch.Tensor]=None, qtype:GGMLQuantizationType=None, reader_tensor_weight:ReaderTensor=None, reader_tensor_bias:ReaderTensor=None):
         super().__init__()
         if reader_tensor_weight is not None:
             assert sd is None
+            assert isinstance(reader_tensor_weight, ReaderTensor)
             self.weight = QuantizedTensor.load_from_reader_tensor(reader_tensor_weight)
             self.bias   = QuantizedTensor.load_from_reader_tensor(reader_tensor_bias) if reader_tensor_bias is not None else None
         else:
             self.weight = quantise_tensor(sd['weight'], qtype)
             self.bias   = quantise_tensor(sd.get('bias',None), qtype) 
+
+    @classmethod
+    def from_reader_tensors(cls, weight_and_bias:tuple[ReaderTensor,Union[ReaderTensor,None]]):
+        w, b = weight_and_bias
+        return DequantingLinear(reader_tensor_weight=w, reader_tensor_bias=b)
 
     def _apply(self, fn):
         if self.weight is not None:
@@ -83,25 +110,18 @@ class DequantingLinear(torch.nn.Module):
         super()._apply(fn)
         return self
 
-    def move_patch_to_cuda(self, item, device):
-        if isinstance(item, torch.Tensor):
-            return item.to(device, non_blocking=True)
-        elif isinstance(item, tuple):
-            return tuple(self.move_patch_to_cuda(x, device) for x in item)
-        elif isinstance(item, list):
-            return [self.move_patch_to_cuda(x, device) for x in item]
-        else:
-            return item
+    def move_things(self, thing, device):
+        if isinstance(thing, torch.Tensor): return thing.to(device, non_blocking=True)
+        elif isinstance(thing, tuple):      return tuple(self.move_things(x, device) for x in thing)
+        elif isinstance(thing, list):       return [self.move_things(x, device) for x in thing]
+        else:                               return thing
 
     def get_weight(self, tensor:QuantizedTensor, dtype, device):
-        # consolidate and load patches to GPU in async
         patch_list = []
+        for function, patches, key in getattr(tensor, "patches", []):
+            patch_list += self.move_things(patches, device)
 
-        for function, patches, _ in getattr(tensor, "patches", []):
-            patch_list += self.move_patch_to_cuda(patches, device)
-
-        # dequantize tensor while patches load
-        weight = tensor.dequanted(dtype, device)
+        weight = tensor.dequantized(dtype, device)
 
         # apply patches
         if patch_list: weight = function(patch_list, weight, "dequant.name.unknown")
