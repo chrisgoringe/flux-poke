@@ -230,3 +230,16 @@
 16,all,Q4_1,    45.384,    95.342
 17,all,Q4_1,    47.378,    95.334
 18,all,Q4_1,    36.467,    95.348
+
+
+19,all,Q8_0,    8.9919,    94.347
+Job 1 - 19,all,Linear8bitLt: loss    39.2221, took    96.4547s
+10,all,Q8_0,      42.3,    94.787
+Job 4 - 10,all,Linear8bitLt: loss   111.0247, took    96.6826s
+
+19,all,Q4_1,    18.577,    94.942
+Job 2 - 19,all,LinearFP4: loss    26.5289, took    95.2364s
+Job 3 - 19,all,LinearNF4: loss    21.0279, took    95.2020s
+10,all,Q4_1,    72.594,    95.366
+Job 5 - 10,all,LinearFP4: loss    94.8578, took    95.3429s
+Job 6 - 10,all,LinearNF4: loss    86.4401, took    95.4012s

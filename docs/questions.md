@@ -6,11 +6,8 @@ does impact add? if not is there a pattern? try two layers and compare img+img t
 (independent errors add the square)
 
 
-bnb4 bnb8 bfloat8 casts
+bnb4 bnb8 bfloat8 casts  ALL RUBBISH
 
-
-plot impact per bit saved
-also time cost per bit saved
 
 do whole stack to get time cost
 
