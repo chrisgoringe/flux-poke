@@ -12,7 +12,7 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 import os
 
-def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
+def new_layer(s, n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     if is_double(n):
         return DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
     else:
@@ -21,7 +21,7 @@ def new_layer(n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
 def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
     layer_sd = shared.layer_sd(layer_number)
     if remove_from_sd: shared.drop_layer(layer_number)
-    layer = new_layer(layer_number)
+    layer = new_layer(None, layer_number)
     layer.load_state_dict(layer_sd)
     return layer
 
