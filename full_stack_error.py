@@ -50,7 +50,7 @@ def create_dataset():
 
 
 def get_jobs_list_patch_singles(jobs=[]):
-    FILES = ['d:/models/unet/flux1-dev-Q2_K.gguf',]
+    FILES = ['/workspace/ComfyUI/flux1-dev-Q2_K.gguf',]
     LAYERS = range(19,20)
 
     for file in FILES:
