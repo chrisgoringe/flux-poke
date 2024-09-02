@@ -3,6 +3,7 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, is_double
+from bitsandbytes.nn import Linear8bitLt, LinearFP4, LinearNF4
 
 from modules.jobs import Job, Result
 import torch
@@ -51,8 +52,8 @@ def create_dataset():
 
 def get_jobs_list_singles(jobs=[]):
     BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
-    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = range(19, 57)
+    CASTS = [Linear8bitLt, LinearFP4, LinearNF4]
+    LAYERS = range(19)
     for block in BLOCKS:
         for cast in CASTS:
             for layer in LAYERS:
@@ -66,8 +67,8 @@ def get_jobs_list_singles(jobs=[]):
 
 def get_jobs_list_doubles(jobs=[]):
     BLOCKS = [ 'all', ]
-    CASTS = ['Q8_0', 'Q5_1', 'Q4_1']
-    LAYERS = range(0,19)
+    CASTS = [Linear8bitLt, LinearFP4, LinearNF4]
+    LAYERS = range(10)
     
     for cast in CASTS:
         for block in BLOCKS:
@@ -114,8 +115,8 @@ def main():
     jobs:list[Job] = []
     get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    #get_jobs_list_singles(jobs)
-    #get_jobs_list_doubles(jobs)
+    get_jobs_list_singles(jobs)
+    get_jobs_list_doubles(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")
