@@ -3,7 +3,8 @@ from .utils import layer_iteratable_from_string
 from .casting import DequantingLinear
 
 from gguf.gguf_reader import ReaderTensor
-from gguf import GGUFReader
+from gguf import GGUFReader, GGMLQuantizationType
+from warnings import warn
 
 class PatchingMap:
     def __init__(self):
@@ -25,6 +26,9 @@ class PatchingMap:
     
     def get_childname(self, linear_name:str) -> str:
         return linear_name.split(".")[-1] 
+    
+    def get_quant_type(self, linear_name:str) -> GGMLQuantizationType:
+        return self.map_linear_to_tensors[linear_name]['weight'].tensor_type
 
     def __contains__(self, name):
         return name in self.map_linear_to_parent 
@@ -52,7 +56,12 @@ def name_all_linears(layer_stack, layer_list, block_constraint) -> PatchingMap:
 
     return linear_map
 
+DO_NOT_CAST = [
+    GGMLQuantizationType.F32, GGMLQuantizationType.F64, GGMLQuantizationType.F16
+]
+
 def patch_layer_stack(layer_stack, patch_config, verbose):
+
     for mod in patch_config['patches']:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint=None
 
@@ -67,10 +76,15 @@ def patch_layer_stack(layer_stack, patch_config, verbose):
                 linear_map.add_tensor(most, last, tensor)
 
         for linear in linear_map:
-            if verbose: print(f"Patching {linear}")
-            setattr(
-                    linear_map.get_parent(linear), 
-                    linear_map.get_childname(linear), 
-                    DequantingLinear.from_reader_tensors( weight_and_bias=linear_map.get_weight_and_bias(linear) )
-                    )
+            qt:GGMLQuantizationType = linear_map.get_quant_type(linear)
+            if qt in DO_NOT_CAST:
+                if verbose: print(f"Not patching {linear} because patch is {qt.name}")
+            else:
+                if verbose: print(f"Patching {linear} to {qt.name}")
+                setattr(
+                        linear_map.get_parent(linear), 
+                        linear_map.get_childname(linear), 
+                        DequantingLinear.from_reader_tensors( weight_and_bias=linear_map.get_weight_and_bias(linear) )
+                        )
+
 
