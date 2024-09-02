@@ -24,7 +24,7 @@ class QuantizedTensor():
         self._set_data(data, data_is_unquantized_tensor)
 
     def dequantized(self, dtype, device=None) -> torch.Tensor:
-        return dequantize_tensor(self._tensor, dtype, device)
+        return dequantize(self._tensor, self.tensor_type, self.tensor_shape, dtype=dtype).to(dtype).to(device)
 
     @property
     def tensor_description(self):
