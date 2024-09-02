@@ -40,9 +40,9 @@ class Job:
 
         saved_layer_sds = [ self.clone_layer_sd(layer_stack, layer_index) for layer_index in self.preserve_layers ]
         self.modify_layer_stack( layer_stack, 
-                                cast_config  = self.config if 'casts'  in self.config else None,
-                                prune_config = self.config if 'prunes' in self.config else None,
-                                patch_config = None )
+                                cast_config  = self.config if 'casts'   in self.config else None,
+                                prune_config = self.config if 'prunes'  in self.config else None,
+                                patch_config = self.config if 'patches' in self.config else None )
         
         layer_stack.cuda()
         start_time = time.monotonic()

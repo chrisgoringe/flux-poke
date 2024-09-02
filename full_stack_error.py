@@ -3,9 +3,8 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, is_double
-from bitsandbytes.nn import Linear8bitLt, LinearFP4, LinearNF4
 
-from modules.jobs import Job, Result
+from modules.jobs import Job
 import torch
 from tqdm import trange
 from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
@@ -51,7 +50,7 @@ def create_dataset():
 
 
 def get_jobs_list_patch_singles(jobs=[]):
-    FILES = ['flux1-dev-Q2_K.gguf',]
+    FILES = ['d:/models/unet/flux1-dev-Q2_K.gguf',]
     LAYERS = range(19,20)
 
     for file in FILES:
@@ -80,8 +79,9 @@ def get_jobs_list_doubles(jobs=[]):
 def get_jobs_list_null(jobs=[]) -> list[Job]:
     nzs = []
     def note_nonzero(loss:float, source): 
-        print(f"{source} loss {loss}")
-        if loss>1e-4: nzs.append(f"{source}")
+        if loss>1e-4: 
+            print(f"{source} loss {loss}")
+            nzs.append(f"{source}")
     def report_nonzero():
         print ("\n".join(nzs))
 
@@ -107,7 +107,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    get_jobs_list_null(jobs)
+    #get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
     get_jobs_list_patch_singles(jobs)
     #get_jobs_list_doubles(jobs)

@@ -14,10 +14,10 @@ from gguf import GGUFReader
 import numpy as np
 
 class QuantizedTensor(object):
-    def __init__(self, data, gtype:GGMLQuantizationType, oshape:torch.Size, **kwargs):
+    def __init__(self, data, tensor_type:GGMLQuantizationType, tensor_shape:torch.Size, **kwargs):
         self._tensor = data if isinstance(data, torch.Tensor) or data is None else torch.as_tensor(data)  
-        self.tensor_type = gtype
-        self.tensor_shape = oshape
+        self.tensor_type = tensor_type
+        self.tensor_shape = tensor_shape
         self.patches = []
         self._dequanted = None
 
@@ -48,12 +48,12 @@ class QuantizedTensor(object):
         oshapes = tuple(a.tensor_shape for a in args if hasattr(a, 'tensor_shape'))
         args = [getattr(a, '_tensor', a) for a in args]
         ret = func(*args, **kwargs)
-        return QuantizedTensor(ret, gtype=gtypes[0], oshape=oshapes[0])
+        return QuantizedTensor(ret, tensor_type=gtypes[0], tensor_shape=oshapes[0])
 
 def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTensor:
     if t is None: return None
     t = t.to(torch.float32)
-    return QuantizedTensor(quants.quantize(t.squeeze().numpy(), gtype), gtype=gtype, oshape=t.shape)
+    return QuantizedTensor(quants.quantize(t.squeeze().numpy(), gtype), tensor_type=gtype, tensor_shape=t.shape)
 
 def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
     if tensor is None: return None
