@@ -50,19 +50,15 @@ def create_dataset():
 
 
 
-def get_jobs_list_singles(jobs=[]):
-    BLOCKS = ['all',]#['linear1', 'linear2', 'modulation', 'linear', 'all']
-    CASTS = ['Linear8bitLt', 'LinearFP4', 'LinearNF4']
+def get_jobs_list_patch_singles(jobs=[]):
+    FILES = ['flux1-dev-Q2_K.gguf',]
     LAYERS = range(19,20)
-    for block in BLOCKS:
-        for cast in CASTS:
-            for layer in LAYERS:
-                if (False):
-                    pass
-                else:
-                    config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
-                    label = f"{layer},{block},{cast}"
-                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
+
+    for file in FILES:
+        for layer in LAYERS:
+            config = { 'patches': [{'layers': layer, 'file': file}] }
+            label = f"{layer},{file}"
+            jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
     return jobs
 
 def get_jobs_list_doubles(jobs=[]):
@@ -107,16 +103,14 @@ def get_jobs_list_adding(jobs=[]) -> list[Job]:
 
     return jobs
 
-
-    
 def main():
     setup()
 
     jobs:list[Job] = []
     get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    get_jobs_list_singles(jobs)
-    get_jobs_list_doubles(jobs)
+    get_jobs_list_patch_singles(jobs)
+    #get_jobs_list_doubles(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")

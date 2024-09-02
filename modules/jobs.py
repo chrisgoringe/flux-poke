@@ -3,6 +3,7 @@ import time
 from collections.abc import Callable
 from modules.casting import cast_layer_stack
 from modules.pruning import prune_layer_stack
+from modules.patching import patch_layer_stack
 from comfy.ldm.flux.layers import DoubleStreamBlock
 from modules.generated_dataset import _Dataset
 from tqdm import tqdm
@@ -76,7 +77,7 @@ class Job:
         if prune_config:
             prune_layer_stack(layer_stack, prune_config=prune_config, model_first_layer=0, verbose=self.verbose)
         if patch_config:
-            raise NotImplementedError()
+            patch_layer_stack(layer_stack, patch_config=patch_config, verbose=self.verbose)
         
     def evaluate(self, layer_stack, dataset:_Dataset):
         with torch.no_grad():

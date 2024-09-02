@@ -21,3 +21,7 @@ casts:
   - layers: 0
     blocks: txt
     castto: Q8_0
+
+patches:
+  - layers: 0
+    file: flux1-dev-Q2_K.gguf
