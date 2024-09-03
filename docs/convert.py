@@ -88,10 +88,10 @@ Patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
 '''
 
 def to_md(costs):
-    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q5_K_S*', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
-    for layer in costs.values():
-        for cast in layer:
-            if not cast in all_casts: all_casts.append(cast)
+    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q5_K_S*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'Q4_0*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
+    #for layer in costs.values():
+    #    for cast in layer:
+    #        if not cast in all_casts: all_casts.append(cast)
 
     def format(x, divide_by=1.0):
         if not x: return ""
@@ -102,6 +102,7 @@ def to_md(costs):
 
         print( "|-|" + "|".join(all_casts) + "|", file=f )
         print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
+        print("|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|", file=f )
         for layer in costs:
             print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None)) for cast in all_casts ) + "|", file=f)
 
@@ -109,6 +110,7 @@ def to_md(costs):
 
         print( "|-|" + "|".join(all_casts) + "|", file=f )
         print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
+        print("|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|", file=f )
         for layer in costs:
             print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None), (2.4 if int(layer)<19 else 1.0)) for cast in all_casts ) + "|", file=f)
 
