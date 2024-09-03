@@ -79,7 +79,7 @@ def gguf_file(quant:GGMLQuantizationType):
 
 def get_jobs_list_qpatch(jobs=[]):
 
-    CASTS = [GGMLQuantizationType.Q3_K, GGMLQuantizationType.Q4_0, GGMLQuantizationType.Q4_1, GGMLQuantizationType.Q4_K]
+    CASTS = [ GGMLQuantizationType.Q5_K, ]
     LAYERS = layer_list_from_string('all')
 
     for quant in CASTS:
