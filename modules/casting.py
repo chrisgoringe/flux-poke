@@ -4,7 +4,6 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 
 from typing import Union
 import bitsandbytes.nn as bnb
-from warnings import warn
 
 from gguf import GGMLQuantizationType, quants
 from .city_gguf.dequant import dequantize
@@ -22,9 +21,13 @@ class QuantizedTensor():
         self.patches:list                     = patches.copy()
         self._tensor:torch.Tensor             = None
         self._set_data(data, data_is_unquantized_tensor)
+        self._cached = None
 
     def dequantized(self, dtype, device=None) -> torch.Tensor:
-        return dequantize(self._tensor, self.tensor_type, self.tensor_shape, dtype=dtype).to(dtype).to(device)
+        if self._cached is None: self._cached = dequantize_tensor(self, dtype, device)
+        return self._cached
+    
+    def purge(self): self._cached = None
 
     @property
     def tensor_description(self):
@@ -72,6 +75,7 @@ class QuantizedTensor():
         a = getattr(self._tensor, __name)
         return partial(self.wrap, a) if hasattr(a,'__call__') else a
 
+
 def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTensor:
     if t is None: return None
     t = t.to(torch.float32)
@@ -79,7 +83,10 @@ def quantise_tensor(t:torch.Tensor, gtype:GGMLQuantizationType) -> QuantizedTens
 
 def dequantize_tensor(tensor:QuantizedTensor, dtype, device):
     if tensor is None: return None
-    out = dequantize(tensor._tensor, tensor.tensor_type, tensor.tensor_shape, dtype=dtype)
+    if tensor.tensor_type in [GGMLQuantizationType.F32, GGMLQuantizationType.F16]:
+        out = tensor._tensor
+    else:
+        out = dequantize(tensor._tensor, tensor.tensor_type, tensor.tensor_shape, dtype=dtype)
     return out.to(dtype).to(device)
 
 class DequantingLinear(torch.nn.Module):
