@@ -34,16 +34,36 @@ The cost (average MSE error in final hidden state) of quantising layers to diffe
 
 Model - Flux.1.dev
 
+Quantizations marked with (*) are patched in from GGUF models
+
+In all models, the entry and exit layers are left in f16/32: 64,124,992 parameters
+
+In all models, the normalisation scales are left in f16/32: 19,456 parameters
+
+In patch models, an additional 3,035,136 bias parameters are left in f16/32
+
+|type|quantised|unquantised block biases|unquantised other|q%|
+|:-:|-:|-:|-:|-:|
+|fly|11,837,294,656|0|64,144,448|99.461%|
+|patch|11,834,228,736|3,065,920|64,144,448|99.435%|
+
+---
+
+Bits per parameter:
+
+|-|Q8_0|bf8|bnb8|Q5_K_S*|Q5_1|Q4_0*|Q4_1|Q4_1*|Q4_K_S*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
+|-|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
+|bits||8|8+|5.5|||5|5|4.5|4+|4+||2.625|
+
+---
 '''
 
 POSTLUDE = '''
-Casts marked with an asterix are patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
-
-Q2_K bias are left unquantized (in float32)
+Patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
 '''
 
 def to_md(costs):
-    all_casts = ['Q8_0', 'bnb8', 'Q5_1', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
+    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
     for layer in costs.values():
         for cast in layer:
             if not cast in all_casts: all_casts.append(cast)

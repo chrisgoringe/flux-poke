@@ -54,6 +54,11 @@ QUANT_FILES = {
     GGMLQuantizationType.Q4_0:'flux1-dev-Q4_0.gguf',
     GGMLQuantizationType.Q4_1:'flux1-dev-Q4_1.gguf',
     GGMLQuantizationType.Q4_K:'flux1-dev-Q4_K_S.gguf',
+    GGMLQuantizationType.Q5_0:'flux1-dev-Q5_0.gguf',
+    GGMLQuantizationType.Q5_1:'flux1-dev-Q5_1.gguf',
+    GGMLQuantizationType.Q5_K:'flux1-dev-Q5_K_S.gguf',
+    GGMLQuantizationType.Q6_K:'flux1-dev-Q6_0.gguf',
+    GGMLQuantizationType.Q8_0:'flux1-dev-Q8_0.gguf',
 }
 
 QUANT_NAMES = {
@@ -62,7 +67,13 @@ QUANT_NAMES = {
     GGMLQuantizationType.Q4_0:'Q4_0*',
     GGMLQuantizationType.Q4_1:'Q4_1*',
     GGMLQuantizationType.Q4_K:'Q4_K_S*',    
+    GGMLQuantizationType.Q5_0:'Q5_0*',
+    GGMLQuantizationType.Q5_1:'Q5_1*',
+    GGMLQuantizationType.Q5_K:'Q5_K_S*',
+    GGMLQuantizationType.Q6_K:'Q6_0*',
+    GGMLQuantizationType.Q8_0:'Q8_0*',
 }
+
 def gguf_file(quant:GGMLQuantizationType):
     return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
 
@@ -77,6 +88,18 @@ def get_jobs_list_qpatch(jobs=[]):
             config = { 'patches': [{'layers': layer, 'file': file}] }
             label = f"{layer},all,{QUANT_NAMES[quant]}"
             jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
+    return jobs
+
+def get_jobs_list_prune(jobs=[]):
+    LAYERS = layer_list_from_string('all')
+    DEPTHS = [2000,4000,6000]
+
+    for layer in LAYERS:
+        for depth in DEPTHS:
+            config = { "prunes": [{"layers":layer, "remove":depth}]}
+            label = f"{layer},all,{depth}"
+            jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
+
     return jobs
 
 def get_jobs_list_doubles(jobs=[]):
@@ -126,10 +149,11 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    get_jobs_list_null(jobs)
+    #get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    get_jobs_list_qpatch(jobs)
+    #get_jobs_list_qpatch(jobs)
     #get_jobs_list_doubles(jobs)
+    get_jobs_list_prune(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")
