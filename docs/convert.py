@@ -43,7 +43,7 @@ Q2_K bias are left unquantized (in float32)
 '''
 
 def to_md(costs):
-    all_casts = ['Q8_0', 'Q5_1', 'Q4_1']
+    all_casts = ['Q8_0', 'bnb8', 'Q5_1', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
     for layer in costs.values():
         for cast in layer:
             if not cast in all_casts: all_casts.append(cast)
