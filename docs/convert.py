@@ -31,6 +31,10 @@ def from_yaml():
 
 PRELUDE = '''# Casting cost
 
+## General Observations
+
+- bitsandbytes doesn't perform well
+- mostly the on the fly ones work well, although Q4_K_S is superior to other 4bits
 
 Model - Flux.1.dev
 

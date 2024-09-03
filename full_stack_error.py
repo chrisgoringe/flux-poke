@@ -153,7 +153,7 @@ def main():
     #get_jobs_list_adding(jobs)
     #get_jobs_list_qpatch(jobs)
     #get_jobs_list_doubles(jobs)
-    get_jobs_list_prune(jobs)
+    get_jobs_list_qpatch(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")
