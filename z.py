@@ -3,7 +3,7 @@ from gguf import GGUFReader, GGMLQuantizationType
 import math
 
 
-reader = GGUFReader("d:/models/unet/gguf/flux1-dev-Q3_K_S.gguf")
+reader = GGUFReader("d:/models/unet/gguf/flux1-dev-Q8_0.gguf")
 expect = GGMLQuantizationType.Q4_1
 tensor:ReaderTensor
 
