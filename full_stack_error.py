@@ -78,8 +78,7 @@ def gguf_file(quant:GGMLQuantizationType):
     return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
 
 def get_jobs_list_qpatch(jobs=[]):
-
-    CASTS = [ GGMLQuantizationType.Q5_K, ]
+    CASTS = [ GGMLQuantizationType.Q6_K,  ]
     LAYERS = layer_list_from_string('all')
 
     for quant in CASTS:
@@ -102,20 +101,15 @@ def get_jobs_list_prune(jobs=[]):
 
     return jobs
 
-def get_jobs_list_doubles(jobs=[]):
-    BLOCKS = [ 'all', ]
-    CASTS = ['Linear8bitLt', 'LinearFP4', 'LinearNF4']
-    LAYERS = range(10,11)
+def get_jobs_list_all(jobs=[]):
+    CASTS = ['float8_e4m3fn',]
+    LAYERS = layer_list_from_string('all')
     
     for cast in CASTS:
-        for block in BLOCKS:
-            for layer in LAYERS:
-                if (False):
-                    pass
-                else:
-                    config = { 'casts': [{'layers': layer, 'blocks': block, 'castto': cast}] }
-                    label = f"{layer},{block},{cast}"
-                    jobs.append( Job(label=label, config=config, preserve_layers=[layer,],))
+        for layer in LAYERS:
+            config = { 'casts': [{'layers': layer, 'castto': cast}] }
+            label = f"{layer},all,{cast}"
+            jobs.append( Job(label=label, config=config, preserve_layers=[layer,],))
     return jobs    
 
 def get_jobs_list_null(jobs=[]) -> list[Job]:
@@ -130,27 +124,15 @@ def get_jobs_list_null(jobs=[]) -> list[Job]:
     jobs.append( Job("null", config={}, preserve_layers=[], callbacks=[note_nonzero,], postrun=report_nonzero))
     return jobs
 
-def get_jobs_list_adding(jobs=[]) -> list[Job]:
-    cast = 'Q4_1'
-    for first_layer in [4,]:
-        for second_layer in [5,14]:
-            for first_block in ['img', 'txt']:
-                for second_block in ['img', 'txt']:
-                    config = { 'casts': [{'layers': first_layer, 'blocks': first_block, 'castto': cast},
-                                        {'layers': second_layer, 'blocks': second_block, 'castto': cast}]   }
-                    jobs.append( Job(label=f"{first_layer}-{first_block} and {second_layer}-{second_block} to {cast}", 
-                                     config=config, 
-                                     preserve_layers=[first_layer, second_layer], )
-                                )
-
-    return jobs
 
 def main():
     setup()
 
     jobs:list[Job] = []
 
+    get_jobs_list_null(jobs)
     get_jobs_list_qpatch(jobs)
+    get_jobs_list_all(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")

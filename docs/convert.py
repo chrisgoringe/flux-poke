@@ -55,13 +55,6 @@ In patch models, block biases are unquantised: 3,035,136 parameters
 |fly|11,837,294,656|0|64,144,448|99.461%|
 |patch|11,834,228,736|3,065,920|64,144,448|99.435%|
 
----
-
-## Bits per parameter:
-
-|-|Q8_0|bf8|bnb8|Q5_1|Q5_K_S*|Q4_1|Q4_1*|Q4_K_S*|Q4_0*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
-|-|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
-|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|
 
 ---
 
@@ -88,7 +81,19 @@ Patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
 '''
 
 def to_md(costs):
-    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q5_K_S*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'Q4_0*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
+    #all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q5_K_S*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'Q4_0*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
+    casts_and_bits = {
+        'Q8_0':8.5,
+        'bf8':8,
+        'Q5_1':6,
+        'Q5_K_S*':5.5, 
+        'Q4_1':5, 
+        'Q4_1*':5, 
+        'Q4_K_S*':4.5, 
+        'Q4_0*':4.5, 
+        'Q3_K_S*':3.4375,
+        'Q2_K*':2.625
+    }
     #for layer in costs.values():
     #    for cast in layer:
     #        if not cast in all_casts: all_casts.append(cast)
@@ -100,19 +105,19 @@ def to_md(costs):
     with open(path("casting_cost.md"), 'w') as f:
         print(PRELUDE, file=f)
 
-        print( "|-|" + "|".join(all_casts) + "|", file=f )
-        print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
-        print("|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|", file=f )
+        print( "|-|" + "|".join(casts_and_bits) + "|", file=f )
+        print( "|-|" + "|".join("-:" for _ in casts_and_bits) + "|", file=f )
+        print("|bits|" + "|".join(str(casts_and_bits[x]) for x in casts_and_bits) + "|", file=f )
         for layer in costs:
-            print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None)) for cast in all_casts ) + "|", file=f)
+            print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None)) for cast in casts_and_bits ) + "|", file=f)
 
         print(MIDDLE, file=f)
 
-        print( "|-|" + "|".join(all_casts) + "|", file=f )
-        print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
-        print("|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|", file=f )
+        print( "|-|" + "|".join(casts_and_bits) + "|", file=f )
+        print( "|-|" + "|".join("-:" for _ in casts_and_bits) + "|", file=f )
+        print("|bits|" + "|".join(str(casts_and_bits[x]) for x in casts_and_bits) + "|", file=f )
         for layer in costs:
-            print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None), (2.4 if int(layer)<19 else 1.0)) for cast in all_casts ) + "|", file=f)
+            print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None), (2.4 if int(layer)<19 else 1.0)) for cast in casts_and_bits ) + "|", file=f)
 
 
         print(POSTLUDE, file=f)
