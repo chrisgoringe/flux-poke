@@ -31,6 +31,9 @@ def load_config(config_filepath):
     else:
         with open(config_filepath, 'r') as f: return json.load(f)
 
+def layer_list_from_string(s:str) -> list[int]:
+    return list(layer_iteratable_from_string(s))
+
 def layer_iteratable_from_string(s) -> Iterable[int]:
     if isinstance(s, int): return [s,]
     if s.lower()=='all':    return range(shared.last_layer+1)

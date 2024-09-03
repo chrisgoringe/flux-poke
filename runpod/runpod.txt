@@ -2,6 +2,7 @@ git clone https://github.com/chrisgoringe/runpod-setup
 cd runpod-setup
 
 bash sensitivity.bash
+
 cd /workspace/ComfyUI/custom_nodes/flux-poke
 
 python full_stack_error.py

@@ -2,7 +2,7 @@ import add_paths
 from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
-from modules.utils import Batcher, shared, is_double
+from modules.utils import Batcher, shared, is_double, layer_list_from_string
 from gguf import GGMLQuantizationType
 
 from modules.jobs import Job
@@ -54,9 +54,10 @@ QUANT_FILES = {
 def gguf_file(quant:GGMLQuantizationType):
     return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
 
-def get_jobs_list_patch_singles(jobs=[]):
+def get_jobs_list_qpatch(jobs=[]):
+
     FILES = [gguf_file(GGMLQuantizationType.Q2_K),]
-    LAYERS = range(19,20)
+    LAYERS = layer_list_from_string('all')
 
     for file in FILES:
         for layer in LAYERS:
@@ -112,9 +113,9 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    #get_jobs_list_null(jobs)
+    get_jobs_list_null(jobs)
     #get_jobs_list_adding(jobs)
-    get_jobs_list_patch_singles(jobs)
+    get_jobs_list_qpatch(jobs)
     #get_jobs_list_doubles(jobs)
 
     if args.skip: 
