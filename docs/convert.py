@@ -70,7 +70,7 @@ to make comparisons between layers.
 MIDDLE = '''
 ---
 
-## Weighted
+## Weighted by parameter count
 
 Same again, but the double block values divided by 2.4. So this is proportional to error per parameter quantized.
 
@@ -85,6 +85,7 @@ def to_md(costs):
     casts_and_bits = {
         'Q8_0':8.5,
         'bf8':8,
+        'Q6_K':6.5,
         'Q5_1':6,
         'Q5_K_S*':5.5, 
         'Q4_1':5, 
