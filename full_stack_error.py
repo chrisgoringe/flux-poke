@@ -49,20 +49,25 @@ def create_dataset():
         return RemoteDataset(split='eval', eval_frac=args.eval_frac, first_layer=0, thickness=57, squeeze=False)
 
 QUANT_FILES = {
-    GGMLQuantizationType.Q2_K:'flux1-dev-Q2_K.gguf',
+#    GGMLQuantizationType.Q2_K:'flux1-dev-Q2_K.gguf',
+    GGMLQuantizationType.Q3_K:'flux1-dev-Q3_K_S.gguf',
+    GGMLQuantizationType.Q4_0:'flux1-dev-Q4_0.gguf',
+    GGMLQuantizationType.Q4_1:'flux1-dev-Q4_1.gguf',
+    GGMLQuantizationType.Q4_K:'flux1-dev-Q4_K_S.gguf',
 }
 def gguf_file(quant:GGMLQuantizationType):
     return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
 
 def get_jobs_list_qpatch(jobs=[]):
 
-    FILES = [gguf_file(GGMLQuantizationType.Q2_K),]
+    CASTS = [k for k in QUANT_FILES]
     LAYERS = layer_list_from_string('all')
 
-    for file in FILES:
+    for cast in CASTS:
         for layer in LAYERS:
+            file = gguf_file(cast)
             config = { 'patches': [{'layers': layer, 'file': file}] }
-            label = f"{layer},{file}"
+            label = f"{layer},all,{cast.name}"
             jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
     return jobs
 
