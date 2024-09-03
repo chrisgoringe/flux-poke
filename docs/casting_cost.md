@@ -1,15 +1,15 @@
 # Casting cost
-The cost (average MSE error in final hidden state) of quantising layers to different levels.
+
 
 Model - Flux.1.dev
 
 Quantizations marked with (*) are patched in from GGUF models
 
-In all models, the entry and exit layers are left in f16: 64,124,992 parameters
+In all models, the entry and exit layers are left in f16/32: 64,124,992 parameters
 
-In all models, the normalisation scales are left in f16: 19,456 parameters
+In all models, the normalisation scales are left in f16/32: 19,456 parameters
 
-In patch models, an additional 3,035,136 bias parameters are left in f16
+In patch models, an additional 3,035,136 bias parameters are left in f16/32
 
 |type|quantised|unquantised block biases|unquantised other|q%|
 |:-:|-:|-:|-:|-:|
@@ -25,6 +25,13 @@ Bits per parameter:
 |bits||8|8+|5.5|||5|5|4.5|4+|4+||2.625|
 
 ---
+
+Error (average MSE error in final hidden state) of quantising layers to different levels.
+
+Note that layers 19-56 are single block (141,557,760 quantable parameters), 
+layers 0-18 are double block (339,738,624 quantable parameters). Quantizing a double
+block saves 2.4 times the memory of quantizing a single block.
+
 
 |-|Q8_0|bf8|bnb8|Q5_1|Q4_0*|Q4_1|Q4_1*|Q4_K_S*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
 |-|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
@@ -86,7 +93,5 @@ Bits per parameter:
 |55|  0.183|||  1.217|  5.793|  4.200||||| 19.676| 62.069|
 |56|  0.137|||  0.308|  3.901|  0.926||||| 19.450| 74.913|
 
-Casts marked with an asterix are patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
-
-Q2_K bias are left unquantized (in float32)
+Patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
 

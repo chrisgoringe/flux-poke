@@ -30,7 +30,7 @@ def from_yaml():
         return yaml.safe_load(f)
 
 PRELUDE = '''# Casting cost
-The cost (average MSE error in final hidden state) of quantising layers to different levels.
+
 
 Model - Flux.1.dev
 
@@ -56,6 +56,13 @@ Bits per parameter:
 |bits||8|8+|5.5|||5|5|4.5|4+|4+||2.625|
 
 ---
+
+Error (average MSE error in final hidden state) of quantising layers to different levels.
+
+Note that layers 19-56 are single block (141,557,760 quantable parameters), 
+layers 0-18 are double block (339,738,624 quantable parameters). Quantizing a double
+block saves 2.4 times the memory of quantizing a single block.
+
 '''
 
 POSTLUDE = '''
