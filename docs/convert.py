@@ -34,13 +34,14 @@ PRELUDE = '''# Casting cost
 
 Model - Flux.1.dev
 
-Quantizations marked with (*) are patched in from GGUF models
+Quantizations marked with (*) are patched in from GGUF models. Others are
+quantised by this code.
 
-In all models, the entry and exit layers are left in f16/32: 64,124,992 parameters
+In all models, the entry and exit layers are unquantised: 64,124,992 parameters
 
-In all models, the normalisation scales are left in f16/32: 19,456 parameters
+In all models, the normalisation scales are unquantised: 19,456 parameters
 
-In patch models, an additional 3,035,136 bias parameters are left in f16/32
+In patch models, block biases are unquantised: 3,035,136 parameters
 
 |type|quantised|unquantised block biases|unquantised other|q%|
 |:-:|-:|-:|-:|-:|
@@ -49,19 +50,29 @@ In patch models, an additional 3,035,136 bias parameters are left in f16/32
 
 ---
 
-Bits per parameter:
+## Bits per parameter:
 
 |-|Q8_0|bf8|bnb8|Q5_K_S*|Q5_1|Q4_0*|Q4_1|Q4_1*|Q4_K_S*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
 |-|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
-|bits||8|8+|5.5|||5|5|4.5|4+|4+||2.625|
+|bits||8|8+|5.5|||5|5|4.5|4+|4+|3.4375|2.625|
 
 ---
 
-Error (average MSE error in final hidden state) of quantising layers to different levels.
+## Error (average MSE error in final hidden state) of quantising layers to different levels.
 
 Note that layers 19-56 are single block (141,557,760 quantable parameters), 
 layers 0-18 are double block (339,738,624 quantable parameters). Quantizing a double
-block saves 2.4 times the memory of quantizing a single block.
+block saves 2.4 times the memory of quantizing a single block. See weighted table below
+to make comparisons between layers.
+
+'''
+
+MIDDLE = '''
+---
+
+## Weighted
+
+Same again, but the double block values divided by 2.4. So this is proportional to error per parameter quantized.
 
 '''
 
@@ -75,16 +86,26 @@ def to_md(costs):
         for cast in layer:
             if not cast in all_casts: all_casts.append(cast)
 
-    def format(x):
+    def format(x, divide_by=1.0):
         if not x: return ""
-        return f"{x: >7.3f}"
+        return f"{x/divide_by: >7.3f}"
 
     with open(path("casting_cost.md"), 'w') as f:
         print(PRELUDE, file=f)
+
         print( "|-|" + "|".join(all_casts) + "|", file=f )
         print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
         for layer in costs:
             print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None)) for cast in all_casts ) + "|", file=f)
+
+        print(MIDDLE, file=f)
+
+        print( "|-|" + "|".join(all_casts) + "|", file=f )
+        print( "|-|" + "|".join("-:" for _ in all_casts) + "|", file=f )
+        for layer in costs:
+            print( f"|{layer}|" + "|".join( format(costs[layer].get(cast,None), (2.4 if int(layer)<19 else 1.0)) for cast in all_casts ) + "|", file=f)
+
+
         print(POSTLUDE, file=f)
 
         
