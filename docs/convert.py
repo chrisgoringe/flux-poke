@@ -34,7 +34,10 @@ PRELUDE = '''# Casting cost
 ## General Observations
 
 - bitsandbytes doesn't perform well
-- mostly the on the fly ones work well, although Q4_K_S is superior to other 4bits
+- mostly the on the fly ones work well, although Qx_K_S perform better or as well and are slightly smaller
+- there is a very strong dependance on depth in the model, though not entirely monotonic
+- some interesting variation in last 10 or so layers with smaller quants performing very badly
+- the quantisation or not of bias (the difference between Q4_1 and Q4_1* and similar) seems to make no difference
 
 Model - Flux.1.dev
 
@@ -56,9 +59,9 @@ In patch models, block biases are unquantised: 3,035,136 parameters
 
 ## Bits per parameter:
 
-|-|Q8_0|bf8|bnb8|Q5_K_S*|Q5_1|Q4_0*|Q4_1|Q4_1*|Q4_K_S*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
+|-|Q8_0|bf8|bnb8|Q5_1|Q5_K_S*|Q4_1|Q4_1*|Q4_K_S*|Q4_0*|bnbFP4|bnbNF4|Q3_K_S*|Q2_K*|
 |-|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|-:|
-|bits|8.5|8|8+|5.5|6|6.5625|5|5|4.5|4+|4+|3.4375|2.625|
+|bits|8.5|8|8+|6|5.5|5|5|4.5|4.5|4+|4+|3.4375|2.625|
 
 ---
 
@@ -85,7 +88,7 @@ Patches from (https://huggingface.co/city96/FLUX.1-dev-gguf)
 '''
 
 def to_md(costs):
-    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
+    all_casts = ['Q8_0', 'bf8', 'bnb8', 'Q5_1', 'Q5_K_S*', 'Q4_0*', 'Q4_1', 'Q4_1*', 'Q4_K_S*', 'bnbFP4', 'bnbNF4', 'Q3_K_S*', 'Q2_K*']
     for layer in costs.values():
         for cast in layer:
             if not cast in all_casts: all_casts.append(cast)

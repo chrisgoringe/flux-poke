@@ -149,10 +149,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    #get_jobs_list_null(jobs)
-    #get_jobs_list_adding(jobs)
-    #get_jobs_list_qpatch(jobs)
-    #get_jobs_list_doubles(jobs)
+
     get_jobs_list_qpatch(jobs)
 
     if args.skip: 
