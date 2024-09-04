@@ -70,7 +70,7 @@ QUANT_NAMES = {
     GGMLQuantizationType.Q5_0:'Q5_0*',
     GGMLQuantizationType.Q5_1:'Q5_1*',
     GGMLQuantizationType.Q5_K:'Q5_K_S*',
-    GGMLQuantizationType.Q6_K:'Q6_0*',
+    GGMLQuantizationType.Q6_K:'Q6_K*',
     GGMLQuantizationType.Q8_0:'Q8_0*',
 }
 
@@ -90,8 +90,8 @@ def get_jobs_list_qpatch(jobs=[]):
     return jobs
 
 def get_jobs_list_prune(jobs=[]):
-    LAYERS = layer_list_from_string('all')
-    DEPTHS = [2000,4000,6000]
+    LAYERS = [10,]#  layer_list_from_string('all')
+    DEPTHS = [1000,2000,4000]
 
     for layer in LAYERS:
         for depth in DEPTHS:
@@ -130,8 +130,6 @@ def main():
 
     jobs:list[Job] = []
 
-    get_jobs_list_null(jobs)
-    get_jobs_list_qpatch(jobs)
     get_jobs_list_all(jobs)
 
     if args.skip: 

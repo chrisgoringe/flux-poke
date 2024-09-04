@@ -38,6 +38,7 @@ PRELUDE = '''# Casting cost
 - there is a very strong dependance on depth in the model, though not entirely monotonic
 - some interesting variation in last 10 or so layers with smaller quants performing very badly
 - the quantisation or not of bias (the difference between Q4_1 and Q4_1* and similar) seems to make no difference
+- Q6_K is really good
 
 Model - Flux.1.dev
 
@@ -85,7 +86,7 @@ def to_md(costs):
     casts_and_bits = {
         'Q8_0':8.5,
         'bf8':8,
-        'Q6_K':6.5,
+        'Q6_K*':6.5625,
         'Q5_1':6,
         'Q5_K_S*':5.5, 
         'Q4_1':5, 
@@ -124,5 +125,5 @@ def to_md(costs):
         print(POSTLUDE, file=f)
 
         
-
-to_md(from_csv())
+to_yaml(from_csv())
+to_md(from_yaml())
