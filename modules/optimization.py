@@ -120,16 +120,22 @@ bits_per_gigabyte = 8*math.pow(2,30)
 def bits_to_gbytes(bits)->float: return bits/bits_per_gigabyte
 def gybtes_to_bits(gb): return gb*bits_per_gigabyte
 
-def get_csv():
+def get_csv(save=True):
     steps = get_sorted_steps()
     bits = 0
     cost = 0
-    with open('optimals.csv','w') as f:
-        print("GB saved,cost", file=f)
+    if save:
+        with open('optimals.csv','w') as f:
+            print("GB saved,cost", file=f)
+            for step in steps:
+                bits += step.bits_saved
+                cost += step.error_increase
+                print(str(bits_to_gbytes(bits))+","+str(cost), file=f)
+    else:
         for step in steps:
             bits += step.bits_saved
             cost += step.error_increase
-            print(str(bits_to_gbytes(bits))+","+str(cost), file=f)
+            print(str(bits_to_gbytes(bits))+","+str(cost))
 
 def get_optimised_casting(gb_wanted):
     print(f"Model is {bits_to_gbytes(total_bits):>6.3f} GB")
@@ -147,8 +153,8 @@ def save_for_simple(cast):
     return bits_to_gbytes((16-casts_and_bits[cast])*189347659776/16 )
 
 if __name__=='__main__': 
-    #get_csv()
-    get_optimised_casting(10)
+    #get_csv(save=False)
+    get_optimised_casting(10.6)
     #costs = get_costs()
     #for cast in casts_and_bits:
     #    try:
