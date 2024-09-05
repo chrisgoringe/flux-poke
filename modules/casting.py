@@ -101,6 +101,10 @@ class DequantingLinear(torch.nn.Module):
             self.weight = quantise_tensor(sd['weight'], qtype)
             self.bias   = quantise_tensor(sd.get('bias',None), qtype) 
 
+    def state_dict(self, destination, prefix, keep_vars):
+        destination[prefix+'weight'] = self.weight
+        if self.bias is not None: destination[prefix+'bias'] = self.bias
+
     @classmethod
     def from_reader_tensors(cls, weight_and_bias:tuple[ReaderTensor,Union[ReaderTensor,None]]):
         w, b = weight_and_bias
@@ -187,7 +191,7 @@ def cast_layer(layer:Union[DoubleStreamBlock, SingleStreamBlock], cast_to, block
     for child_name, child_module in layer.named_children():
         recursive_cast(layer, initial_name, child_module, child_name)
 
-def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_cast, verbose=False, callbacks=[], autocast=False):
+def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer=0, default_cast=None, verbose=0, callbacks=[], autocast=False):
     for mod in cast_config.get('casts',None) or []:
         if (block_constraint:=mod.get('blocks', 'all')) == 'all': block_constraint=None
         if (cast:=mod.get('castto', 'default')) != 'none' and block_constraint != 'none':
@@ -214,3 +218,9 @@ def cast_layer_stack(layer_stack, cast_config, stack_starts_at_layer, default_ca
                                initial_name=f"{global_layer_index}",
                                autocast=autocast)
 
+
+def cast_all_leftovers(cast_name, remove=True) -> dict[str, QuantizedTensor]:
+    qtype = getattr(GGMLQuantizationType, cast_name)
+    cast_tensor_dictionary = { k:QuantizedTensor.from_unquantized_tensor(tensor, qtype) for k, tensor in shared.sd.items() }
+    if remove: shared._sd = {}
+    return cast_tensor_dictionary

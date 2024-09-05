@@ -2,33 +2,13 @@ import add_paths
 from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
-from modules.utils import Batcher, shared, is_double, layer_list_from_string
+from modules.utils import Batcher, shared, layer_list_from_string
 from gguf import GGMLQuantizationType
 
 from modules.jobs import Job
-import torch
-from tqdm import trange
-from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
-from typing import Union
+from modules.loader import new_layer, load_layer_stack
+
 import os
-
-def new_layer(s, n) -> Union[DoubleStreamBlock, SingleStreamBlock]:
-    if is_double(n):
-        return DoubleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn, qkv_bias=True)
-    else:
-        return SingleStreamBlock(hidden_size=3072, num_heads=24, mlp_ratio=4, dtype=torch.bfloat16, device="cpu", operations=torch.nn)
-
-def load_single_layer(layer_number:int, remove_from_sd=True) -> Union[DoubleStreamBlock, SingleStreamBlock]:
-    layer_sd = shared.layer_sd(layer_number)
-    if remove_from_sd: shared.drop_layer(layer_number)
-    layer = new_layer(None, layer_number)
-    layer.load_state_dict(layer_sd)
-    return layer
-
-def load_layer_stack():
-    print("Loading model")
-    layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x) for x in trange(shared.last_layer+1)] )
-    return layer_stack
 
 def setup():
     HFFS_Cache.set_cache_directory(args.cache_dir)

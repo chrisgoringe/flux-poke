@@ -4,16 +4,16 @@ from dataclasses import dataclass
 casts_and_bits = {
     '16bit':16,
     'Q8_0':8.5,
-    'bf8':8,
-    'Q6_K*':6.5,
+    #'bf8':8,
+    #'Q6_K*':6.5,
     'Q5_1':6,
-    'Q5_K_S*':5.5, 
+    #'Q5_K_S*':5.5, 
     'Q4_1':5, 
-    'Q4_1*':5, 
-    'Q4_K_S*':4.5, 
-    'Q4_0*':4.5, 
-    'Q3_K_S*':3.4375,
-    'Q2_K*':2.625
+    #'Q4_1*':5, 
+    #'Q4_K_S*':4.5, 
+    #'Q4_0*':4.5, 
+    #'Q3_K_S*':3.4375,
+    #'Q2_K*':2.625
 }
 
 @dataclass
@@ -38,7 +38,7 @@ class CastingStep:
         return CastingStep( s1.from_cast, s2.to_cast, s1.bits_saved+s2.bits_saved, s1.error_increase+s2.error_increase, s1.layer )
     
 def get_costs(use_only=None) -> dict[str,dict[str,float]]:
-    casting_cost_yaml_file = os.path.join(os.path.dirname(__file__), "..", "docs", "casting_cost.yaml")
+    casting_cost_yaml_file = os.path.join(os.path.dirname(__file__), "docs", "casting_cost.yaml")
     with open(casting_cost_yaml_file, 'r') as f:
         costs = yaml.safe_load(f)
     if use_only:
@@ -154,7 +154,7 @@ def save_for_simple(cast):
 
 if __name__=='__main__': 
     #get_csv(save=False)
-    get_optimised_casting(10.6)
+    get_optimised_casting(9)
     #costs = get_costs()
     #for cast in casts_and_bits:
     #    try:

@@ -12,7 +12,7 @@ for tensor in reader.tensors:
 
     n = math.prod(tensor.shape)
     m = tensor.n_bytes
-    print(f"{tensor.tensor_type.name} {8*m/n}")         
+    print(f"{tensor.name} {tensor.tensor_type.name} {8*m/n}")         
 
 
 
