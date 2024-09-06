@@ -4,6 +4,7 @@ from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, layer_list_from_string
 from gguf import GGMLQuantizationType
+import modules.future
 
 from modules.jobs import Job
 from modules.loader import new_layer, load_layer_stack
@@ -42,6 +43,8 @@ QUANT_FILES = {
 }
 
 QUANT_NAMES = {
+    GGMLQuantizationType.TQ1_0:'TQ1_0',
+    GGMLQuantizationType.TQ2_0:'TQ2_0',
     GGMLQuantizationType.Q2_K:'Q2_K*',
     GGMLQuantizationType.Q3_K:'Q3_K_S*',
     GGMLQuantizationType.Q4_0:'Q4_0*',
@@ -54,35 +57,9 @@ QUANT_NAMES = {
     GGMLQuantizationType.Q8_0:'Q8_0*',
 }
 
-def gguf_file(quant:GGMLQuantizationType):
-    return os.path.join( args.gguf_dir, QUANT_FILES[quant] )
-
-def get_jobs_list_qpatch(jobs=[]):
-    CASTS = [ GGMLQuantizationType.Q6_K,  ]
-    LAYERS = layer_list_from_string('all')
-
-    for quant in CASTS:
-        for layer in LAYERS:
-            file = gguf_file(quant)
-            config = { 'patches': [{'layers': layer, 'file': file}] }
-            label = f"{layer},all,{QUANT_NAMES[quant]}"
-            jobs.append( Job(label=label, config=config, preserve_layers=[layer,], ))
-    return jobs
-
-def get_jobs_list_prune(jobs=[]):
-    LAYERS = [10,]#  layer_list_from_string('all')
-    DEPTHS = [1000,2000,4000]
-
-    for layer in LAYERS:
-        for depth in DEPTHS:
-            config = { "prunes": [{"layers":layer, "remove":depth}]}
-            label = f"{layer},all,{depth}"
-            jobs.append( Job(label=label, config=config, preserve_layers=[layer,]))
-
-    return jobs
 
 def get_jobs_list_all(jobs=[]):
-    CASTS = ['float8_e4m3fn',]
+    CASTS = ['TQ2_0','TQ1_0', ]
     LAYERS = layer_list_from_string('all')
     
     for cast in CASTS:
@@ -109,7 +86,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-
+    #get_jobs_list_null(jobs)
     get_jobs_list_all(jobs)
 
     if args.skip: 

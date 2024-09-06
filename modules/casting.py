@@ -5,11 +5,9 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 import bitsandbytes.nn as bnb
 
-from gguf import GGMLQuantizationType, quants
-from .city_gguf.dequant import dequantize
+from gguf import GGMLQuantizationType, quants, dequantize, quantize, ReaderTensor
+import modules.future
 
-from gguf.gguf_reader import ReaderTensor
-from gguf.quants import quantize
 import numpy as np
 
 from functools import partial
@@ -163,9 +161,9 @@ class CastLinear(torch.nn.Module):
         if hasattr(to, '__call__'):  
             self.linear = to(linear.in_features, linear.out_features, linear.bias is not None, device=linear.weight.device)
             self.linear.load_state_dict(linear.state_dict())
-        elif isinstance(to, GGMLQuantizationType):
+        elif isinstance(to, int):
             self.linear = DequantingLinear(linear.state_dict(), qtype=to)
-            self.description = to.name
+            self.description = to.name if hasattr(to,'name') else {34:"TQ1_0", 35:{"TQ2_0"}}[to]
         else:
             self.linear = linear.to(to)
 
