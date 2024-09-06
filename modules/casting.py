@@ -14,6 +14,8 @@ import numpy as np
 from functools import partial
 
 class QuantizedTensor():
+    NEVER_PURGE = False
+
     def __init__(self, data=None, tensor_type=None, tensor_shape=None, patches=[], data_is_unquantized_tensor=False, **kwargs):
         self.tensor_type:GGMLQuantizationType = tensor_type
         self.tensor_shape:torch.Size          = tensor_shape
@@ -26,7 +28,8 @@ class QuantizedTensor():
         if self._cached is None: self._cached = dequantize_tensor(self, dtype, device)
         return self._cached
     
-    def purge(self): self._cached = None
+    def purge(self): 
+        if not self.NEVER_PURGE: self._cached = None
 
     @property
     def tensor_description(self):

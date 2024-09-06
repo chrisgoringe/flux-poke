@@ -3,6 +3,7 @@ from modules.arguments import args, filepath
 from modules.hffs import HFFS_Cache
 from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, layer_list_from_string
+from modules.casting import QuantizedTensor
 from gguf import GGMLQuantizationType
 import modules.future
 
@@ -22,6 +23,7 @@ def setup():
         Batcher.set_mode(all_in_one=False)
     Job.layer_generator = new_layer
     Job.args = args
+    QuantizedTensor.NEVER_PURGE = True
     
 def create_dataset():
     if args.hs_type==2:
