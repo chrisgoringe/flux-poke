@@ -81,7 +81,10 @@ class Shared(SingletonAddin, FluxFacts):
 
     @property
     def sd(self):
-        if isinstance(self._sd,str): self._sd = load_file(self._sd)
+        if isinstance(self._sd,str): 
+            self._sd = load_file(self._sd)
+            def clean(s:str): return s[22:] if s.startswith('model.diffusion_model.') else s
+            self._sd = { clean(k):self._sd[k] for k in self._sd  }
         return self._sd
     
     def store_mask(self, mask, layer_index, subtype):

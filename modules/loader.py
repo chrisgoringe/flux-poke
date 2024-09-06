@@ -19,6 +19,5 @@ def load_single_layer(layer_number:int, remove_from_sd=True, dry_run=False) -> U
     return layer
 
 def load_layer_stack(dry_run=False):
-    print("Loading model")
     layer_stack = torch.nn.Sequential( *[load_single_layer(layer_number=x, dry_run=dry_run) for x in trange(shared.last_layer+1)] )
     return layer_stack
