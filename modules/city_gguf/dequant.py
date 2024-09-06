@@ -27,17 +27,21 @@ def dequantize(data, qtype, oshape, dtype=None):
     """
     Dequantize tensor back to usable shape/dtype
     """
-    block_size, type_size = gguf.GGML_QUANT_SIZES[qtype]
-    dequantize_blocks = dequantize_functions[qtype]
+    try:
+        block_size, type_size = gguf.GGML_QUANT_SIZES[qtype]
+        dequantize_blocks = dequantize_functions[qtype]
 
-    rows = data.reshape(
-        (-1, data.shape[-1])
-    ).view(torch.uint8)
+        rows = data.reshape(
+            (-1, data.shape[-1])
+        ).view(torch.uint8)
 
-    n_blocks = rows.numel() // type_size
-    blocks = rows.reshape((n_blocks, type_size))
-    blocks = dequantize_blocks(blocks, block_size, type_size, dtype)
-    return blocks.reshape(oshape)
+        n_blocks = rows.numel() // type_size
+        blocks = rows.reshape((n_blocks, type_size))
+        blocks = dequantize_blocks(blocks, block_size, type_size, dtype)
+        return blocks.reshape(oshape)
+    except KeyError:
+        new = gguf.quants.dequantize(data.cpu().numpy(), qtype)
+        return torch.from_numpy(new).to(data.device, dtype=dtype)
 
 def to_uint32(x):
     # no uint32 :(
