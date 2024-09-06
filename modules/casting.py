@@ -5,8 +5,9 @@ from comfy.ldm.flux.layers import DoubleStreamBlock, SingleStreamBlock
 from typing import Union
 import bitsandbytes.nn as bnb
 
-from gguf import GGMLQuantizationType, quants, dequantize, quantize, ReaderTensor
+from gguf import GGMLQuantizationType, quants, quantize, ReaderTensor
 import modules.future
+from modules.city_gguf.dequant import dequantize
 
 import numpy as np
 
