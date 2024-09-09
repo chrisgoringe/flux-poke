@@ -95,7 +95,7 @@ def compute_loss(model:torch.nn.Sequential, inputs:dict[str,torch.Tensor], autoc
     loss_fn = loss_fn or torch.nn.MSELoss()
 
     for i, layer in enumerate(model): 
-        if (i+1)<len(model): precaster.precast( model[i+1], message = f"precast layer {i+1}" )  # start the next layer dequanting
+        if (i+1)<len(model): precaster.precast( model[i+1], message = ("precasting" if i==0 else None) )  # start the next layer dequanting
         if isinstance(layer, DoubleStreamBlock): 
             with torch.autocast("cuda", enabled=autocast): img, txt = layer( img, txt, vec, pe ) 
         else:

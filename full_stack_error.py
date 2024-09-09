@@ -23,7 +23,6 @@ def setup():
         Batcher.set_mode(all_in_one=False)
     Job.layer_generator = new_layer
     Job.args = args
-    QuantizedTensor.NEVER_PURGE = True
     
 def create_dataset():
     if args.hs_type==2:
@@ -68,8 +67,8 @@ def get_jobs_list_cast_all(jobs=[]):
     
     for cast in CASTS:
         config = { 'casts': [{'layers': 'all', 'castto': cast}] }
-        jobs.append( Job(label=cast+" no precast", config=config, preserve_layers=all_layers, prerun=disable_precast))
-        jobs.append( Job(label=cast+" precast", config=config, preserve_layers=all_layers, prerun=enable_precast))
+        #jobs.append( Job(label=cast+" no precast", config=config, preserve_layers=all_layers, prerun=disable_precast))
+        jobs.append( Job(label=cast+" precast", config=config, preserve_layers=[], prerun=enable_precast))
     return jobs    
 
 def get_jobs_list_null(jobs=[]) -> list[Job]:
@@ -89,7 +88,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    get_jobs_list_null(jobs)
+    #get_jobs_list_null(jobs)
     get_jobs_list_cast_all(jobs)
 
     if args.skip: 

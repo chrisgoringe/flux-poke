@@ -1,4 +1,4 @@
-import threading, queue, torch, logging, math
+import threading, queue, torch, math
 from .casting import CastLinear, DequantingLinear
 from .utils import SingletonAddin
 
@@ -10,7 +10,7 @@ class Precaster(SingletonAddin):
 
     def runner(self):
         target, dtype, device, message = self.queue.get()
-        if message: logging.info(f"[{message}] retrieved from queue")
+        if message: print(f"[{message}] retrieved from queue")
         count = 0
         for m in target.modules():
             if isinstance(m, CastLinear):
@@ -18,12 +18,12 @@ class Precaster(SingletonAddin):
                     weight, bias = m.linear.get_weight_and_bias(dtype, device)
                     count += math.prod(weight.shape)
                     if bias is not None: count += math.prod(bias.shape)
-        if message: logging.info(f"[{message}] complete - {count} parameters precast")
+        if message: print(f"[{message}] complete - {count} parameters precast")
 
 
     def precast(self, target, dtype=torch.bfloat16, device="cuda", message=None):
         if not self.enabled: return
-        if message: logging.info(f"[{message}] added to queue")
+        if message: print(f"[{message}] added to queue")
         self.queue.put((target, dtype, device, message))
 
 precaster = Precaster.instance()
