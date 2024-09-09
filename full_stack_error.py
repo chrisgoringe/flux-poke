@@ -90,7 +90,7 @@ def main():
 
     jobs:list[Job] = []
     get_jobs_list_null(jobs)
-    get_jobs_list_all(jobs)
+    get_jobs_list_cast_all(jobs)
 
     if args.skip: 
         print(f"Skipping {args.skip}")
