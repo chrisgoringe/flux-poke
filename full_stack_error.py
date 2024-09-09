@@ -5,7 +5,7 @@ from modules.generated_dataset import MergedBatchDataset, RemoteDataset
 from modules.utils import Batcher, shared, layer_list_from_string
 from modules.casting import QuantizedTensor
 from gguf import GGMLQuantizationType
-import modules.future
+from modules.precaster import precaster
 
 from modules.jobs import Job
 from modules.loader import new_layer, load_layer_stack
@@ -59,15 +59,17 @@ QUANT_NAMES = {
     GGMLQuantizationType.Q8_0:'Q8_0*',
 }
 
-def get_jobs_list_all(jobs=[]):
+def disable_precast(): precaster.enabled = False
+def enable_precast():  precaster.enabled = True
+
+def get_jobs_list_cast_all(jobs=[]):
     CASTS = ['QF8_0', 'QF5_0', 'QF4_0' ]
-    LAYERS = layer_list_from_string('all')
+    all_layers = layer_list_from_string('all')
     
     for cast in CASTS:
-        for layer in LAYERS:
-            config = { 'casts': [{'layers': layer, 'castto': cast}] }
-            label = f"{layer},all,{cast}"
-            jobs.append( Job(label=label, config=config, preserve_layers=[layer,],))
+        config = { 'casts': [{'layers': all_layers, 'castto': cast}] }
+        jobs.append( Job(label=cast+" no precast", config=config, preserve_layers=all_layers, prerun=disable_precast))
+        jobs.append( Job(label=cast+" precast", config=config, preserve_layers=all_layers, prerun=enable_precast))
     return jobs    
 
 def get_jobs_list_null(jobs=[]) -> list[Job]:
