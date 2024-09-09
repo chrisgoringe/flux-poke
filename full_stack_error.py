@@ -67,7 +67,7 @@ def get_jobs_list_cast_all(jobs=[]):
     all_layers = layer_list_from_string('all')
     
     for cast in CASTS:
-        config = { 'casts': [{'layers': all_layers, 'castto': cast}] }
+        config = { 'casts': [{'layers': 'all', 'castto': cast}] }
         jobs.append( Job(label=cast+" no precast", config=config, preserve_layers=all_layers, prerun=disable_precast))
         jobs.append( Job(label=cast+" precast", config=config, preserve_layers=all_layers, prerun=enable_precast))
     return jobs    
@@ -89,7 +89,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    #get_jobs_list_null(jobs)
+    get_jobs_list_null(jobs)
     get_jobs_list_cast_all(jobs)
 
     if args.skip: 
