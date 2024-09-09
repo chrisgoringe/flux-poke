@@ -63,7 +63,7 @@ def disable_precast(): precaster.enabled = False
 def enable_precast():  precaster.enabled = True
 
 def get_jobs_list_cast_all(jobs=[]):
-    CASTS = ['QF8_0', 'QF5_0', 'QF4_0' ]
+    CASTS = ['Q8_0', 'Q5_1', 'Q4_1' ]
     all_layers = layer_list_from_string('all')
     
     for cast in CASTS:

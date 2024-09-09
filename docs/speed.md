@@ -2,4 +2,6 @@
 
 For full stack cast, 120 'steps':
 
-|cast|time per step
+|cast|steps / second|
+|-|-|
+|none|1.273|
