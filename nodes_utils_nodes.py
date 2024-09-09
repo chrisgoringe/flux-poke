@@ -135,8 +135,28 @@ class CommonSizes(RandomSize):
     def func(self,size:str):
         x,y = (int(x) for x in size.split('x'))
         return (x,y)
+'''
+class FluxSuperScheduler:
+    RETURN_TYPES = ("SIGMAS",)
+    FUNCTION = "func"
+    CATEGORY = "flux_watcher"
 
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {}}
+
+    def simple_scheduler(self):
+        sigs = [1.0, 0.99991, 0.0.0,]
+        return torch.FloatTensor(sigs, device="cpu")
     
+    def func(self, steps, denoise):
+        total_steps = steps
+        if denoise < 1.0:
+            if denoise <= 0.0: return (torch.FloatTensor([]),)
+            total_steps = int(steps/denoise)
+
+        return (self.simple_scheduler(total_steps, steps),)
+'''
 class FluxSimpleScheduler:
     RETURN_TYPES = ("SIGMAS",)
     FUNCTION = "func"

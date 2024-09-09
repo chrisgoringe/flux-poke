@@ -59,9 +59,8 @@ QUANT_NAMES = {
     GGMLQuantizationType.Q8_0:'Q8_0*',
 }
 
-
 def get_jobs_list_all(jobs=[]):
-    CASTS = ['TQ2_0','TQ1_0', ]
+    CASTS = ['QF8_0', 'QF5_0', 'QF4_0' ]
     LAYERS = layer_list_from_string('all')
     
     for cast in CASTS:
@@ -88,7 +87,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    #get_jobs_list_null(jobs)
+    get_jobs_list_null(jobs)
     get_jobs_list_all(jobs)
 
     if args.skip: 
