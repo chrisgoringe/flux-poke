@@ -89,7 +89,7 @@ def main():
     setup()
 
     jobs:list[Job] = []
-    get_jobs_list_null(jobs)
+    #get_jobs_list_null(jobs)
     get_jobs_list_cast_all(jobs)
 
     if args.skip: 
