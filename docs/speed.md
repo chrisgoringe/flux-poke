@@ -8,6 +8,8 @@ Running on A40, pytorch 2.2.0, cuda 12.1.1, transformers 4.44.2, gguf 0.10.0
 |-|-|-|
 |none|n/a|1.273|
 |Q8_0| no|1.074|
-|Q8_0|yes|
+|Q8_0|yes|1.074|
 |Q5_1|no|0.568|
+|Q5_1|yes|0.996|
 |Q4_1|no|0.847|
+|Q4_1|no|0.987|
