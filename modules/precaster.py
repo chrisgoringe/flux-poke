@@ -1,4 +1,4 @@
-import threading, queue, torch, math
+import threading, queue, torch
 from .casting import CastLinear, DequantingLinear
 from .utils import SingletonAddin
 
